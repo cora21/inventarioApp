@@ -33,6 +33,7 @@
                         <td class="text-right">{{ $user->created_at }}</td>
                         <td>
                             <div class="table-data-feature">
+                                {{-- con estos can limito quien puede ser la vista dependiendo del rol --}}
                                 @can('users.show')
                                 <a href="{{ route('users.show', $user->id) }}" class="item" data-toggle="tooltip" data-placement="top" title="" data-original-title="View">
                                     <i class="fa fa-eye"></i>

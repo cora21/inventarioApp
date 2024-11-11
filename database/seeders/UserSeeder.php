@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\User;
 use Illuminate\Support\Str;
-
+use App\Models\User;
 class UserSeeder extends Seeder
 {
     /**
@@ -20,29 +19,18 @@ class UserSeeder extends Seeder
             'last_name' => 'admin',
             'email' => 'admin@admin.com',
             'email_verified_at' => now(),
-            'password' => bcrypt('password'),
-            'phone_number' => '633401092',
+            'phone_number'=> '412589631',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
         ])->assignRole('admin');
-
         User::create([
-            'first_name' => 'Nancy',
-            'last_name' => 'Espinosa',
-            'email' => 'nancy@gmail.com',
+            'first_name' => 'Obrayan',
+            'last_name' => 'Acosta',
+            'email' => 'obra@admin.com',
             'email_verified_at' => now(),
-            'password' => bcrypt('password'),
-            'phone_number' => '633401093',
+            'phone_number'=> '4122539631',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
-        ])->assignRole('manager');;
-
-        User::create([
-            'first_name' => 'Felipe',
-            'last_name' => 'Muñoz',            
-            'email' => 'felipe@gmail.com',
-            'email_verified_at' => now(),
-            'password' => bcrypt('password'),
-            'phone_number' => '633401094',
-            'remember_token' => Str::random(10),
-        ])->assignRole('manager');; 
+        ])->assignRole('analist');
     }
 }
