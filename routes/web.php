@@ -4,15 +4,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 require __DIR__.'/auth.php';
 
-Route::middleware(['auth'])->group(function () {    
-   
+Route::middleware(['auth'])->group(function () {
+
     Route::get('/dashboard', function () { return view('layouts.welcome'); })->name('dashboard');
-    
+
     /* USERS */
     Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::get('users/create', [UserController::class, 'create'])->name('users.create');
