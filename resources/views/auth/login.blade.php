@@ -1,56 +1,75 @@
-<x-guest-layout>
-    <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </x-slot>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body style="background-color: #9A616D;" class="h-screen flex items-center justify-center">
 
-        <!-- Session Status -->
-        <x-auth-session-status class="mb-4" :status="session('status')" />
+    <section class="w-full h-full">
+        <div class="container mx-auto py-5 h-full flex items-center justify-center">
+            <!-- aqui si quiero cambiar el color del fondo blanco de la tarjeta  style="background-color: #424242;" -->
+            <div class="w-full max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden" >
+                <div class="flex flex-wrap">
+                    <!-- Columna Izquierda: Imagen -->
+                    <div class="w-full md:w-1/2 hidden md:block">
+                        <img src="https://www.captia.es/assets/img/web/Captia-Blog-Sistema-Inventario-Automatizado.jpg"
+                             alt="Formulario de Inicio de Sesión"
+                             class="object-cover w-full h-full rounded-l-lg">
+                    </div>
 
-        <!-- Validation Errors -->
-        <x-auth-validation-errors class="mb-4" :errors="$errors" />
+                    <!-- Columna Derecha: Formulario -->
+                    <div class="w-full md:w-1/2 flex items-center p-8 md:p-12 lg:p-16">
+                        <div class="w-full">
+                            <div class="flex items-center mb-6">
+                                <i class="fas fa-cubes fa-2x mr-3 text-orange-500"></i>
+                                <span class="text-2xl font-bold text-gray-700">Logo</span>
+                            </div>
 
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
+                            <h5 class="text-lg font-normal mb-6 text-gray-600 tracking-wide">Inicia sesión en el sistema</h5>
 
-            <!-- Email Address -->
-            <div>
-                <x-label for="email" :value="__('Email')" />
+                            <form method="POST" action="{{ route('login') }}">
+                                @csrf
 
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
+                                <!-- Campo de correo electrónico -->
+                                <div class="mb-4">
+                                    <label for="email" class="block text-gray-600">Correo Electrónico</label>
+                                    <input type="email" id="email" name="email" required
+                                           class="w-full border border-gray-300 rounded-lg p-3 focus:border-blue-500 focus:outline-none" />
+                                </div>
+
+                                <!-- Campo de contraseña -->
+                                <div class="mb-4">
+                                    <label for="password" class="block text-gray-600">Contraseña</label>
+                                    <input type="password" id="password" name="password" required
+                                           class="w-full border border-gray-300 rounded-lg p-3 focus:border-blue-500 focus:outline-none" />
+                                </div>
+
+                                <!-- Botón de acceso -->
+                                <div class="mb-4">
+                                    <button type="submit"
+                                            class="w-full bg-gray-800 hover:bg-gray-900 text-white font-semibold py-3 rounded-lg transition duration-200">
+                                        Iniciar Sesión
+                                    </button>
+                                </div>
+
+                                <!-- Enlaces de ayuda -->
+                                <div class="text-sm text-gray-600 text-center">
+                                    <a href="{{ route('password.request') }}" class="text-blue-600 hover:underline">¿Olvidaste tu Contraseña?</a>
+                                </div>
+                                <p class="mt-5 text-sm text-center text-gray-600">
+                                    ¿No tienes una cuenta?
+                                    <a href="{{ route('register') }}" class="text-blue-600 hover:underline">Regístrate aquí</a>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+    </section>
 
-            <!-- Password -->
-            <div class="mt-4">
-                <x-label for="password" :value="__('Password')" />
-
-                <x-input id="password" class="block mt-1 w-full"
-                                type="password"
-                                name="password"
-                                required autocomplete="current-password" />
-            </div>
-
-            <!-- Remember Me -->
-            <div class="block mt-4">
-                <label for="remember_me" class="inline-flex items-center">
-                    <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="remember">
-                    <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-                </label>
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                @if (Route::has('password.request'))
-                    <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('password.request') }}">
-                        {{ __('Forgot your password?') }}
-                    </a>
-                @endif
-
-                <x-button class="ml-3">
-                    {{ __('Log in') }}
-                </x-button>
-            </div>
-        </form>
-    </x-auth-card>
-</x-guest-layout>
+</body>
+</html>

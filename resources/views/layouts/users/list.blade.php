@@ -1,10 +1,13 @@
-@extends('layouts.dashboard')
+{{-- @extends('layouts.dashboard') --}}
+@extends('layouts.app')
 
+
+@section('title', 'Listado de los Usuarios')
 @section('page')
     @php $currentPage = 'users' @endphp
 @endsection
 
-@section('content')
+@section('contenido')
 
 <div class="row">
     <div class="col-lg-12">
