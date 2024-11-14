@@ -7,13 +7,17 @@ use App\Http\Controllers\AlmacenController;
 
 Route::get('/', function () {
     return view('auth.login');
+    return view('auth.login');
 });
 
 require __DIR__.'/auth.php';
 
 Route::middleware(['auth'])->group(function () {
 
+Route::middleware(['auth'])->group(function () {
+
     Route::get('/dashboard', function () { return view('layouts.welcome'); })->name('dashboard');
+
 
     /* USERS */
     Route::get('users', [UserController::class, 'index'])->name('users.index');
@@ -23,9 +27,4 @@ Route::middleware(['auth'])->group(function () {
     Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('users/{user}/destroy', [UserController::class, 'destroy'])->name('users.destroy');
-});
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('almacen', [AlmacenController::class, 'index'])->name('almacen.index');
-
 });
