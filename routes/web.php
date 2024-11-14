@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AlmacenController;
+
 
 Route::get('/', function () {
     return view('auth.login');
@@ -23,4 +25,4 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('users/{user}/destroy', [UserController::class, 'destroy'])->name('users.destroy');
 });
 
-
+Route::get('almacen', [AlmacenController::class, 'index'])->name('almacen.index');
