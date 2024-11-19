@@ -34,24 +34,50 @@
                         <table class="table table-hover">
                             <thead>
                                 {{-- si funciona --}}
-                                <tr style="background-color: rgb(245, 245, 245); ">
+                                <tr style="background-color: rgb(212, 212, 212); ">
                                     <th scope="col" style="border-radius: 15px 0px 0px 0px;">Id</th>
                                     <th scope="col">Nombre</th>
-                                    <th scope="col" style="border solid; red;">Dirección</th>
-                                    <th scope="col" style="border solid; red;">Observaciones</th>
+                                    <th scope="col" >Dirección</th>
+                                    <th scope="col">Observaciones</th>
                                     <th scope="col" style="border-radius: 0px 15px 0px 0px;">Acciones</th>
                                 </tr>
                             </thead>
                             @foreach ($almacen as $row)
                                 <tbody class="table-group-divider">
-                                    @can('users.show')
-                                    <tr>
-                                        <th>{{ $row->id }}</th>
-                                        <td>{{ $row->nombre }}</td>
-                                        <td>{{ $row->direccion }}</td>
-                                        <td>{{ $row->observaciones }}</td>
-                                    </tr>
-                                    @endcan
+                                    
+                                        <tr>
+                                            <th>{{ $row->id }}</th>
+                                            <td>{{ $row->nombre }}</td>
+                                            <td>{{ $row->direccion }}</td>
+                                            <td>{{ $row->observaciones }}</td>
+                                            <td>
+                                                <a class="btn btn-primary dropdown-toggle d-none d-sm-inline-block" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <span class="text-light">Acciones</span>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-tod">
+                                                    <div class="dropdown-item text-center">
+                                                        <a class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                                                            <i data-feather="eye" class="me-2"></i> <span>Ver</span>
+                                                        </a>
+                                                    </div>
+                                                    @can('users.show')
+                                                    <div class="dropdown-item text-center">
+                                                        <a class="btn btn-success w-100 d-flex align-items-center justify-content-center">
+                                                            <i data-feather="edit-2" class="me-2"></i> <span>Editar</span>
+                                                        </a>
+                                                    </div>
+                                                    @endcan
+                                                    <div class="dropdown-item text-center">
+                                                        @can('users.show')
+                                                        <a class="btn btn-danger w-100 d-flex align-items-center justify-content-center">
+                                                            <i data-feather="trash" class="me-2"></i> <span>Eliminar</span>
+                                                        </a>
+                                                        @endcan
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    
                             @endforeach
                             </tbody>
                         </table>
@@ -76,9 +102,9 @@
                             <div class="card">
                                 <div class="card-body rounded shadow-lg">
                                     <form action="{{ route('almacen.store') }}" method="POST">
-                                    <div class="container">
-                                        <div class="row">
-                                            @csrf
+                                        <div class="container">
+                                            <div class="row">
+                                                @csrf
                                                 <!-- Columna para los inputs -->
                                                 <div class="col-md-6">
                                                     <label for="basic-url" class="form-label text-dark"><strong>Nombre:
@@ -110,8 +136,8 @@
                                                         <textarea name="observaciones" class="form-control" aria-label="With textarea" style="height: 90%; resize: none;"></textarea>
                                                     </div>
                                                 </div>
+                                            </div>
                                         </div>
-                                    </div>
 
 
                                 </div>
@@ -122,7 +148,8 @@
                     </div>
                     <div class="modal-footer">
                         <p class="card-text fs-4"> <strong>Los campos con </strong><span class="text-danger">*</span>
-                            <strong> son obligatorios</strong></p>
+                            <strong> son obligatorios</strong>
+                        </p>
                         <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-primary text-gray">Guardar</button>
                     </div>
@@ -132,11 +159,5 @@
             </div>
         </div>
     </div>
-
-
-
-
-
-
 
 @endsection

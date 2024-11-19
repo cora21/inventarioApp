@@ -17,7 +17,7 @@
                 <div>
                     <table class="table table-hover">
                         <thead>
-                            <tr style="background-color: rgb(201, 201, 201); ">
+                            <tr style="background-color: rgb(184, 182, 182); ">
                                 <th style="border-radius: 15px 0px 0px 0px;" >Nombre</th>
                                 <th>Apellido</th>
                                 <th class="text-right">Correo</th>
