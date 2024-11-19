@@ -26,3 +26,4 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('almacen', [AlmacenController::class, 'index'])->name('almacen.index');
+Route::post('almacen', [AlmacenController::class, 'store'])->name('almacen.store');
