@@ -10,8 +10,9 @@
     <meta name="keywords" content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
 
     <!-- Fuente y Favicon -->
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+    {{-- <link rel="preconnect" href="https://fonts.gstatic.com"> --}}
     <link rel="shortcut icon" href="{{ asset('adminkit/img/icons/icon-48x48.png') }}" />
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
 
@@ -24,7 +25,7 @@
     <link href="{{ asset('adminkit/css/app.css') }}" rel="stylesheet">
 
     <!-- Fuente de Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    {{-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet"> --}}
 </head>
 
 <body>
@@ -155,14 +156,6 @@
                     <span class="text-dark">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</span>
               </a>
 							<div class="dropdown-menu dropdown-menu-end">
-                                {{-- esto son los componentes dentro del cerrar sesion --}}
-
-								{{-- <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="user"></i> Profile</a>
-								<a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="pie-chart"></i> Analytics</a>
-								<div class="dropdown-divider"></div>
-								<a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="settings"></i> Settings & Privacy</a>
-								<a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="help-circle"></i> Help Center</a> --}}
-								{{-- <div class="dropdown-divider"></div> --}}
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button class="dropdown-item logout-link" href="#">
@@ -212,7 +205,11 @@
 	</div>
 
 	{{-- <script src="{{ asset('js/app.js') }}"> </script> --}}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    {{-- ojito con esto ya que sdi lo activo el log out no abre esta loco --}}
+
+    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> --}}
+
     <script src="{{ asset('adminkit/js/app.js') }}"></script>
 
 	<script>
