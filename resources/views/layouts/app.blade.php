@@ -2,6 +2,7 @@
 <html lang="es  ">
 
 <head>
+	@yield('estilos')
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -66,6 +67,11 @@
             </a>
 					</li>
 
+					<li class="sidebar-item">
+						<a class="sidebar-link" href="{{ route('metodoPago.index') }}">
+              <i class="align-middle" data-feather="dollar-sign"></i> <span class="align-middle">Método de Pago</span>
+            </a>
+					</li>
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="#">
               <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Configuraciones</span>

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\Almacen;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,8 +15,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        
         $this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);
+        $this->call(AlmacenSeeder::class);
         User::factory(10)->create()->each(function ($user) {
             $user->assignRole('developer');
         });

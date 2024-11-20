@@ -16,8 +16,8 @@
             @endforeach
         </select>
         <!-- Botón alineado a la derecha -->
-        <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalRegistroAlmacen">
-            Registra nuevo almacén
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalRegistroAlmacen">
+           + Nuevo almacén
         </button>
     </div>
     <br><br>
@@ -94,7 +94,7 @@
             aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header no-border">
+                    <div class="modal-header no-border style="background-color: #222e3c;"">
                         <h1 class="modal-title fs-1 text-blue-200" id="exampleModalLabel">Nuevo Almacén</h1>
                     </div>
 
@@ -109,8 +109,8 @@
                                                 @csrf
                                                 <!-- Columna para los inputs -->
                                                 <div class="col-md-6">
-                                                    <label for="basic-url" class="form-label text-dark"><strong>Nombre:
-                                                        </strong><span class="text-danger">*</span></label>
+                                                    <label for="basic-url" class="text-dark" style="font-size: 1rem;"><strong>Nombre:
+                                                        </strong><span class="text-danger" style="font-size: 1.2rem;">*</span></label>
                                                     <div class="input-group mb-4">
                                                         <div class="input-group input-group-lg">
                                                             <input type="text" class="form-control"
@@ -121,7 +121,7 @@
 
                                                     <div class="input-group mb-4">
                                                         <label for="basic-url"
-                                                            class="form-label"><strong>Dirección:</strong></label>
+                                                            class="text-dark" style="font-size: 1rem;"><strong>Dirección:</strong></label>
                                                         <div class="input-group input-group-lg">
                                                             <input type="text" class="form-control"
                                                                 aria-label="Sizing example input"
@@ -133,7 +133,7 @@
                                                 <!-- Columna para el textarea -->
                                                 <div class="col-md-6">
                                                     <label for="basic-url"
-                                                        class="form-label rounded"><strong>Observaciones:</strong></label>
+                                                    class="text-dark rounded" style="font-size: 1rem;"><strong>Observaciones:</strong></label>
                                                     <div class="input-group h-100">
                                                         <textarea name="observaciones" class="form-control" aria-label="With textarea" style="height: 90%; resize: none;"></textarea>
                                                     </div>
@@ -149,7 +149,7 @@
 
                     </div>
                     <div class="modal-footer">
-                        <p class="card-text fs-4"> <strong>Los campos con </strong><span class="text-danger">*</span>
+                        <p class="card-text fs-4"> <strong>Los campos con </strong><span class="text-danger" style="font-size: 1.2rem;">*</span>
                             <strong> son obligatorios</strong>
                         </p>
                         <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancelar</button>

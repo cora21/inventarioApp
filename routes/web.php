@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AlmacenController;
+use App\Http\Controllers\MetodoPagoController;
 
 
 Route::get('/', function () {
@@ -26,6 +27,8 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::resource('almacen', AlmacenController::class);
+
+Route::resource('metodoPago', MetodoPagoController::class);
 
 
 
