@@ -25,5 +25,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('users/{user}/destroy', [UserController::class, 'destroy'])->name('users.destroy');
 });
 
-Route::get('almacen', [AlmacenController::class, 'index'])->name('almacen.index');
-Route::post('almacen', [AlmacenController::class, 'store'])->name('almacen.store');
+Route::resource('almacen', AlmacenController::class);
+
+
+
+

@@ -11,11 +11,11 @@ class UserController extends Controller
         $users = User::all();
         return view('layouts.users.list', compact('users'));
     }
-    
+
     public function create() {
         return view('create');
     }
-    
+
     public function store(Request $request) {
         $request->validate([
             "first_name" => 'required | max:255',
@@ -26,16 +26,16 @@ class UserController extends Controller
         User::create($request->all());
         return redirect()->route('users.index');
     }
- 
+
     public function show(User $user) {
         return view('layouts.users.show', compact('user'));
     }
-    
+
     public function edit(User $user) {
         return view('layouts.users.edit', compact('user'));
     }
-    
-    public function update(Request $request, User $user) {       
+
+    public function update(Request $request, User $user) {
         $request->validate([
             "first_name" => 'required | max:255',
             "last_name" => 'required | max:255',
@@ -44,8 +44,8 @@ class UserController extends Controller
         ]);
         $user->update($request->all());
         return redirect()->route('users.index');
-    } 
-    
+    }
+
     public function destroy(User $user) {
         $user->delete();
         return redirect()->route('users.index');

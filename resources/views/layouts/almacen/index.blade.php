@@ -11,10 +11,9 @@
         <!-- Select alineado a la izquierda -->
         <select class="form-select form-select-lg me-2" aria-label="Large select example"
             style="max-width: 300px; height: auto;">
-            <option selected>- Seleccione -</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
+            @foreach ($almacen as $row)
+            <option value="{{ $row->nombre }}">{{ $row->nombre }}</option>
+            @endforeach
         </select>
         <!-- Botón alineado a la derecha -->
         <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalRegistroAlmacen">
@@ -37,47 +36,50 @@
                                 <tr style="background-color: rgb(212, 212, 212); ">
                                     <th scope="col" style="border-radius: 15px 0px 0px 0px;">Id</th>
                                     <th scope="col">Nombre</th>
-                                    <th scope="col" >Dirección</th>
+                                    <th scope="col">Dirección</th>
                                     <th scope="col">Observaciones</th>
                                     <th scope="col" style="border-radius: 0px 15px 0px 0px;">Acciones</th>
                                 </tr>
                             </thead>
                             @foreach ($almacen as $row)
                                 <tbody class="table-group-divider">
-                                    
-                                        <tr>
-                                            <th>{{ $row->id }}</th>
-                                            <td>{{ $row->nombre }}</td>
-                                            <td>{{ $row->direccion }}</td>
-                                            <td>{{ $row->observaciones }}</td>
-                                            <td>
-                                                <a class="btn btn-primary dropdown-toggle d-none d-sm-inline-block" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <span class="text-light">Acciones</span>
-                                                </a>
-                                                <div class="dropdown-menu dropdown-menu-tod">
+
+                                    <tr>
+                                        <th>{{ $row->id }}</th>
+                                        <td>{{ $row->nombre }}</td>
+                                        <td>{{ $row->direccion }}</td>
+                                        <td>{{ $row->observaciones }}</td>
+                                        <td>
+                                            <a class="btn btn-primary dropdown-toggle d-none d-sm-inline-block"
+                                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <span class="text-light">Acciones</span>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-tod">
+                                                <div class="dropdown-item text-center">
+                                                    <a <a href="{{ route('almacen.show', $row->id) }}" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                                                        <i data-feather="eye" class="me-2"></i> <span>Ver</span>
+                                                    </a>
+                                                </div>
+                                                @can('users.show')
                                                     <div class="dropdown-item text-center">
-                                                        <a class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
-                                                            <i data-feather="eye" class="me-2"></i> <span>Ver</span>
-                                                        </a>
-                                                    </div>
-                                                    @can('users.show')
-                                                    <div class="dropdown-item text-center">
-                                                        <a class="btn btn-success w-100 d-flex align-items-center justify-content-center">
+                                                        <a href="{{ route('almacen.edit', $row->id) }}"
+                                                            class="btn btn-success w-100 d-flex align-items-center justify-content-center"
+                                                            data-bs-toggle="modal" data-bs-target="#exampleModaleditar">
                                                             <i data-feather="edit-2" class="me-2"></i> <span>Editar</span>
                                                         </a>
                                                     </div>
-                                                    @endcan
-                                                    <div class="dropdown-item text-center">
-                                                        @can('users.show')
-                                                        <a class="btn btn-danger w-100 d-flex align-items-center justify-content-center">
+                                                @endcan
+                                                <div class="dropdown-item text-center">
+                                                    @can('users.show')
+                                                        <a
+                                                            class="btn btn-danger w-100 d-flex align-items-center justify-content-center">
                                                             <i data-feather="trash" class="me-2"></i> <span>Eliminar</span>
                                                         </a>
-                                                        @endcan
-                                                    </div>
+                                                    @endcan
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    
+                                            </div>
+                                        </td>
+                                    </tr>
                             @endforeach
                             </tbody>
                         </table>
@@ -160,4 +162,75 @@
         </div>
     </div>
 
+
 @endsection
+
+<!-- Modal  que sirve para editar-->
+<div class="modal fade" id="exampleModaleditar" tabindex="-1" aria-labelledby="exampleModalLabeleditar"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabeleditar">Editar el almace {{$row->nombre}}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{-- da inicio al modal de edicion de los almacenes --}}
+                <p class="card-text fs-4 text-dark">Aqui puedes editar el almacen de tu empresa</p>
+                <div class="mx-auto" style="width: 70%;">
+                    <div class="card">
+                        <div class="card-body rounded shadow-lg">
+                            <form action="{{ route('almacen.update', $row->id) }}" method="POST">
+                                <div class="container">
+                                    <div class="row">
+                                        @csrf
+                                        @method('put')
+                                        <!-- Columna para los inputs -->
+                                        <div class="col-md-6">
+                                            <label for="basic-url" class="form-label text-dark"><strong>Nombre:
+                                                </strong><span class="text-danger">*</span></label>
+                                            <div class="input-group mb-4">
+                                                <div class="input-group input-group-lg">
+                                                    <input type="text" class="form-control"
+                                                        aria-label="Sizing example input"
+                                                        aria-describedby="inputGroup-sizing-lg" name="nombre" value="{{$row->nombre}}">
+                                                </div>
+                                            </div>
+
+                                            <div class="input-group mb-4">
+                                                <label for="basic-url"
+                                                    class="form-label"><strong>Dirección:</strong></label>
+                                                <div class="input-group input-group-lg">
+                                                    <input type="text" class="form-control"
+                                                        aria-label="Sizing example input"
+                                                        aria-describedby="inputGroup-sizing-lg" name="direccion" value="{{$row->direccion}}">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Columna para el textarea -->
+                                        <div class="col-md-6">
+                                            <label for="basic-url"
+                                                class="form-label rounded"><strong>Observaciones:</strong></label>
+                                            <div class="input-group h-100">
+                                                <textarea name="observaciones" class="form-control" value="{{$row->observaciones}}" aria-label="With textarea" style="height: 90%; resize: none;">{{$row->observaciones}}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <p class="card-text fs-4"> <strong>Los campos con </strong><span class="text-danger">*</span>
+                    <strong> son obligatorios</strong>
+                </p>
+                <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-success text-gray">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>

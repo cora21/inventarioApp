@@ -25,4 +25,19 @@ class AlmacenController extends Controller{
         $almacen->save();
         return redirect()->route('almacen.index');
     }
+
+    public function show($id){
+        $almacen = Almacen::find($id);
+        return view('layouts.almacen.show', compact('almacen'));
+    }
+
+    public function update(Request $request, $id){
+        $almacen = Almacen::find($id);
+        $almacen->update($request->all());
+        return redirect()->route('almacen.index', compact('almacen'));
+    }
+    public function edit($id){
+        $almacen = Almacen::find($id);
+        return redirect()->route('almacen.edit', compact('almacen'));
+    }
 }
