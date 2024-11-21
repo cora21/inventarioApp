@@ -26,6 +26,7 @@
 
 
         <div class="card shadow-lg" style="width: 56rem;">
+
             <div class="card-body">
                 {{-- la carta que sostiene la tabla --}}
                 <div class="card shadow-lg" style="width: 54rem;">
@@ -111,13 +112,26 @@
                                                 <div class="col-md-6">
                                                     <label for="basic-url" class="text-dark" style="font-size: 1rem;"><strong>Nombre:
                                                         </strong><span class="text-danger" style="font-size: 1.2rem;">*</span></label>
-                                                    <div class="input-group mb-4">
-                                                        <div class="input-group input-group-lg">
-                                                            <input type="text" class="form-control"
-                                                                aria-label="Sizing example input"
-                                                                aria-describedby="inputGroup-sizing-lg" name="nombre">
+                                                        <div class="input-group mb-4">
+                                                            <div class="input-group input-group-lg">
+                                                                {{-- como puedo ver este lo uso de referencia para aplicar los estilos que necesito de las validaciones --}}
+                                                                <input type="text"
+                                                                        class="form-control @error('nombre') is-invalid @enderror"
+                                                                        aria-label="Sizing example input"
+                                                                        aria-describedby="inputGroup-sizing-lg"
+                                                                        name="nombre"
+                                                                        value="{{ old('nombre') }}">
+
+                                                        {{-- este mensaje de error es que hace que aparezcan el mensaje abajo asi que pendiente, entre comillas simples va la variable  --}}
+                                                        {{-- usamos el value="{{ old('nombre') }}" para que las variables se mantengan asi el modal se cierre --}}
+                                                                @error('nombre')
+                                                                    <div class="invalid-feedback">
+                                                                        <strong>{{ $message }}</strong>
+                                                                    </div>
+                                                                @enderror
+                                                            </div>
                                                         </div>
-                                                    </div>
+
 
                                                     <div class="input-group mb-4">
                                                         <label for="basic-url"
@@ -125,7 +139,7 @@
                                                         <div class="input-group input-group-lg">
                                                             <input type="text" class="form-control"
                                                                 aria-label="Sizing example input"
-                                                                aria-describedby="inputGroup-sizing-lg" name="direccion">
+                                                                aria-describedby="inputGroup-sizing-lg" name="direccion" value="{{ old('direccion') }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -135,7 +149,7 @@
                                                     <label for="basic-url"
                                                     class="text-dark rounded" style="font-size: 1rem;"><strong>Observaciones:</strong></label>
                                                     <div class="input-group h-100">
-                                                        <textarea name="observaciones" class="form-control" aria-label="With textarea" style="height: 90%; resize: none;"></textarea>
+                                                        <textarea name="observaciones" class="form-control" aria-label="With textarea" style="height: 90%; resize: none;">{{ old('observaciones') }}</textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -145,7 +159,19 @@
                                 </div>
                             </div>
                         </div>
-
+                        {{-- dan inicio los scripts --}}
+                        {{-- el script que permite que el modal se abra exitosamente --}}
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                            // Revisa si hay errores de validación
+                            @if ($errors->any())
+                                // Selecciona el modal por su ID
+                                const modal = new bootstrap.Modal(document.getElementById('modalRegistroAlmacen'));
+                                // Muestra el modal
+                                modal.show();
+                            @endif
+                        });
+                        </script>
 
                     </div>
                     <div class="modal-footer">
