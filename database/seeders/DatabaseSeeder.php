@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(AlmacenSeeder::class);
+        $this->call(MetodoPagoSeeder::class);
         User::factory(10)->create()->each(function ($user) {
             $user->assignRole('developer');
         });

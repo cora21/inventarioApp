@@ -21,6 +21,8 @@ class AlmacenController extends Controller{
             'nombre' => 'required|max:255', // Valida que sea obligatorio, string, y de un tamaño razonable
             'direccion' => 'nullable|max:255', // Campo opcional
             'observaciones' => 'nullable|max:1000', // Observaciones más largas pero opcionales
+        ], [
+            'nombre.required' => 'Este campo es obligatorio.',
         ]);
 
         $almacen = new Almacen();
