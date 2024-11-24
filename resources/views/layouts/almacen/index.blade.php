@@ -68,7 +68,7 @@
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-tod">
                                                 <div class="dropdown-item text-center">
-                                                    <a <a href="{{ route('almacen.show', $row->id) }}" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                                                    <a href="{{ route('almacen.show', $row->id) }}" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
                                                         <i data-feather="eye" class="me-2"></i> <span>Ver</span>
                                                     </a>
                                                 </div>

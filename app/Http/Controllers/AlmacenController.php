@@ -50,8 +50,6 @@ class AlmacenController extends Controller{
     public function edit($id){
         $almacen = Almacen::find($id);
         return view('layouts.almacen.edit', compact('almacen'));
-        // $almacen = Almacen::find($id);
-        // return redirect()->route('almacen.edit', compact('almacen'));
     }
 
 
@@ -69,5 +67,6 @@ class AlmacenController extends Controller{
         return redirect()->route('almacen.index')->with('success', 'Almacén actualizado exitosamente.');
 
     }
+    
 
 }

@@ -9,6 +9,17 @@
 @section('title', 'Nuevo Metodo de pago')
 
 @section('contenido')
+@if(session('success'))
+<script>
+    Swal.fire({
+        title: '¡Registrado con éxito!',
+        text: '{{ session('success') }}',
+        icon: "success",
+        confirmButtonText: "Aceptar",
+        timer: 1500, // Desaparece después de 3 segundos
+    });
+    </script>
+@endif
     <h2 class="title-1 m-b-25">Métodos de Pago</h2>
     {{-- boton del nuevo almacen --}}
     <div style="display: flex; justify-content: flex-end;">
@@ -44,7 +55,31 @@
                             @endif
                         </td>
                         <td>
-                            acciones
+                            <a class="btn btn-primary dropdown-toggle d-none d-sm-inline-block"
+                                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <span class="text-light">Acciones</span>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-tod">
+                                                <div class="dropdown-item text-center">
+                                                    <a <a href="{{ route('metodo.show', $row->id)}}" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                                                        <i data-feather="eye" class="me-2"></i> <span>Ver</span>
+                                                    </a>
+                                                </div>
+                                                    @can('users.show')
+                                                    <a href="{{ route('metodoPago.edit', $row->id) }}"
+                                                        class="btn btn-success w-100 d-flex align-items-center justify-content-center">
+                                                         <i data-feather="edit-2" class="me-2"></i> <span>Editar</span>
+                                                     </a>
+                                                    @endcan
+                                                <div class="dropdown-item text-center">
+                                                    @can('users.show')
+                                                        <a
+                                                            class="btn btn-danger w-100 d-flex align-items-center justify-content-center">
+                                                            <i data-feather="trash" class="me-2"></i> <span>Eliminar</span>
+                                                        </a>
+                                                    @endcan
+                                                </div>
+                                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -78,7 +113,7 @@
                     {{-- aqui comienza el modal del registro de los metodos de pago --}}
                     <div class="card">
                         <div class="card-body">
-                            <form action="{{ route('metodo.store') }}" method="POST" enctype="multipart/form-data">
+                            <form action="{{ route('metodo.store', ) }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row">
                                     <div class="col-md-6">
@@ -89,7 +124,7 @@
                                             class="form-control" placeholder="">
                                             @error('nombreMetPago')
                                             <small> <span class="text-danger">{{$message}}</span></small>
-                                        @enderror
+                                            @enderror
                                     </div>
                                     <div class="col-md-6">
                                         <label for="imageMetodo" class="text-dark" style="font-size: 1.2rem;">Selecciona una
@@ -163,7 +198,7 @@
 
 {{-- utilidades
     plus<i class="align-middle" data-feather="grid"></i>
-    
+
     --}}
 
 

@@ -17,7 +17,42 @@ class MetodoPagoController extends Controller{
     }
 
 
-    public function store(Request $request)
+    public function store(Request $request){
+    // Validar los campos
+    $request->validate([
+        'nombreMetPago' => 'required|max:255',
+        'imageMetodo' => 'image', // Verifica que el archivo sea una imagen
+    ], [
+        'nombreMetPago.required' => 'Este campo es obligatorio.',
+        'imageMetodo.image' => 'Debe subir una imagen válida.',
+    ]);
+    // Subir la imagen y obtener la URL
+    if ($request->hasFile('imageMetodo')) {
+        $imagenes = $request->file('imageMetodo')->store('public/imagenes');
+        $url = Storage::url($imagenes); // Genera la URL accesible públicamente
+    } else {
+        $url = null; // En caso de que no se suba una imagen
+    }
+    // Crear un nuevo registro en la base de datos
+    MetodoPago::create([
+        'nombreMetPago' => $request->nombreMetPago,
+        'imagenMetPago' => $url, // Guardar la URL en el campo correspondiente
+        'observacionesMetPago' => $request->nombreMetPago
+    ]);
+    // Redirigir al índice
+    return redirect()->route('metodo.index')->with('success', 'Metdo de Pago registrado exitosamente.');
+}
+
+public function show($id){
+    $metPago = MetodoPago::find($id);
+    return view('layouts.metodoPago.show', compact('metPago'));
+}
+
+public function edit($id){
+    $metPago = MetodoPago::find($id);
+    return view('layouts.metodoPago.edit', compact('metPago'));
+}
+public function update(Request $request, $id)
 {
     // Validar los campos
     $request->validate([
@@ -28,22 +63,33 @@ class MetodoPagoController extends Controller{
         'imageMetodo.image' => 'Debe subir una imagen válida.',
     ]);
 
-    // Subir la imagen y obtener la URL
+    // Buscar el registro existente
+    $metPago = MetodoPago::findOrFail($id);
+
+    // Procesar la imagen, si se ha subido una nueva
     if ($request->hasFile('imageMetodo')) {
-        $imagenes = $request->file('imageMetodo')->store('public/imagenes');
-        $url = Storage::url($imagenes); // Genera la URL accesible públicamente
+        // Eliminar la imagen anterior si existe
+        if ($metPago->imagenMetPago && Storage::exists(str_replace('/storage/', 'public/', $metPago->imagenMetPago))) {
+            Storage::delete(str_replace('/storage/', 'public/', $metPago->imagenMetPago));
+        }
+
+        // Subir la nueva imagen
+        $imagen = $request->file('imageMetodo')->store('public/imagenes');
+        $url = Storage::url($imagen); // Genera la URL accesible públicamente
     } else {
-        $url = null; // En caso de que no se suba una imagen
+        // Mantener la URL de la imagen existente
+        $url = $metPago->imagenMetPago;
     }
 
-    // Crear un nuevo registro en la base de datos
-    MetodoPago::create([
+    // Actualizar el registro en la base de datos
+    $metPago->update([
         'nombreMetPago' => $request->nombreMetPago,
-        'imagenMetPago' => $url, // Guardar la URL en el campo correspondiente
-        'observacionesMetPago' => $request->nombreMetPago
+        'imagenMetPago' => $url, // Guardar la nueva URL o la existente
+        'observacionesMetPago' => $request->observacionesMetPago,
     ]);
 
-    // Redirigir al índice
-    return redirect()->route('metodo.index');
+    // Redirigir al índice con un mensaje de éxito
+    return redirect()->route('metodo.index')->with('success', 'Método de pago actualizado con éxito.');
 }
+
 }

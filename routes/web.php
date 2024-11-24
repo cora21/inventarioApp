@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AlmacenController;
 use App\Http\Controllers\MetodoPagoController;
+use App\Http\Controllers\CategoriaController;
 
 
 Route::get('/', function () {
@@ -26,13 +27,21 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('users/{user}/destroy', [UserController::class, 'destroy'])->name('users.destroy');
 });
 
+
+// rutas de almacen
 Route::resource('almacen', AlmacenController::class);
 Route::get('edit/{id}', [AlmacenController::class, 'edit'])->name('almacen.edit');
 
+
+//rutas del metodo de pago
 Route::resource('metodoPago', MetodoPagoController::class);
 Route::get('index', [MetodoPagoController::class, 'index'])->name('metodo.index');
-Route::post('metodo', [MetodoPagoController::class, 'store'])->name('metodo.store');
+Route::post('store', [MetodoPagoController::class, 'store'])->name('metodo.store');
+Route::get('show/{id}', [MetodoPagoController::class, 'show'])->name('metodo.show');
 
+
+//rutas de las categorias
+Route::resource('categoria', CategoriaController::class);
 
 
 
