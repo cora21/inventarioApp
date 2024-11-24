@@ -7,6 +7,17 @@
 
     <h2 class="title-1 m-b-25">Lista de los Almacenes</h2>
     {{-- boton del nuevo almacen --}}
+        @if(session('success'))
+        <script>
+            Swal.fire({
+                title: '¡Registrado con éxito!',
+                text: '{{ session('success') }}',
+                icon: "success",
+                confirmButtonText: "Aceptar",
+                timer: 1500, // Desaparece después de 3 segundos
+            });
+            </script>
+        @endif
     <div class="d-flex justify-content-between align-items-center">
         <!-- Select alineado a la izquierda -->
         <select class="form-select form-select-lg me-2" aria-label="Large select example"
@@ -64,8 +75,7 @@
                                                 @can('users.show')
                                                     <div class="dropdown-item text-center">
                                                         <a href="{{ route('almacen.edit', $row->id) }}"
-                                                            class="btn btn-success w-100 d-flex align-items-center justify-content-center"
-                                                            data-bs-toggle="modal" data-bs-target="#exampleModaleditar">
+                                                            class="btn btn-success w-100 d-flex align-items-center justify-content-center">
                                                             <i data-feather="edit-2" class="me-2"></i> <span>Editar</span>
                                                         </a>
                                                     </div>
@@ -190,73 +200,3 @@
 
 
 @endsection
-
-<!-- Modal  que sirve para editar-->
-<div class="modal fade" id="exampleModaleditar" tabindex="-1" aria-labelledby="exampleModalLabeleditar"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabeleditar">Editar el almace {{$row->nombre}}</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                {{-- da inicio al modal de edicion de los almacenes --}}
-                <p class="card-text fs-4 text-dark">Aqui puedes editar el almacen de tu empresa</p>
-                <div class="mx-auto" style="width: 70%;">
-                    <div class="card">
-                        <div class="card-body rounded shadow-lg">
-                            <form action="{{ route('almacen.update', $row->id) }}" method="POST">
-                                <div class="container">
-                                    <div class="row">
-                                        @csrf
-                                        @method('put')
-                                        <!-- Columna para los inputs -->
-                                        <div class="col-md-6">
-                                            <label for="basic-url" class="form-label text-dark"><strong>Nombre:
-                                                </strong><span class="text-danger">*</span></label>
-                                            <div class="input-group mb-4">
-                                                <div class="input-group input-group-lg">
-                                                    <input type="text" class="form-control"
-                                                        aria-label="Sizing example input"
-                                                        aria-describedby="inputGroup-sizing-lg" name="nombre" value="{{$row->nombre}}">
-                                                </div>
-                                            </div>
-
-                                            <div class="input-group mb-4">
-                                                <label for="basic-url"
-                                                    class="form-label"><strong>Dirección:</strong></label>
-                                                <div class="input-group input-group-lg">
-                                                    <input type="text" class="form-control"
-                                                        aria-label="Sizing example input"
-                                                        aria-describedby="inputGroup-sizing-lg" name="direccion" value="{{$row->direccion}}">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Columna para el textarea -->
-                                        <div class="col-md-6">
-                                            <label for="basic-url"
-                                                class="form-label rounded"><strong>Observaciones:</strong></label>
-                                            <div class="input-group h-100">
-                                                <textarea name="observaciones" class="form-control" value="{{$row->observaciones}}" aria-label="With textarea" style="height: 90%; resize: none;">{{$row->observaciones}}</textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <p class="card-text fs-4"> <strong>Los campos con </strong><span class="text-danger">*</span>
-                    <strong> son obligatorios</strong>
-                </p>
-                <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-success text-gray">Guardar</button>
-            </div>
-        </div>
-    </div>
-</div>

@@ -27,6 +27,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::resource('almacen', AlmacenController::class);
+Route::get('edit/{id}', [AlmacenController::class, 'edit'])->name('almacen.edit');
 
 Route::resource('metodoPago', MetodoPagoController::class);
 Route::get('index', [MetodoPagoController::class, 'index'])->name('metodo.index');

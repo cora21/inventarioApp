@@ -9,6 +9,8 @@ class AlmacenController extends Controller{
 
     public function index(Request $request) {
         $almacen = Almacen::all();
+        //return redirect()->route('almacen.index', compact('almacen'))->with('success', 'Almacén registrado exitosamente.');
+
         return view('layouts.almacen.index', compact('almacen'));
     }
     public function create(){
@@ -42,13 +44,30 @@ class AlmacenController extends Controller{
         return view('layouts.almacen.show', compact('almacen'));
     }
 
-    public function update(Request $request, $id){
-        $almacen = Almacen::find($id);
-        $almacen->update($request->all());
-        return redirect()->route('almacen.index', compact('almacen'));
-    }
+
+
+
     public function edit($id){
         $almacen = Almacen::find($id);
-        return redirect()->route('almacen.edit', compact('almacen'));
+        return view('layouts.almacen.edit', compact('almacen'));
+        // $almacen = Almacen::find($id);
+        // return redirect()->route('almacen.edit', compact('almacen'));
     }
+
+
+    public function update(Request $request, $id){
+        $validatedData = $request->validate([
+            'nombre' => 'required|max:255', // Valida que sea obligatorio, string, y de un tamaño razonable
+            'direccion' => 'nullable|max:255', // Campo opcional
+            'observaciones' => 'nullable|max:1000', // Observaciones más largas pero opcionales
+        ], [
+            'nombre.required' => 'Este campo es obligatorio.',
+        ]);
+        $almacen = Almacen::find($id);
+        $almacen->update($request->all());
+        //return redirect()->route('almacen.index', compact('almacen');
+        return redirect()->route('almacen.index')->with('success', 'Almacén actualizado exitosamente.');
+
+    }
+
 }
