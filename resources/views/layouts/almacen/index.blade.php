@@ -105,7 +105,7 @@
             aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header no-border style="background-color: #222e3c;"">
+                    <div class="modal-header no-border">
                         <h1 class="modal-title fs-1 text-blue-200" id="exampleModalLabel">Nuevo Almacén</h1>
                     </div>
 

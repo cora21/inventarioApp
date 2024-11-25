@@ -79,11 +79,17 @@
               <i class="align-middle" data-feather="grid"></i> <span class="align-middle">Categorias</span>
             </a>
 					</li>
+					<li class="sidebar-item">
+						<a class="sidebar-link" href="{{ route('proveedor.index') }}">
+              <i class="align-middle" data-feather="users"></i> <span class="align-middle">Proveedores</span>
+            </a>
+					</li>
                     <li class="sidebar-item">
 						<a class="sidebar-link" href="#">
               <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Configuraciones</span>
             </a>
 					</li>
+					
 
 					<li class="sidebar-header">
 						Tools & Components

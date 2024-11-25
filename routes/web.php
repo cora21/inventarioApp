@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AlmacenController;
 use App\Http\Controllers\MetodoPagoController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\ProveedorController;
 
 
 Route::get('/', function () {
@@ -42,6 +43,10 @@ Route::get('show/{id}', [MetodoPagoController::class, 'show'])->name('metodo.sho
 
 //rutas de las categorias
 Route::resource('categoria', CategoriaController::class);
+
+
+//rutas de los proveedores
+Route::resource('proveedor', ProveedorController::class);
 
 
 
