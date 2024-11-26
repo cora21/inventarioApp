@@ -19,6 +19,7 @@ class CreateProveedoresTable extends Migration
             $table->string('telefonoProveedor')->nullable();
             $table->string('emailProveedor')->nullable();
             $table->string('rif_cedula')->nullable();
+            $table->string('nacionalidad')->nullable();
             $table->text('direccionProveedor')->nullable();
             $table->timestamps();
         });
