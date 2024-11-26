@@ -31,7 +31,7 @@
     <br>
     <br><br>
     <div class="container">
-        <table class="table table-hover response">
+        <table class="table table-hover response table-bordered">
             <thead class="thead-dark">
                 <tr style="background-color: rgb(212, 212, 212); ">
                     <th scope="col" style="border-radius: 15px 0px 0px 0px;">Método de Pago</th>

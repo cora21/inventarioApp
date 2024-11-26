@@ -11,10 +11,34 @@
     <div class="d-flex justify-content-between align-items-center">
         <!-- Botón alineado a la derecha -->
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalRegistroAlmacen">
-            + Nuevo almacén
+            + Nuevo Proveedor
         </button>
     </div>
-
+    <br><br>
+    <table class="table table-hover table-bordered">
+        <thead class="thead-dark">
+            <tr style="background-color: rgb(212, 212, 212); ">
+            <th scope="col" style="border-radius: 15px 0px 0px 0px;">Nombre: </th>
+            <th scope="col">Documento:</th>
+            <th scope="col">Correo Electronico:</th>
+            <th scope="col">Telf:</th>
+            <th scope="col">Dirección:</th>
+            <th scope="col" style="border-radius: 0px 15px 0px 0px;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+             @foreach ($proveedor as $row)
+          <tr>
+            <td>{{$row->nombreProveedor}}</td>
+            <td>{{$row->nacionalidad}}.- {{$row->rif_cedula}}</td>
+            <td>{{$row->emailProveedor}}</td>
+            <td>{{$row->telefonoProveedor}}</td>
+            <td>{{$row->direccionProveedor}}</td>
+            <td>Acciones</td>
+          </tr>
+          @endforeach
+        </tbody>
+      </table>
 
 
 

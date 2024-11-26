@@ -9,7 +9,8 @@ use App\Models\Proveedor;
 class ProveedorController extends Controller{
 
     public function index(){
-        return view('layouts.proveedor.index');
+        $proveedor = Proveedor::all();
+        return view('layouts.proveedor.index', compact('proveedor'));
     }
     public function create(){
         $proveedor = Proveedor::all();
