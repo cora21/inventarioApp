@@ -52,7 +52,7 @@
 					</li>
 
 					<li class="sidebar-item">
-						<a class="sidebar-link" href="#">
+						<a class="sidebar-link" href="{{route('producto.index')}}">
               <i class="align-middle" data-feather="tag"></i> <span class="align-middle">Productos</span>
             </a>
 					</li>
@@ -89,7 +89,7 @@
               <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Configuraciones</span>
             </a>
 					</li>
-					
+
 
 					<li class="sidebar-header">
 						Tools & Components

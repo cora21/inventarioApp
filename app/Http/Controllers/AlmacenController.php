@@ -63,10 +63,9 @@ class AlmacenController extends Controller{
         ]);
         $almacen = Almacen::find($id);
         $almacen->update($request->all());
-        //return redirect()->route('almacen.index', compact('almacen');
         return redirect()->route('almacen.index')->with('success', 'Almacén actualizado exitosamente.');
 
     }
-    
+
 
 }

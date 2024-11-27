@@ -6,6 +6,7 @@ use App\Http\Controllers\AlmacenController;
 use App\Http\Controllers\MetodoPagoController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProveedorController;
+use App\Http\Controllers\ProductoController;
 
 
 Route::get('/', function () {
@@ -47,6 +48,9 @@ Route::resource('categoria', CategoriaController::class);
 
 //rutas de los proveedores
 Route::resource('proveedor', ProveedorController::class);
+
+//rutas para el producto modulo mas pesado
+Route::resource('producto', ProductoController::class);
 
 
 
