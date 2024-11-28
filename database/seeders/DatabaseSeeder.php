@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Almacen;
+use App\Models\Color;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(AlmacenSeeder::class);
         $this->call(MetodoPagoSeeder::class);
+        $this->call(ColorSeeder::class);
         User::factory(10)->create()->each(function ($user) {
             $user->assignRole('developer');
         });

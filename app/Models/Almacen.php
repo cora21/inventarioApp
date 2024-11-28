@@ -8,10 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Almacen extends Model{
 
     use HasFactory;
-    protected $table = 'almacen';
+    protected $table = 'almacenes';
     protected $fillable = [
         'nombre',
         'direccion',
         'observaciones'
     ];
+
+    public function productos(){
+    return $this->belongsToMany(Producto::class, 'producto_almacen')
+                ->withPivot('cantidad')
+                ->withTimestamps();
+            }
 }

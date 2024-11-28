@@ -27,46 +27,64 @@
           </tr>
         </thead>
         <tbody>
-             @foreach ($proveedor as $row)
-          <tr>
-            <td>{{$row->nombreProveedor}}</td>
-            <td>{{$row->nacionalidad}}.- {{$row->rif_cedula}}</td>
-            <td>{{$row->emailProveedor}}</td>
-            <td>{{$row->telefonoProveedor}}</td>
-            <td>{{$row->direccionProveedor}}</td>
-            <td>
-                <a class="btn btn-primary dropdown-toggle d-none d-sm-inline-block"
-                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="text-light">Acciones</span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-tod">
-                    <div class="dropdown-item text-center">
-                        <a href="{{ route('proveedor.show', $row->id) }}" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
-                            <i data-feather="eye" class="me-2"></i> <span>Ver</span>
-                        </a>
-                    </div>
-                    @can('users.show')
+                    @if ($proveedor->isEmpty())
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            <div class="alert alert-info" role="alert">
+                                <strong class="h3 text-dark" >¡A un clic de crear tu primer proveedor!</strong>
+                                <br>
+                                <br>
+                                <p class="h5">
+                                    Crea tus productos y comienza a registrar tus inventario
+                                </p>
+                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalRegistroAlmacen">
+                                    + Nuevo Proveedor
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                @else
+                @foreach ($proveedor as $row)
+                <tr>
+                <td>{{$row->nombreProveedor}}</td>
+                <td>{{$row->nacionalidad}}.- {{$row->rif_cedula}}</td>
+                <td>{{$row->emailProveedor}}</td>
+                <td>{{$row->telefonoProveedor}}</td>
+                <td>{{$row->direccionProveedor}}</td>
+                <td>
+                    <a class="btn btn-primary dropdown-toggle d-none d-sm-inline-block"
+                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="text-light">Acciones</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-tod">
                         <div class="dropdown-item text-center">
-                             <a href="{{ route('proveedor.edit', $row->id) }}"
-                                class="btn btn-success w-100 d-flex align-items-center justify-content-center">
-                                <i data-feather="edit-2" class="me-2"></i> <span>Editar</span>
+                            <a href="{{ route('proveedor.show', $row->id) }}" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                                <i data-feather="eye" class="me-2"></i> <span>Ver</span>
                             </a>
                         </div>
-                    @endcan
-                    <div class="dropdown-item text-center">
                         @can('users.show')
-                            <a
-                                class="btn btn-danger w-100 d-flex align-items-center justify-content-center">
-                                <i data-feather="trash" class="me-2"></i> <span>Eliminar</span>
-                            </a>
+                            <div class="dropdown-item text-center">
+                                <a href="{{ route('proveedor.edit', $row->id) }}"
+                                    class="btn btn-success w-100 d-flex align-items-center justify-content-center">
+                                    <i data-feather="edit-2" class="me-2"></i> <span>Editar</span>
+                                </a>
+                            </div>
                         @endcan
+                        <div class="dropdown-item text-center">
+                            @can('users.show')
+                                <a
+                                    class="btn btn-danger w-100 d-flex align-items-center justify-content-center">
+                                    <i data-feather="trash" class="me-2"></i> <span>Eliminar</span>
+                                </a>
+                            @endcan
+                        </div>
                     </div>
-                </div>
-            </td>
-          </tr>
-          @endforeach
-        </tbody>
-      </table>
+                </td>
+                </tr>
+                @endforeach
+                @endif
+            </tbody>
+        </table>
 
 
 

@@ -17,4 +17,8 @@ class Proveedor extends Model
         'direccionProveedor',
         'nacionalidad'
     ];
+    // Relación con Productos
+    public function productos(){
+        return $this->hasMany(Producto::class, 'proveedor_id');
+    }
 }
