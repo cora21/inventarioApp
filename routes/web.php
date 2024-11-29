@@ -51,6 +51,8 @@ Route::resource('proveedor', ProveedorController::class);
 
 //rutas para el producto modulo mas pesado
 Route::resource('producto', ProductoController::class);
+Route::get('colores/{id}', [ProductoController::class, 'colores'])->name('producto.colores');
+
 
 
 

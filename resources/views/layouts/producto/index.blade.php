@@ -3,6 +3,16 @@
 @section('title', 'Registro del producto')
 
 @section('contenido')
+<!-- Agregar Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+  .hover-shadow:hover {
+      filter: brightness(0.5);
+      transform: scale(2);
+      transition: all 0.1s;
+  }
+</style>
+
 <h1>comienza el modulo mas arrecho con la fé puesta en dios y creyendo en mi todo saldra bien</h1>
 
 <!-- Button trigger modal -->
@@ -10,33 +20,41 @@
     + Nuevo Producto
   </button>
   <br><br>
-  <table class="table">
+  <table class="table table-hover">
     <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">First</th>
-        <th scope="col">Last</th>
-        <th scope="col">Handle</th>
+      <tr style="background-color: rgb(212, 212, 212); ">
+        <th scope="col" style="border-radius: 15px 0px 0px 0px;">Producto</th>
+        <th class="bordered">Marca</th>
+        <th>Precio</th>
+        <th>Cantidad Total</th>
+        <th scope="col" style="border-radius: 0px 15px 0px 0px;">Acciones</th>
       </tr>
     </thead>
     <tbody>
+      @foreach ($producto as $row)
       <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
+        <td><a href="" class="text-primary hover-shadow">{{$row->nombreProducto}}</a></td>
+        <td>{{$row->marcaProducto}}</td>
+        <td>${{$row->precioUnitarioProducto}}</td>
+        <td>{{$row->cantidadDisponibleProducto}}</td>
+        <td>
+          <div class="d-flex gap-3">
+            <!-- Icono de Editar -->
+            <a href="#" class="text-primary hover-shadow" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">
+                <i class="bi bi-pencil-square fs-4"></i>
+            </a>
+            <!-- Icono de Subir Foto -->
+            <a href="#" class="text-primary hover-shadow" data-bs-toggle="tooltip" data-bs-placement="top" title="Subir Foto">
+                <i class="bi bi-camera fs-4"></i>
+            </a>
+            <!-- Icono de Agregar Colores -->
+            <a href="{{route('producto.colores', $row->id)}}" class="text-primary hover-shadow" data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar Colores">
+                <i class="bi bi-palette fs-4"></i>
+            </a>
+        </div>
+        </td>
       </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td colspan="2">Larry the Bird</td>
-        <td>@twitter</td>
-      </tr>
+      @endforeach
     </tbody>
   </table>
 
@@ -116,7 +134,7 @@
                     </div>
                     <div class="col-md-4">
                         <label for="" class="form-label">Precio Unitario:</label><span class="text-danger" style="font-size: 1.2rem;"> * </span>
-                        <input type="text" name="precioUnitarioProducto" class="form-control" id="precioUnitarioProducto" oninput="calcularPrecioTotal()">
+                        <input type="text" step="0.01" name="precioUnitarioProducto" class="form-control" id="precioUnitarioProducto" oninput="calcularPrecioTotal()">
                     </div>
                     <div class="col-4">
                         <label for="" class="form-label">Total</label><span class="text-light" style="font-size: 1.2rem;"> * </span>
@@ -142,6 +160,22 @@
                     document.getElementById("precioTotal").value = '';
                 }
             }
+        </script>
+        <script>
+          function formatDecimal(input) {
+              // Elimina cualquier carácter no numérico excepto el punto
+              let value = input.value.replace(/[^0-9.]/g, "");
+              
+              // Convierte el valor en un número flotante
+              let number = parseFloat(value);
+              
+              // Si es un número válido, formatea a dos decimales
+              if (!isNaN(number)) {
+                  input.value = number.toFixed(2);
+              } else {
+                  input.value = ""; // Si no es válido, limpia el campo
+              }
+          }
         </script>
           {{-- da inicio lo de aqui para arriba el modal --}}
         </div>
