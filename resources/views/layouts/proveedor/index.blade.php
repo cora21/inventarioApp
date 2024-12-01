@@ -15,7 +15,7 @@
         </button>
     </div>
     <br><br>
-    <table class="table table-hover table-bordered">
+    <table class="table table-hover">
         <thead class="thead-dark">
             <tr style="background-color: rgb(212, 212, 212); ">
             <th scope="col" style="border-radius: 15px 0px 0px 0px;">Nombre: </th>
@@ -46,12 +46,12 @@
                 @else
                 @foreach ($proveedor as $row)
                 <tr>
-                <td>{{$row->nombreProveedor}}</td>
-                <td>{{$row->nacionalidad}}.- {{$row->rif_cedula}}</td>
-                <td>{{$row->emailProveedor}}</td>
-                <td>{{$row->telefonoProveedor}}</td>
-                <td>{{$row->direccionProveedor}}</td>
-                <td>
+                <td class="border">{{$row->nombreProveedor}}</td>
+                <td class="border">{{$row->nacionalidad}}.- {{$row->rif_cedula}}</td>
+                <td class="border">{{$row->emailProveedor}}</td>
+                <td class="border">{{$row->telefonoProveedor}}</td>
+                <td class="border">{{$row->direccionProveedor}}</td>
+                <td class="border">
                     <a class="btn btn-primary dropdown-toggle d-none d-sm-inline-block"
                         type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="text-light">Acciones</span>

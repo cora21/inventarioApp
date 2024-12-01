@@ -27,6 +27,8 @@
         font-size: 14px;
     }
 </style>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
 @section('contenido')
     <h2>Producto</h2>
     <div class="d-flex justify-content-between">
@@ -39,32 +41,63 @@
         <div class="d-flex">
             <!-- Miniaturas en Columna -->
             <div class="d-flex flex-column me-3">
-                @foreach ($producto->imagenes as $imagen)
-                    <img src="{{ $imagen->ruta }}" class="img-thumbnail mb-2 preview-image"
-                        style="width: 50px; height: 50px; object-fit: cover; cursor: pointer;" alt="Miniatura">
-                @endforeach
+                @if ($producto->imagenes->isNotEmpty())
+                    @foreach ($producto->imagenes as $imagen)
+                        <img src="{{ $imagen->ruta }}" class="img-thumbnail mb-2 preview-image"
+                            style="width: 50px; height: 50px; object-fit: cover; cursor: pointer;" alt="Miniatura">
+                    @endforeach
+                @endif
             </div>
 
             <!-- Imagen Principal -->
             <div class="me-4">
-                <img id="mainImage" src="{{ $producto->imagenes->first()->ruta }}" class="rounded border"
-                    style="width: 350px; height: 350px; object-fit: cover;" alt="Imagen Principal">
+                @if ($producto->imagenes->isNotEmpty())
+                    <!-- Mostrar Imagen Principal -->
+                    <img id="mainImage" src="{{ $producto->imagenes->first()->ruta }}" class="rounded border"
+                        style="width: 350px; height: 350px; object-fit: cover;" alt="Imagen Principal">
+                @else
+                    <!-- Mostrar Cuadro Placeholder -->
+                    <div class="d-flex justify-content-center align-items-center border rounded bg-light"
+                        style="width: 350px; height: 350px; position: relative;">
+                        <div class="text-center">
+                            <i class="bi bi-card-image" style="font-size: 3rem; color: #6c757d;"></i>
+                            <p class="mt-2 text-muted">No hay imágenes disponibles para este producto</p>
+                            <a class="btn btn-primary btn-sm mt-2" href="{{ route('producto.imagenes', $producto->id) }}">
+                                + Agregar Imagenes
+                            </a>
+                        </div>
+                    </div>
+                @endif
                 <br>
+
                 <!-- Colores Disponibles -->
                 <div class="mt-4">
                     <p><strong>Colores Disponibles:</strong></p>
-                    <div class="d-flex gap-3 justify-content-start">
-                        @foreach ($producto->colores as $color)
-                            <div class="color-container text-center" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Cantidad disponible: {{ $color->pivot->unidadesDisponibleProducto }} unidades">
-                                <div class="circle" style="background-color: {{ $color->codigoHexa }};"></div>
-                                <span
-                                    class="color-count mt-2 d-block">{{ $color->pivot->unidadesDisponibleProducto }}</span>
-                            </div>
-                        @endforeach
-                    </div>
+                    @if ($producto->colores->isNotEmpty())
+                        <!-- Mostrar colores disponibles -->
+                        <div class="d-flex gap-3 justify-content-start">
+                            @foreach ($producto->colores as $color)
+                                <div class="color-container text-center" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                    title="Cantidad disponible: {{ $color->pivot->unidadesDisponibleProducto }} unidades">
+                                    <div class="circle" style="background-color: {{ $color->codigoHexa }};"></div>
+                                    <span
+                                        class="color-count mt-2 d-block">{{ $color->pivot->unidadesDisponibleProducto }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <!-- Mensaje cuando no hay colores -->
+                        <div class="alert text-center mt-3 border" style="background-color: #e8eff4" role="alert">
+                            <i class="bi bi-palette" style="font-size: 2rem; color: #6c757d;"></i>
+                            <p class="mb-3">No hay colores registrados para este producto.</p>
+                            <a href="{{ route('producto.colores', $producto->id) }}" class="btn btn-primary btn-sm mt-2">
+                                + Registrar colores
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
+
 
             <!-- Detalles del Producto -->
             <div class="col-md-6">

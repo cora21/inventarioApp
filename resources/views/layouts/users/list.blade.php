@@ -28,11 +28,11 @@
                             <tbody>
                                 @foreach ($users as $user)
                                     <tr>
-                                        <td>{{ $user->first_name }}</td>
-                                        <td>{{ $user->last_name }}</td>
-                                        <td class="text-right">{{ $user->email }}</td>
-                                        <td class="text-right">{{ $user->phone_number }}</td>
-                                        <td>
+                                        <td  class="border">{{ $user->first_name }}</td>
+                                        <td  class="border">{{ $user->last_name }}</td>
+                                        <td class="text-right border">{{ $user->email }}</td>
+                                        <td class="text-right border">{{ $user->phone_number }}</td>
+                                        <td class="border">
                                             <a class="btn btn-primary dropdown-toggle d-none d-sm-inline-block"
                                                 type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                 <span class="text-light">Acciones</span>

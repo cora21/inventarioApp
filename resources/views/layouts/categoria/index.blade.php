@@ -15,12 +15,19 @@
     @endif
     <h1>Categorias</h1>
     <div class="d-flex justify-content-between align-items-center">
+        <!-- Select alineado a la izquierda -->
+        <select class="form-select form-select-lg me-2" aria-label="Large select example"
+            style="max-width: 300px; height: auto;">
+            <option value="selected">- Seleccione una Categoria -</option>
+            @foreach ($categoria as $row)
+            <option value="{{ $row->nombre }}">{{ $row->nombre }}</option>
+            @endforeach
+        </select>
         <!-- Botón alineado a la derecha -->
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalRegistroAlmacen">
             + Nueva Categoria
         </button>
     </div>
-
     <div class="modal fade" id="modalRegistroAlmacen" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -121,9 +128,9 @@
                 @foreach ($categoria as $row)
                 <tbody>
                     <tr>
-                        <td>{{ $row->nombre }}</td>
-                        <td>{{ $row->descripcion }}</td>
-                        <td>
+                        <td class="border">{{ $row->nombre }}</td>
+                        <td class="border">{{ $row->descripcion }}</td>
+                        <td class="border">
                             <a class="btn btn-primary dropdown-toggle d-none d-sm-inline-block" type="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 <span class="text-light">Acciones</span>

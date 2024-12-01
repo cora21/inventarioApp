@@ -57,11 +57,11 @@
                                 <tbody class="table-group-divider">
 
                                     <tr>
-                                        <th>{{ $row->id }}</th>
-                                        <td>{{ $row->nombre }}</td>
-                                        <td>{{ $row->direccion }}</td>
-                                        <td>{{ $row->observaciones }}</td>
-                                        <td>
+                                        <th  class="border">{{ $row->id }}</th>
+                                        <td class="border">{{ $row->nombre }}</td>
+                                        <td class="border">{{ $row->direccion }}</td>
+                                        <td class="border">{{ $row->observaciones }}</td>
+                                        <td class="border">
                                             <a class="btn btn-primary dropdown-toggle d-none d-sm-inline-block"
                                                 type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                 <span class="text-light">Acciones</span>

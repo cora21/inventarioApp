@@ -43,11 +43,11 @@
         <tbody>
             @foreach ($producto as $row)
                 <tr>
-                    <td><a href="{{route('producto.show', $row->id)}}" class="text-primary hover-shadow">{{ $row->nombreProducto }}</a></td>
-                    <td>{{ $row->marcaProducto }}</td>
-                    <td>${{ $row->precioUnitarioProducto }}</td>
-                    <td>{{ $row->cantidadDisponibleProducto }}</td>
-                    <td>
+                    <td  class="border" ><a href="{{route('producto.show', $row->id)}}" class="text-primary hover-shadow">{{ $row->nombreProducto }}</a></td>
+                    <td class="border" >{{ $row->marcaProducto }}</td>
+                    <td class="border" >${{ $row->precioUnitarioProducto }}</td>
+                    <td class="border" >{{ $row->cantidadDisponibleProducto }}</td>
+                    <td class="border" >
                         <div class="d-flex gap-3">
                             <!-- Icono de Editar -->
                             <a href="#" class="text-primary hover-shadow" data-bs-toggle="tooltip"

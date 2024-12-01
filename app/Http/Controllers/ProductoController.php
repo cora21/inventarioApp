@@ -84,25 +84,33 @@ class ProductoController extends Controller{
     }
 
     public function colores($id){
-        // Obtener producto específico
-        $producto = Producto::with('colores')->find($id);
-        $almacen = Almacen::all();
-        $categoria = Categoria::all();
-        $colores = Color::all();
-        $proveedor = Proveedor::all();
-        return view('layouts.producto.colores', compact('almacen', 'categoria', 'colores','proveedor', 'producto'));
-        //return route('producto.color', compact('almacen', 'categoria', 'colores','proveedor'));
-    }
+    $producto = Producto::with('colores')->find($id);
+    $totalUnidadesConColor = $producto->colores->sum('pivot.unidadesDisponibleProducto');
+
+    $almacen = Almacen::all();
+    $categoria = Categoria::all();
+    $colores = Color::all();
+    $proveedor = Proveedor::all();
+    // Pasar la suma de unidades a la vista
+    return view('layouts.producto.colores', compact('almacen', 'categoria', 'colores', 'proveedor', 'producto', 'totalUnidadesConColor'));
+}
 
     public function guardarColores(Request $request, $id){
     // Validar los datos enviados desde el formulario
     $validated = $request->validate([
         'color_id' => 'required|array', // color_id debe ser un array
-        'color_id.*' => 'exists:colores,id', // Cada id en color_id debe existir en la tabla colores
+        'color_id.*' => 'required|integer|exists:colores,id', // Cada elemento debe ser un entero válido y existir en la tabla colores
         'unidadesDisponibleProducto' => 'required|array', // unidadesDisponibleProducto debe ser un array
-        'unidadesDisponibleProducto.*' => 'integer|min:1', // Cada cantidad debe ser un entero válido y al menos 1
+        'unidadesDisponibleProducto.*' => 'required|integer|min:1', // Cada cantidad debe ser un entero válido y al menos 1
+    ], [
+        'color_id.required' => 'Debes seleccionar al menos un color.',
+        'color_id.*.required' => 'Debes seleccionar un color válido para cada entrada.',
+        'color_id.*.integer' => 'El color seleccionado no es válido.',
+        'color_id.*.exists' => 'El color seleccionado no existe en la base de datos.',
+        'unidadesDisponibleProducto.required' => 'Debe contener por lo menos un producto.',
+        'unidadesDisponibleProducto.*.integer' => 'Debe contener por lo menos un producto.',
+        'unidadesDisponibleProducto.*.min' => 'Cada unidad debe ser al menos 1.',
     ]);
-
     // Buscar el producto al que se le asignarán los colores
     $producto = Producto::findOrFail($id);
 

@@ -31,7 +31,7 @@
     <br>
     <br><br>
     <div class="container">
-        <table class="table table-hover response table-bordered">
+        <table class="table table-hover response">
             <thead class="thead-dark">
                 <tr style="background-color: rgb(212, 212, 212); ">
                     <th scope="col" style="border-radius: 15px 0px 0px 0px;">Método de Pago</th>
@@ -43,9 +43,9 @@
             @foreach ($metPago as $row)
                 <tbody>
                     <tr>
-                        <th>{{ $row->nombreMetPago }}</th>
-                        <td>{{ $row->observacionesMetPago }}</td>
-                        <td>
+                        <th class="border">{{ $row->nombreMetPago }}</th>
+                        <td class="border">{{ $row->observacionesMetPago }}</td>
+                        <td class="border">
                             @if ($row->imagenMetPago)
                                 <a href="{{ $row->imagenMetPago }}" target="_blank">
                                     <img src="{{ $row->imagenMetPago }}" alt="Imagen del método"
@@ -55,7 +55,7 @@
                                 <span>No hay imagen disponible</span>
                             @endif
                         </td>
-                        <td>
+                        <td class="border">
                             <a class="btn btn-primary dropdown-toggle d-none d-sm-inline-block" type="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 <span class="text-light">Acciones</span>
