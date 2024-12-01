@@ -30,9 +30,24 @@ class Producto extends Model
         return $this->belongsTo(Proveedor::class, 'proveedor_id');
     }
 
+    public function almacen(){
+    return $this->belongsTo(Almacen::class, 'almacen_id'); // Ajusta el campo si es diferente
+}
+
     public function almacenes(){
         return $this->belongsToMany(Almacen::class, 'producto_almacen')
                     ->withPivot('cantidad')
                     ->withTimestamps();
     }
+
+    // Relación con colores
+    public function colores(){
+        return $this->belongsToMany(Color::class, 'productos_colores')
+                    ->withPivot('unidadesDisponibleProducto') // Campo adicional de la tabla intermedia
+                    ->withTimestamps();
+    }
+    public function imagenes(){
+        return $this->hasMany(Imagen::class);
+    }
+
 }

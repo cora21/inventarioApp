@@ -15,16 +15,16 @@ class CreateProductosTable extends Migration
     {
         Schema::create('productos', function (Blueprint $table) {
             $table->id();
-            $table->string('nombreProducto')->nullable();;
-            $table->string('marcaProducto')->nullable();;
+            $table->string('nombreProducto')->nullable();
+            $table->string('marcaProducto')->nullable();
             $table->string('modeloProducto')->nullable();
             $table->text('descripcionProducto')->nullable();
-            $table->unsignedBigInteger('categoria_id')->nullable();;
-            $table->unsignedBigInteger('proveedor_id')->nullable();;
-            $table->unsignedBigInteger('almacen_id')->nullable();; // Aunque será usado en la intermedia, lo incluimos por integridad.
+            $table->unsignedBigInteger('categoria_id')->nullable();
+            $table->unsignedBigInteger('proveedor_id')->nullable();
+            $table->unsignedBigInteger('almacen_id')->nullable(); // Aunque será usado en la intermedia, lo incluimos por integridad.
             $table->integer('cantidadDisponibleProducto')->default(0);
-            $table->decimal('precioUnitarioProducto', 10, 2)->nullable();;
-            $table->decimal('precioTotal', 15, 2)->nullable(); 
+            $table->decimal('precioUnitarioProducto', 10, 2)->nullable();
+            $table->decimal('precioTotal', 15, 2)->nullable();
             $table->timestamps();
 
             // Relaciones

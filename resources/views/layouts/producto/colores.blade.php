@@ -4,35 +4,67 @@
 
 @section('contenido')
     <h1>aqui registro los colores de los productos</h1>
-    {{ $producto->id }}
-    <br>
-    {{ $producto->nombreProducto }}
-    <br>
-    {{ $producto->marcaProducto }}
-    <br>
-    {{ $producto->modeloProducto }}
-    <br>
-    {{ $producto->descripcionProducto }}
-    <br>
-    {{ $producto->categoria_id }}
-    <br>
-    {{ $producto->proveedor_id }}
-    <br>
-    {{ $producto->almacen_id }}
-    <br>
-    {{ $producto->cantidadDisponibleProducto }}
-    <br>
-    {{ $producto->precioUnitarioProducto }}
-    <br>
-    {{ $producto->precioTotal }}
-    <br>
-
-
-
+    <h2>Nombre del Producto: {{ $producto->nombreProducto }}</h2>
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Especifica el color
-    </button>
+    <div class="d-flex justify-content-between">
+        <!-- Botón alineado a la izquierda -->
+        <a href="{{route('producto.index')}}" type="button" class="btn btn-primary">
+            Regresar
+        </a>
+
+        <!-- Botón alineado a la derecha con el modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            + Especifica el color
+        </button>
+    </div>
+    <br>
+    <br>
+
+    <div class="card">
+        <div class="card-body">
+            <p>
+                El Producto <strong>{{ $producto->nombreProducto }}</strong> se encuentra disponible en los siguientes
+                colores
+            </p>
+            <table class="table text-center">
+                <thead>
+                    <tr style="background-color: rgb(212, 212, 212); ">
+                        <th scope="col" style="border-radius: 15px 0px 0px 0px;">Color:</th>
+                        <th scope="col">Unidades:</th>
+                        <th scope="col" style="border-radius: 0px 15px 0px 0px;">Vista del color</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($producto->colores as $color)
+                        <tr>
+                            <td class="border">{{ $color->nombreColor }}</td> <!-- Nombre del color -->
+                            <td class="border">{{ $color->pivot->unidadesDisponibleProducto }}</td> <!-- Unidades disponibles -->
+                            <td class="border">
+                                @if ($color->id == 6)
+                                    <!-- Si el id es 6, se muestra el texto "Color Blanco" -->
+                                    <div type="button" class="btn btn-lg border-secondary" style="background-color: {{ $color->codigoHexa }}; color: {{ $color->codigoHexa }};">
+                                        Este es un color
+                                    </div>
+                                @else
+                                    <!-- Si el id no es 6, se muestra el color original del código hexadecimal -->
+                                    <div type="button" class="btn btn-lg" style="background-color: {{ $color->codigoHexa }}; color: {{ $color->codigoHexa }};">
+                                        Este es un color
+                                    </div>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+
+
+
+
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -52,7 +84,7 @@
                                 <button class="btn btn-primary" id="add-inputs-button">Agregar</button>
                                 <button class="btn btn-danger" id="remove-inputs-button">Eliminar</button>
                             </div>
-                            <form action="#" method="post" class="row g-3">
+                            <form action="{{ route('producto.guardarColores', $producto->id) }}" method="POST">
                                 @csrf
                                 <!-- Contenedor dinámico -->
                                 <div id="input-container">
@@ -74,7 +106,7 @@
                     const removeButton = document.getElementById('remove-inputs-button');
                     const errorMessage = document.getElementById('error-message');
                     const totalAsignadoDisplay = document.getElementById('total-asignado'); // Referencia para mostrar el total asignado
-                
+
                     // Función para calcular el total asignado
                     function calcularTotal() {
                         let totalAsignado = 0;
@@ -84,7 +116,7 @@
                         totalAsignadoDisplay.textContent = totalAsignado; // Mostrar el total en el elemento
                         return totalAsignado;
                     }
-                
+
                     // Función para validar y manejar el estado de los inputs
                     function validarLimite() {
                         const totalAsignado = calcularTotal();
@@ -96,7 +128,7 @@
                             return true;
                         }
                     }
-                
+
                     // Función para actualizar el color de fondo del input según el color seleccionado
                     function updateColorHex(selectElement) {
                         const selectedOption = selectElement.options[selectElement.selectedIndex];
@@ -111,7 +143,7 @@
                             hexInput.value = '';
                         }
                     }
-                
+
                     // Agregar inputs dinámicamente
                     addButton.addEventListener('click', () => {
                         const totalAsignado = calcularTotal();
@@ -119,18 +151,18 @@
                             errorMessage.style.display = "block";
                             return;
                         }
-                
+
                         const newInputs = document.createElement('div');
                         newInputs.classList.add('row', 'mt-3', 'input-group');
                         newInputs.innerHTML = `
                             <div class="col-md-4">
                                 <label for="inputState" class="form-label">Colores:</label><span class="text-danger" style="font-size: 1.2rem;"> * </span>
-                                <select name="ColorPorducto[]" id="inputState" class="form-select" onchange="updateColorHex(this)">
+                                <select name="color_id[]" id="inputState" class="form-select" onchange="updateColorHex(this)">
                                     <option value="">- Seleccione -</option>
                                     @foreach ($colores as $valor)
                                         <option value="{{ $valor->id }}" data-hexa="{{ $valor->codigoHexa }}">
                                             {{ $valor->nombreColor }}
-                                        </option> 
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -144,12 +176,12 @@
                             </div>
                             <div>
                                 <label for=""></label>
-                                <input type="hidden" value="{{ $producto->id }}" name="id_producto[]" class="form-control">
+                                <input type="hidden" value="{{ $producto->id }}" name="producto_id[]" class="form-control">
                             </div>
                         `;
                         inputContainer.appendChild(newInputs);
                     });
-                
+
                     // Eliminar los últimos inputs agregados
                     removeButton.addEventListener('click', () => {
                         const lastGroup = inputContainer.lastElementChild;
@@ -158,7 +190,7 @@
                             validarLimite();
                         }
                     });
-                
+
                     // Validar cuando se modifique algún input
                     inputContainer.addEventListener('input', () => {
                         const totalAsignado = calcularTotal();
@@ -174,7 +206,7 @@
                         validarLimite();
                     });
                 </script>
-                
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                     <button type="submit" class="btn btn-primary">Guardar</button>
@@ -189,33 +221,4 @@
 
 
 
-
-
-
-
-    <div class="card">
-        <div class="card-body">
-            <p>
-                El Producto <strong>{{ $producto->nombreProducto }}</strong> se encuentra disponible en los siguientes
-                colores
-            </p>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Color:</th>
-                        <th scope="col">Unidades:</th>
-                        <th scope="col">vista del color</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
 @endsection

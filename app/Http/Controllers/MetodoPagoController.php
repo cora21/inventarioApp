@@ -26,6 +26,7 @@ class MetodoPagoController extends Controller{
         'nombreMetPago.required' => 'Este campo es obligatorio.',
         'imageMetodo.image' => 'Debe subir una imagen válida.',
     ]);
+    
     // Subir la imagen y obtener la URL
     if ($request->hasFile('imageMetodo')) {
         $imagenes = $request->file('imageMetodo')->store('public/imagenes');

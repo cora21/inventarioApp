@@ -52,7 +52,9 @@ Route::resource('proveedor', ProveedorController::class);
 //rutas para el producto modulo mas pesado
 Route::resource('producto', ProductoController::class);
 Route::get('colores/{id}', [ProductoController::class, 'colores'])->name('producto.colores');
-
+Route::post('producto/{id}/colores', [ProductoController::class, 'guardarColores'])->name('producto.guardarColores');
+Route::get('imagenes/{id}', [ProductoController::class, 'imagenes'])->name('producto.imagenes');
+Route::post('producto/{id}', [ProductoController::class, 'guardarImagenes'])->name('producto.guardarImagenes');
 
 
 

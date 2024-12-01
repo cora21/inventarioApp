@@ -13,4 +13,16 @@ class Color extends Model
         'nombreColor',
         'codigoHexa',
     ];
+
+    public function productos(){
+        return $this->belongsToMany(Producto::class, 'productos_colores')
+                    ->withPivot('unidadesDisponibleProducto') // Agregamos el campo extra de la tabla intermedia
+                    ->withTimestamps();
+    }
+    // Relación con colores
+    public function colores(){
+        return $this->belongsToMany(Color::class, 'productos_colores')
+                    ->withPivot('unidadesDisponibleProducto') // Campo adicional de la tabla intermedia
+                    ->withTimestamps();
+    }
 }
