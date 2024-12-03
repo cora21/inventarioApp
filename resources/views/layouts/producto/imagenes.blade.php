@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Registra las imagenes del producto')
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 @section('contenido')
     <h1>Aqui registro las imagenes de los productos</h1>
     <br>
@@ -104,13 +104,29 @@
                         const fileInput = document.getElementById('file-upload');
                         const previewContainer = document.getElementById('preview-container');
                         const previewImagesContainer = document.getElementById('preview-images');
+                        const maxFiles = 5; // Límite máximo de archivos
 
-                        fileInput.addEventListener('change', function() {
+                        fileInput.addEventListener('change', function () {
                             // Limpiar las imágenes previas
                             previewImagesContainer.innerHTML = '';
 
                             // Revisamos si se han seleccionado archivos
                             const files = this.files;
+                            if (files.length > maxFiles) {
+                                // Mostrar SweetAlert2
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Límite excedido',
+                                    text: `Solo puedes subir un máximo de ${maxFiles} imágenes.`,
+                                    confirmButtonText: 'Entendido',
+                                    timer: 3000 // Opcional: cierra automáticamente después de 3 segundos
+                                });
+
+                                this.value = ''; // Limpiar el input
+                                previewContainer.classList.add('d-none'); // Ocultar la vista previa si no hay archivos
+                                return;
+                            }
+
                             if (files.length > 0) {
                                 previewContainer.classList.remove('d-none'); // Mostrar la vista previa
 
@@ -118,7 +134,7 @@
                                 Array.from(files).forEach(file => {
                                     const reader = new FileReader();
 
-                                    reader.onload = function(e) {
+                                    reader.onload = function (e) {
                                         // Crear una imagen y agregarla al contenedor de vista previa
                                         const img = document.createElement('img');
                                         img.src = e.target.result;
@@ -135,9 +151,8 @@
                                 previewContainer.classList.add('d-none'); // Ocultar la vista previa si no hay archivos
                             }
                         });
-                    </script>
-
-
+                </script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
                 </div>
                 <div class="modal-footer">

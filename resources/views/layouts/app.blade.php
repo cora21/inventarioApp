@@ -57,9 +57,15 @@
             </a>
 					</li>
 
+                    <li class="sidebar-item">
+						<a class="sidebar-link" href="{{route('venta.index')}}">
+              <i class="align-middle" data-feather="dollar-sign"></i> <span class="align-middle">Ventas</span>
+            </a>
+					</li>
+
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="{{ route('almacen.index') }}">
-				<i class="align-middle" data-feather="book"></i>  <span class="align-middle">Almacen</span>
+				<i class="align-middle" data-feather="book"></i>  <span class="align-middle">Almacenes</span>
             </a>
 					</li>
 
@@ -71,7 +77,7 @@
 
 					<li class="sidebar-item">
 						<a class="sidebar-link" href="{{ route('metodoPago.index') }}">
-              <i class="align-middle" data-feather="dollar-sign"></i> <span class="align-middle">Método de Pago</span>
+              <i class="align-middle" data-feather="dollar-sign"></i> <span class="align-middle">Métodos de Pago</span>
             </a>
 					</li>
 					<li class="sidebar-item">

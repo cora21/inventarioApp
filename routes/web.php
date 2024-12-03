@@ -7,6 +7,7 @@ use App\Http\Controllers\MetodoPagoController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\VentaController;
 
 
 Route::get('/', function () {
@@ -55,6 +56,10 @@ Route::get('colores/{id}', [ProductoController::class, 'colores'])->name('produc
 Route::post('producto/{id}/colores', [ProductoController::class, 'guardarColores'])->name('producto.guardarColores');
 Route::get('imagenes/{id}', [ProductoController::class, 'imagenes'])->name('producto.imagenes');
 Route::post('producto/{id}', [ProductoController::class, 'guardarImagenes'])->name('producto.guardarImagenes');
+
+
+//rutas de las ventas
+Route::resource('venta', VentaController::class);
 
 
 
