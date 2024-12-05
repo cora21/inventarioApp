@@ -33,7 +33,8 @@
 
 <body>
 	<div class="wrapper">
-		<nav id="sidebar" class="sidebar js-sidebar">
+        <nav id="sidebar" class="sidebar js-sidebar {{ request()->routeIs('venta.index') ? 'collapsed' : '' }}">
+		{{-- <nav id="sidebar" class="sidebar js-sidebar"> --}}
 			<div class="sidebar-content js-simplebar">
 				<a class="sidebar-brand" href="#">
 					<!-- titulo de la parte de arriba de la plantilla en la esquina donde puede ir un logo -->
@@ -155,7 +156,7 @@
 				<a class="sidebar-toggle js-sidebar-toggle" >
           <i class="hamburger align-self-center"></i>
         </a>
-
+        <h2>@yield('nombreBarra')</h2>
 				<div class="navbar-collapse collapse" >
 					<ul class="navbar-nav navbar-align">
 						<li class="nav-item dropdown">

@@ -12,10 +12,10 @@
     <div class="row">
         <div class="col-lg-12">
             <h2 class="title-1 m-b-25">Listado de Usuarios</h2>
-            <div class="card shadow-lg" style="width: 54rem;">
+            <div class="card shadow-lg">
                 <div class="card-body">
                     <div>
-                        <table class="table table-hover">
+                        <table class="table table-hover response">
                             <thead>
                                 <tr style="background-color: rgb(184, 182, 182); ">
                                     <th style="border-radius: 15px 0px 0px 0px;">Nombre</th>

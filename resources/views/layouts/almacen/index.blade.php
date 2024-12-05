@@ -36,13 +36,9 @@
 
 
 
-        <div class="card shadow-lg" style="width: 56rem;">
-
+        <div class="card">
             <div class="card-body">
-                {{-- la carta que sostiene la tabla --}}
-                <div class="card shadow-lg" style="width: 54rem;">
-                    <div class="card-body">
-                        <table class="table table-hover">
+                        <table class="table table-hover response">
                             <thead>
                                 {{-- si funciona --}}
                                 <tr style="background-color: rgb(212, 212, 212); ">
@@ -94,9 +90,6 @@
                             @endforeach
                             </tbody>
                         </table>
-
-                    </div>
-                </div>
             </div>
         </div>
 

@@ -33,7 +33,7 @@
     <h2>Producto</h2>
     <div class="d-flex justify-content-between">
         <!-- Botón alineado a la izquierda -->
-        <a href="{{ route('producto.index') }}" type="button" class="btn btn-primary">
+        <a href="{{ url()->previous() }}" type="button" class="btn btn-primary">
             Regresar
         </a>
     </div>
