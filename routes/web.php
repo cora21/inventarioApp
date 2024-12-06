@@ -56,6 +56,8 @@ Route::get('colores/{id}', [ProductoController::class, 'colores'])->name('produc
 Route::post('producto/{id}/colores', [ProductoController::class, 'guardarColores'])->name('producto.guardarColores');
 Route::get('imagenes/{id}', [ProductoController::class, 'imagenes'])->name('producto.imagenes');
 Route::post('producto/{id}', [ProductoController::class, 'guardarImagenes'])->name('producto.guardarImagenes');
+Route::get('/buscar-productos', [ProductoController::class, 'buscar'])->name('producto.buscar');
+
 
 
 //rutas de las ventas

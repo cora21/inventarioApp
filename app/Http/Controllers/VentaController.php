@@ -22,7 +22,6 @@ class VentaController extends Controller{
     return view('layouts.venta.index', compact('almacen', 'categoria', 'colores', 'proveedor', 'producto'));
 }
 
-
 }
 
 

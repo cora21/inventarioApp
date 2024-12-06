@@ -166,7 +166,19 @@ public function imagenes($id){
         return redirect()->route('producto.imagenes', $id)->with('success', 'Imágenes registradas exitosamente.');
     }
 
+    public function buscar(Request $request)
+{
+    $termino = $request->get('q', '');
 
+    // Buscar productos por nombre y categoría
+    $productos = Producto::with(['categoria', 'colores'])
+        ->where('nombreProducto', 'like', '%' . $termino . '%')
+        ->orWhereHas('categoria', function ($query) use ($termino) {
+            $query->where('nombre', 'like', '%' . $termino . '%');
+        })
+        ->get();
 
+    return response()->json($productos);
+}
 
 }
