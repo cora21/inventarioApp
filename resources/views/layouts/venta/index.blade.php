@@ -188,14 +188,107 @@
 
     {{-- aqui comienza la ventana derecha para editar --}}
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-    <div class="offcanvas-header border-bottom">
-        <h3 class="offcanvas-title" id="offcanvasRightLabel">Editar Venta</h3>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <div class="offcanvas-header border-bottom" style="background-color: white;">
+            <h3 class="offcanvas-title" id="offcanvasRightLabel">Editar Venta</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body" style="background-color: white;">
+            <div class="py-4 border-bottom">
+                Sección de la factura
+            </div>
+            <br>
+            <!-- Campos de entrada -->
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="precioBaseCanvas" class="form-label">Precio Base</label>
+                    <input type="text" class="form-control" id="precioBaseCanvas">
+                </div>
+                <div class="col-md-6">
+                    <label for="cantidadCanvas" class="form-label">Cantidad</label>
+                    <input type="text" class="form-control" id="cantidadCanvas">
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="descuento" class="form-label">Descuento (%)</label>
+                    <input type="text" class="form-control" id="descuento">
+                </div>
+                <div class="col-md-6">
+                    <label for="precioTotalCanvas" class="form-label">Precio final</label>
+                    <input type="text" class="form-control" id="precioTotalCanvas" readonly>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="descripcionCanvas" class="form-label">Descripción</label>
+                    <textarea class="form-control" id="descripcionCanvas" rows="3" style="resize: none"></textarea>
+                </div>
+            </div>
+            <br>
+            <div id="dynamicFieldsContainer">
+                <div class="row align-items-center gy-2 dynamic-row">
+                    <div class="col-md-3">
+                        <label for="ColorDisponibleCnavas" class="form-label">Colores:</label>
+                        <select id="ColorDisponibleCnavas" class="form-select">
+                            <option value="red">Red</option>
+                            <option value="blue">Blue</option>
+                            <option value="green">Green</option>
+                            <option value="yellow">Yellow</option>
+                            <option value="purple">Purple</option>
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <label for="CantidadDisponibleCanvas" class="form-label">Cantidad:</label>
+                        <input type="text" id="CantidadDisponibleCanvas" class="form-control">
+                    </div>
+                    <div class="col-md-2 d-grid">
+                        <i id="eliminarColor" class="bi bi-dash-lg text-danger fs-3 mt-4" style="cursor: pointer;"></i>
+                    </div>
+                    <div class="col-md-2 d-grid">
+                        <i id="agregarColor" class="bi bi-plus-lg text-primary fs-3 mt-4" style="cursor: pointer;"></i>
+                    </div>
+                </div>
+            </div>
+            <br><br><br><br><br><br>
+            <!-- Sección de subtotal, descuento y total -->
+            <div class="p-3" style="background-color: #f0f8ff; border-radius: 5px;">
+                <div class="row">
+                    <div class="col-6">
+                        <h5>Subtotal:</h5>
+                    </div>
+                    <div class="col-6 text-end">
+                        <h5 id="subtotalDisplay">$0.00</h5>
+                    </div>
+                </div>
+                <div id="discountSection" class="row" style="display: none;">
+                    <div class="col-6">
+                        <h5>Descuento:</h5>
+                    </div>
+                    <div class="col-6 text-end text-danger">
+                        <h5 id="discountDisplay">- $0.00</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <h4>Total:</h4>
+                    </div>
+                    <div class="col-6 text-end">
+                        <h4 id="totalDisplay">$0.00</h4>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <!-- Botones de acción -->
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-outline-primary me-3" data-bs-dismiss="offcanvas">Cancelar</button>
+                <button type="button" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
     </div>
-    <div class="offcanvas-body">
-        ...
-    </div>
-    </div>
+
+
 
 
 
@@ -297,160 +390,257 @@
         });
     </script>
 
-    {{-- scrips que controlan los botones de la carga --}}
+    {{-- scrips que controlan los botones de pasar los productos a la factura --}}
     <script>
-        // Obtener botones y tabla de factura
-        const botonesAgregar = document.querySelectorAll('.agregar-producto');
-        const tablaFactura = document.getElementById('tabla-factura');
+            // Obtener botones y tabla de factura
+            const botonesAgregar = document.querySelectorAll('.agregar-producto');
+            const tablaFactura = document.getElementById('tabla-factura');
 
-        // Función para actualizar el total de la factura
-        function actualizarTotalFactura() {
-            let totalFactura = 0;
-            const filas = document.querySelectorAll('#tabla-factura tr');
-            filas.forEach(fila => {
-                const precio = parseFloat(fila.querySelector('.precio').innerText.replace('$', ''));
-                totalFactura += precio;
-            });
-            // Actualizar el total en la interfaz
-            document.getElementById('total-factura').innerText = `$${totalFactura.toFixed(2)}`;
-        }
+            // Función para actualizar el total de la factura
+            function actualizarTotalFactura() {
+                let totalFactura = 0;
+                const filas = document.querySelectorAll('#tabla-factura tr');
+                filas.forEach(fila => {
+                    const precio = parseFloat(fila.querySelector('.precio').innerText.replace('$', ''));
+                    totalFactura += precio;
+                });
+                // Actualizar el total en la interfaz
+                document.getElementById('total-factura').innerText = `$${totalFactura.toFixed(2)}`;
+            }
 
-        // Manejar el evento de clic en el botón "Agregar"
-        botonesAgregar.forEach((boton) => {
-            boton.addEventListener('click', () => {
-                // Obtener datos del producto
-                const precioProducto = parseFloat(boton.getAttribute('data-precio'));
-                const nombreProducto = boton.getAttribute('data-nombre');
-                const idProducto = boton.getAttribute('data-id');
-                const cantidadDisponible = parseInt(boton.getAttribute('data-cantidad-disponible')); // Cantidad disponible en el inventario
+            // Manejar el evento de clic en el botón "Agregar"
+            botonesAgregar.forEach((boton) => {
+                boton.addEventListener('click', () => {
+                    // Obtener datos del producto
+                    const precioProducto = parseFloat(boton.getAttribute('data-precio'));
+                    const nombreProducto = boton.getAttribute('data-nombre');
+                    const idProducto = boton.getAttribute('data-id');
+                    const cantidadDisponible = parseInt(boton.getAttribute('data-cantidad-disponible')); // Cantidad disponible en el inventario
 
-                // Validar que el precio del producto sea un número válido
-                if (isNaN(precioProducto) || precioProducto <= 0) {
-                    alert('Precio del producto no válido.');
-                    return;
-                }
-
-                // Verificar si el producto ya está en la factura
-                const filaExistente = document.querySelector(`#producto-${idProducto}`);
-                if (filaExistente) {
-                    // Si el producto ya existe, solo se actualiza la cantidad
-                    const cantidadInput = filaExistente.querySelector('.cantidad');
-                    let cantidadActual = parseInt(cantidadInput.value);
-
-                    // Verificar que la cantidad no supere la disponible en inventario
-                    if (cantidadActual < cantidadDisponible) {
-                        cantidadInput.value = cantidadActual + 1; // Incrementar la cantidad
-                        actualizarPrecio(filaExistente, precioProducto); // Actualizar precio
-                    } else {
-                        alert(`Solo quedan ${cantidadDisponible} unidades disponibles.`);
+                    // Validar que el precio del producto sea un número válido
+                    if (isNaN(precioProducto) || precioProducto <= 0) {
+                        alert('Precio del producto no válido.');
+                        return;
                     }
-                } else {
-                    // Crear nueva fila para la tabla de factura
-                    const fila = document.createElement('tr');
-                    fila.id = `producto-${idProducto}`; // Asignar un id único al producto
 
-                    fila.innerHTML = `
-                        <td>
-                            <span class="text-dark">${nombreProducto}</span>
-                            <div style="font-size: 13px; color: rgb(142, 142, 142)">$${precioProducto.toFixed(2)}</div>
-                        </td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <a class="restar">
-                                    <i class="bi bi-dash-lg mx-2"></i>
-                                </a>
-                                <input type="text" value="1" min="1" class="form-control text-center mx-2 cantidad" style="width: 80px;">
-                                <a class="sumar">
-                                    <i class="bi bi-plus-lg mx-2"></i>
-                                </a>
-                            </div>
-                            <!-- Aquí va el mensaje que inicialmente está oculto -->
-                            <div class="mensaje-maximo" style="color: red; font-size: 12px; display: none;">
-                                Has alcanzado el máximo disponible.
-                            </div>
+                    // Verificar si el producto ya está en la factura
+                    const filaExistente = document.querySelector(`#producto-${idProducto}`);
+                    if (filaExistente) {
+                        // Si el producto ya existe, solo se actualiza la cantidad
+                        const cantidadInput = filaExistente.querySelector('.cantidad');
+                        let cantidadActual = parseInt(cantidadInput.value);
 
-                        </td>
-                        <td class="celda-precio ">
-                            $<span class="precio">${precioProducto.toFixed(2)}</span>
-                            <div class="cuadro-acciones">
-                                <a class="editar" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-pencil"></i></a></a>
-                                <a href="#" class="eliminar"><i class="bi bi-trash"></i></a>
-                            </div>
-                        </td>
-                    `;
+                        // Verificar que la cantidad no supere la disponible en inventario
+                        if (cantidadActual < cantidadDisponible) {
+                            cantidadInput.value = cantidadActual + 1; // Incrementar la cantidad
+                            actualizarPrecio(filaExistente, precioProducto); // Actualizar precio
+                        } else {
+                            alert(`Solo quedan ${cantidadDisponible} unidades disponibles.`);
+                        }
+                    } else {
+                        // Crear nueva fila para la tabla de factura
+                        const fila = document.createElement('tr');
+                        fila.id = `producto-${idProducto}`; // Asignar un id único al producto
 
-                    // Agregar fila a la tabla de factura
-                    tablaFactura.appendChild(fila);
+                        fila.innerHTML = `
+                            <td>
+                                <span class="text-dark">${nombreProducto}</span>
+                                <div style="font-size: 13px; color: rgb(142, 142, 142)">$${precioProducto.toFixed(2)}</div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <a class="restar">
+                                        <i class="bi bi-dash-lg mx-2"></i>
+                                    </a>
+                                    <input type="text" value="1" min="1" class="form-control text-center mx-2 cantidad" style="width: 80px;">
+                                    <a class="sumar">
+                                        <i class="bi bi-plus-lg mx-2"></i>
+                                    </a>
+                                </div>
+                                <!-- Aquí va el mensaje que inicialmente está oculto -->
+                                <div class="mensaje-maximo" style="color: red; font-size: 12px; display: none;">
+                                    Has alcanzado el máximo disponible.
+                                </div>
 
-                    // Agregar la clase de animación a la fila recién agregada
-                    fila.classList.add('producto-fila'); // Esta clase contiene la animación CSS
+                            </td>
+                            <td class="celda-precio ">
+                                $<span class="precio">${precioProducto.toFixed(2)}</span>
+                                <div class="cuadro-acciones">
+                                    <a class="editar" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-pencil"></i></a></a>
+                                    <a href="#" class="eliminar"><i class="bi bi-trash"></i></a>
+                                </div>
+                            </td>
+                        `;
 
-                    // Manejar eventos de la fila recién creada
-                    manejarEventosFila(fila, precioProducto, cantidadDisponible);
-                }
+                        // Agregar fila a la tabla de factura
+                        tablaFactura.appendChild(fila);
 
-                // Actualizar el total de la factura
-                actualizarTotalFactura();
+                        // Agregar la clase de animación a la fila recién agregada
+                        fila.classList.add('producto-fila'); // Esta clase contiene la animación CSS
+
+                        // Manejar eventos de la fila recién creada
+                        manejarEventosFila(fila, precioProducto, cantidadDisponible);
+                    }
+
+                    // Actualizar el total de la factura
+                    actualizarTotalFactura();
+                });
             });
-        });
 
-        // Función para manejar eventos en la fila
-        function manejarEventosFila(fila, precioProducto, cantidadDisponible) {
-            // Botón restar cantidad
-            fila.querySelector('.restar').addEventListener('click', () => {
+            // Función para manejar eventos en la fila
+            function manejarEventosFila(fila, precioProducto, cantidadDisponible) {
+                // Botón restar cantidad
+                fila.querySelector('.restar').addEventListener('click', () => {
+                    const input = fila.querySelector('.cantidad');
+                    let cantidadActual = parseInt(input.value);
+
+                    if (cantidadActual > 1) {
+                        input.value = cantidadActual - 1; // Reducir la cantidad
+                        actualizarPrecio(fila, precioProducto); // Actualizar el precio
+                    } else {
+                            fila.remove(); // Eliminar la fila de la tabla
+                    }
+
+                    // Actualizar el total de la factura
+                    actualizarTotalFactura();
+                });
+
+                // Botón sumar cantidad
+            fila.querySelector('.sumar').addEventListener('click', () => {
                 const input = fila.querySelector('.cantidad');
                 let cantidadActual = parseInt(input.value);
 
-                if (cantidadActual > 1) {
-                    input.value = cantidadActual - 1; // Reducir la cantidad
+                if (cantidadActual < cantidadDisponible) {
+                    input.value = cantidadActual + 1; // Incrementar la cantidad
                     actualizarPrecio(fila, precioProducto); // Actualizar el precio
+                    ocultarMensaje(fila); // Ocultar el mensaje si la cantidad es válida
                 } else {
-                        fila.remove(); // Eliminar la fila de la tabla
+                    mostrarMensaje(fila); // Mostrar mensaje si la cantidad excede
                 }
-
-                // Actualizar el total de la factura
-                actualizarTotalFactura();
             });
-
-            // Botón sumar cantidad
-        fila.querySelector('.sumar').addEventListener('click', () => {
-            const input = fila.querySelector('.cantidad');
-            let cantidadActual = parseInt(input.value);
-
-            if (cantidadActual < cantidadDisponible) {
-                input.value = cantidadActual + 1; // Incrementar la cantidad
-                actualizarPrecio(fila, precioProducto); // Actualizar el precio
-                ocultarMensaje(fila); // Ocultar el mensaje si la cantidad es válida
-            } else {
-                mostrarMensaje(fila); // Mostrar mensaje si la cantidad excede
+                // Evento para el botón eliminar (eliminar la fila)
+                fila.querySelector('.eliminar').addEventListener('click', (event) => {
+                    event.preventDefault(); // Evitar que se recargue la página
+                        fila.remove(); // Eliminar la fila de la tabla
+                    // Actualizar el total de la factura
+                    actualizarTotalFactura();
+                });
             }
-        });
-            // Evento para el botón eliminar (eliminar la fila)
-            fila.querySelector('.eliminar').addEventListener('click', (event) => {
-                event.preventDefault(); // Evitar que se recargue la página
-                    fila.remove(); // Eliminar la fila de la tabla
-                // Actualizar el total de la factura
-                actualizarTotalFactura();
+
+            // Función para actualizar el precio total al cambiar la cantidad
+            function actualizarPrecio(fila, precioProducto) {
+                const cantidad = fila.querySelector('.cantidad').value;
+                const totalPrecio = precioProducto * parseInt(cantidad); // Calcular el precio total
+                fila.querySelector('.precio').innerText = totalPrecio.toFixed(2); // Actualizar el precio total en la tabla
+            }
+
+            // Función para mostrar el mensaje de "Has alcanzado el máximo disponible"
+        function mostrarMensaje(fila) {
+            const mensaje = fila.querySelector('.mensaje-maximo');
+            mensaje.style.display = 'block'; // Mostrar mensaje
+        }
+
+        // Función para ocultar el mensaje de "Has alcanzado el máximo disponible"
+        function ocultarMensaje(fila) {
+            const mensaje = fila.querySelector('.mensaje-maximo');
+            mensaje.style.display = 'none'; // Ocultar mensaje
+        }
+    </script>
+
+    {{-- scrips para el canvas --}}
+    <script>
+        const precioBaseInput = document.getElementById('precioBaseCanvas');
+        const cantidadInput = document.getElementById('cantidadCanvas');
+        const descuentoInput = document.getElementById('descuento');
+        const precioTotalInput = document.getElementById('precioTotalCanvas');
+        const subtotalDisplay = document.getElementById('subtotalDisplay');
+        const totalDisplay = document.getElementById('totalDisplay');
+        const discountDisplay = document.getElementById('discountDisplay');
+        const discountSection = document.getElementById('discountSection');
+
+        // Añadir eventos para recalcular cuando cambien los valores
+        precioBaseInput.addEventListener('input', calculateTotal);
+        cantidadInput.addEventListener('input', calculateTotal);
+        descuentoInput.addEventListener('input', calculateTotal);
+
+        function calculateTotal() {
+            // Obtener los valores
+            const precioBaseCanvas = parseFloat(precioBaseInput.value) || 0;
+            const cantidadCanvas = parseInt(cantidadInput.value) || 0;
+            const descuento = parseFloat(descuentoInput.value) || 0;
+
+            // Calcular el subtotal
+            let subtotal = precioBaseCanvas * cantidadCanvas;
+
+            // Calcular el descuento y el total
+            let descuentoValor = 0;
+            if (descuento > 0) {
+                descuentoValor = subtotal * (descuento / 100);
+            }
+            let total = subtotal - descuentoValor;
+
+            // Mostrar u ocultar la sección de descuento
+            if (descuentoValor > 0) {
+                discountSection.style.display = 'flex';
+                discountDisplay.textContent = `- $${descuentoValor.toFixed(2)}`;
+            } else {
+                discountSection.style.display = 'none';
+            }
+
+            // Actualizar los valores en pantalla
+            subtotalDisplay.textContent = `$${subtotal.toFixed(2)}`;
+            totalDisplay.textContent = `$${total.toFixed(2)}`;
+            precioTotalInput.value = total.toFixed(2);
+        }
+    </script>
+
+
+
+    {{-- aqui es el scrip que genera los select de colores para estar pila sera cambiado mas adelante --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('dynamicFieldsContainer');
+
+            // Delegación de eventos para manejar los botones agregar y eliminar
+            container.addEventListener('click', (event) => {
+                const target = event.target;
+
+                if (target.id === 'agregarColor') {
+                    // Crear un nuevo grupo de campos
+                    const newRow = document.createElement('div');
+                    newRow.className = 'row align-items-center gy-2 dynamic-row';
+                    newRow.innerHTML = `
+                        <div class="col-md-3">
+                            <label for="ColorDisponibleCnavas" class="form-label">Colores:</label>
+                            <select id="ColorDisponibleCnavas" class="form-select">
+                                <option value="red">Red</option>
+                                <option value="blue">Blue</option>
+                                <option value="green">Green</option>
+                                <option value="yellow">Yellow</option>
+                                <option value="purple">Purple</option>
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="CantidadDisponibleCanvas" class="form-label">Cantidad:</label>
+                            <input type="text" id="CantidadDisponibleCanvas" class="form-control">
+                        </div>
+                        <div class="col-md-2 d-grid">
+                            <i id="eliminarColor" class="bi bi-dash-lg text-danger fs-3 mt-3" style="cursor: pointer;"></i>
+                        </div>
+                        <div class="col-md-2 d-grid">
+                        <i id="agregarColor" class="bi bi-plus-lg text-primary fs-3 mt-3" style="cursor: pointer;"></i>
+                        </div>
+
+                    `;
+                    container.appendChild(newRow);
+                } else if (target.id === 'eliminarColor') {
+                    // Eliminar la fila correspondiente
+                    const rowToDelete = target.closest('.dynamic-row');
+                    if (rowToDelete) {
+                        rowToDelete.remove();
+                    }
+                }
             });
-        }
-
-        // Función para actualizar el precio total al cambiar la cantidad
-        function actualizarPrecio(fila, precioProducto) {
-            const cantidad = fila.querySelector('.cantidad').value;
-            const totalPrecio = precioProducto * parseInt(cantidad); // Calcular el precio total
-            fila.querySelector('.precio').innerText = totalPrecio.toFixed(2); // Actualizar el precio total en la tabla
-        }
-
-        // Función para mostrar el mensaje de "Has alcanzado el máximo disponible"
-    function mostrarMensaje(fila) {
-        const mensaje = fila.querySelector('.mensaje-maximo');
-        mensaje.style.display = 'block'; // Mostrar mensaje
-    }
-
-    // Función para ocultar el mensaje de "Has alcanzado el máximo disponible"
-    function ocultarMensaje(fila) {
-        const mensaje = fila.querySelector('.mensaje-maximo');
-        mensaje.style.display = 'none'; // Ocultar mensaje
-    }
+        });
     </script>
 @endsection
