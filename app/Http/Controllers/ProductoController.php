@@ -166,8 +166,7 @@ public function imagenes($id){
         return redirect()->route('producto.imagenes', $id)->with('success', 'Imágenes registradas exitosamente.');
     }
 
-    public function buscar(Request $request)
-{
+    public function buscar(Request $request){
     $termino = $request->get('q', '');
 
     // Buscar productos por nombre y categoría

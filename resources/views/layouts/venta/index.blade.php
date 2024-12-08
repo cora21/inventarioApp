@@ -10,6 +10,67 @@
         width: 0;
         overflow: hidden;
     }
+    /* Animación para el deslizamiento de izquierda a derecha */
+    @keyframes slideIn {
+        from {
+            transform: translateX(-100%); /* Comienza fuera de la pantalla (hacia la izquierda) */
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0); /* Finaliza en su posición original */
+            opacity: 1;
+        }
+    }
+
+    .producto-fila {
+        animation: slideIn 0.3s ease-in-out; /* Aplica la animación con una duración de 0.5 segundos */
+    }
+
+/* Estilos para la celda del precio */
+.celda-precio {
+    position: relative;
+    overflow: hidden; /* Evita que el cuadro sobresalga fuera de la celda */
+}
+
+/* El cuadro emergente con animación de deslizamiento de derecha a izquierda */
+.cuadro-acciones {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0; /* Inicialmente el cuadro tiene un ancho de 0 */
+    height: 100%; /* Cubrir toda la altura de la celda */
+    padding: 10px;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(100%); /* Desplazado fuera de la celda a la derecha */
+    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease, width 0.3s ease;
+}
+
+/* Mostrar el cuadro emergente al pasar el ratón */
+.celda-precio:hover .cuadro-acciones {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0); /* El cuadro se desliza hacia la izquierda */
+    width: 100%; /* Expandir para cubrir todo el ancho de la celda */
+}
+
+/* Estilos para los botones dentro del cuadro */
+.cuadro-acciones a {
+    cursor: pointer;
+    font-size: 1.5em;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.cuadro-acciones a:hover {
+    color: #c01e1e;
+}
+
+
 </style>
 
 @section('title', 'Ventas')
@@ -65,15 +126,23 @@
                                                 <td>
                                                     @if ($producto->colores->isNotEmpty())
                                                         @foreach ($producto->colores as $color)
-                                                            <span class="badge"
-                                                                style="background-color: {{ $color->codigoHexa }};"></span>
+                                                            <span class="badge d-inline-block"
+                                                                style="display: inline-block; width: 20px; height: 20px; background-color: {{ $color->codigoHexa }};
+                                                                       border-radius: 50%; {{ strtolower($color->codigoHexa) == '#ffffff' ? 'border: 2px solid #ccc;' : '' }}"></span>
                                                         @endforeach
                                                     @else
                                                         Sin colores
                                                     @endif
                                                 </td>
+
                                                 <td>
-                                                    <button class="btn btn-primary btn-sm">Agregar</button>
+                                                    <button class="btn btn-primary btn-sm agregar-producto"
+                                                        data-precio="{{ $producto->precioUnitarioProducto }}"
+                                                        data-nombre="{{ $producto->nombreProducto }}"
+                                                        data-id="{{ $producto->id }}"
+                                                        data-cantidad-disponible="{{ $producto->cantidadDisponibleProducto }}">
+                                                        Agregar
+                                                    </button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -86,13 +155,57 @@
                 </div>
 
             </div>
-            <!-- Cuadro 2 (2 partes) -->
-            <div class="col-12 col-md-5 border response" style="height: 500px; background-color: lightgreen;">
 
+            <!-- SEGUNDOOO PASOOOOOO -->
+            <div class="col-12 col-md-5 border response" style="height: 500px; background-color: rgb(255, 255, 255);">
+                <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
+                    <h5 class="h3 m-0">Factura de venta</h5>
+                    <div>
+                        <!-- Ícono de impresión -->
+                        <a class="btn btn-light" title="Imprimir">
+                            <i class="bi bi-printer"></i>
+                        </a>
+                        <!-- Ícono de ajustes -->
+                        <a class="btn btn-light" title="Configuración">
+                            <i class="bi bi-sliders"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover border-top">
+                        <tbody id="tabla-factura">
+                            <!-- Productos seleccionados aparecerán aquí -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
         </div>
     </div>
+    {{-- aqui terminan las 2 columnas --}}
 
+    {{-- aqui comienza la ventana derecha para editar --}}
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header border-bottom">
+        <h3 class="offcanvas-title" id="offcanvasRightLabel">Editar Venta</h3>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        ...
+    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    {{-- aqui comienzan los scrips --}}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const sidebar = document.getElementById('sidebar');
@@ -113,71 +226,231 @@
         });
     </script>
     <script>
-       document.querySelector('#search-productos').addEventListener('input', function () {
-    const query = this.value.toLowerCase(); // Convertimos a minúsculas para comparación insensible a mayúsculas/minúsculas.
+        document.querySelector('#search-productos').addEventListener('input', function() {
+            const query = this.value
+                .toLowerCase(); // Convertimos a minúsculas para comparación insensible a mayúsculas/minúsculas.
 
-    fetch(`/buscar-productos?q=${encodeURIComponent(query)}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Error en la respuesta del servidor: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            const tableBody = document.querySelector('#tabla-productos');
-            tableBody.innerHTML = '';
+            fetch(`/buscar-productos?q=${encodeURIComponent(query)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error en la respuesta del servidor: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const tableBody = document.querySelector('#tabla-productos');
+                    tableBody.innerHTML = '';
 
-            data.forEach(producto => {
-                const highlight = (text, query) => {
-                    if (!query) return text; // Si no hay término, devolvemos el texto original.
-                    const regex = new RegExp(`(${query})`, 'gi'); // Creamos una expresión regular para resaltar el término.
-                    return text.replace(regex, '<mark style="background-color: #FFFFFFFF; color: #0F0F0FFF;">$1</mark>'); // Envolvemos la coincidencia en <mark>.
-                };
+                    data.forEach(producto => {
+                        const highlight = (text, query) => {
+                            if (!query)
+                                return text; // Si no hay término, devolvemos el texto original.
+                            const regex = new RegExp(`(${query})`,
+                                'gi'); // Creamos una expresión regular para resaltar el término.
+                            return text.replace(regex,
+                                '<mark style="background-color: #FFFFFFFF; color: #0F0F0FFF;">$1</mark>'
+                            ); // Envolvemos la coincidencia en <mark>.
+                        };
 
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>
-                        <a href="/producto/${producto.id}">
-                            ${highlight(producto.nombreProducto, query)}
-                        </a>
-                    </td>
-                    <td>${producto.categoria ? highlight(producto.categoria.nombre, query) : 'Sin Categoría'}</td>
-                    <td>${highlight(producto.marcaProducto, query)}</td>
-                    <td>${producto.cantidadDisponibleProducto}</td>
-                    <td>$${producto.precioUnitarioProducto}</td>
-                    <td>
-                        ${
-                            producto.colores.length > 0
-                                ? producto.colores.map(color => `
-                                    <span class="badge" style="background-color: ${color.codigoHexa};"></span>
-                                `).join('')
-                                : 'Sin colores'
-                        }
-                    </td>
-                    <td>
-                        <button class="btn btn-primary btn-sm">Agregar</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>
+                                <a href="/producto/${producto.id}">
+                                    ${highlight(producto.nombreProducto, query)}
+                                </a>
+                            </td>
+                            <td>${producto.categoria ? highlight(producto.categoria.nombre, query) : 'Sin Categoría'}</td>
+                            <td>${highlight(producto.marcaProducto, query)}</td>
+                            <td>${producto.cantidadDisponibleProducto}</td>
+                            <td>$${producto.precioUnitarioProducto}</td>
+                            <td>
+                                ${
+                                    producto.colores.length > 0
+                                        ? producto.colores.map(color => `
+                                                    <span class="badge" style="background-color: ${color.codigoHexa};"></span>
+                                                `).join('')
+                                        : 'Sin colores'
+                                }
+                            </td>
+                            <td>
+                                <button class="btn btn-primary btn-sm">Agregar</button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+
+                    if (data.length === 0) {
+                        tableBody.innerHTML = `
+                            <tr>
+                                <td colspan="7" class="text-center">
+                                    <div class="alert alert-danger" role="alert">
+                                        No se encontraron productos disponibles con ese nombre
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error durante la búsqueda:', error);
+                });
+        });
+    </script>
+
+    {{-- scrips que controlan los botones de la carga --}}
+    <script>
+        // Obtener botones y tabla de factura
+        const botonesAgregar = document.querySelectorAll('.agregar-producto');
+        const tablaFactura = document.getElementById('tabla-factura');
+
+        // Función para actualizar el total de la factura
+        function actualizarTotalFactura() {
+            let totalFactura = 0;
+            const filas = document.querySelectorAll('#tabla-factura tr');
+            filas.forEach(fila => {
+                const precio = parseFloat(fila.querySelector('.precio').innerText.replace('$', ''));
+                totalFactura += precio;
+            });
+            // Actualizar el total en la interfaz
+            document.getElementById('total-factura').innerText = `$${totalFactura.toFixed(2)}`;
+        }
+
+        // Manejar el evento de clic en el botón "Agregar"
+        botonesAgregar.forEach((boton) => {
+            boton.addEventListener('click', () => {
+                // Obtener datos del producto
+                const precioProducto = parseFloat(boton.getAttribute('data-precio'));
+                const nombreProducto = boton.getAttribute('data-nombre');
+                const idProducto = boton.getAttribute('data-id');
+                const cantidadDisponible = parseInt(boton.getAttribute('data-cantidad-disponible')); // Cantidad disponible en el inventario
+
+                // Validar que el precio del producto sea un número válido
+                if (isNaN(precioProducto) || precioProducto <= 0) {
+                    alert('Precio del producto no válido.');
+                    return;
+                }
+
+                // Verificar si el producto ya está en la factura
+                const filaExistente = document.querySelector(`#producto-${idProducto}`);
+                if (filaExistente) {
+                    // Si el producto ya existe, solo se actualiza la cantidad
+                    const cantidadInput = filaExistente.querySelector('.cantidad');
+                    let cantidadActual = parseInt(cantidadInput.value);
+
+                    // Verificar que la cantidad no supere la disponible en inventario
+                    if (cantidadActual < cantidadDisponible) {
+                        cantidadInput.value = cantidadActual + 1; // Incrementar la cantidad
+                        actualizarPrecio(filaExistente, precioProducto); // Actualizar precio
+                    } else {
+                        alert(`Solo quedan ${cantidadDisponible} unidades disponibles.`);
+                    }
+                } else {
+                    // Crear nueva fila para la tabla de factura
+                    const fila = document.createElement('tr');
+                    fila.id = `producto-${idProducto}`; // Asignar un id único al producto
+
+                    fila.innerHTML = `
+                        <td>
+                            <span class="text-dark">${nombreProducto}</span>
+                            <div style="font-size: 13px; color: rgb(142, 142, 142)">$${precioProducto.toFixed(2)}</div>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <a class="restar">
+                                    <i class="bi bi-dash-lg mx-2"></i>
+                                </a>
+                                <input type="text" value="1" min="1" class="form-control text-center mx-2 cantidad" style="width: 80px;">
+                                <a class="sumar">
+                                    <i class="bi bi-plus-lg mx-2"></i>
+                                </a>
+                            </div>
+                            <!-- Aquí va el mensaje que inicialmente está oculto -->
+                            <div class="mensaje-maximo" style="color: red; font-size: 12px; display: none;">
+                                Has alcanzado el máximo disponible.
+                            </div>
+
+                        </td>
+                        <td class="celda-precio ">
+                            $<span class="precio">${precioProducto.toFixed(2)}</span>
+                            <div class="cuadro-acciones">
+                                <a class="editar" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-pencil"></i></a></a>
+                                <a href="#" class="eliminar"><i class="bi bi-trash"></i></a>
+                            </div>
+                        </td>
+                    `;
+
+                    // Agregar fila a la tabla de factura
+                    tablaFactura.appendChild(fila);
+
+                    // Agregar la clase de animación a la fila recién agregada
+                    fila.classList.add('producto-fila'); // Esta clase contiene la animación CSS
+
+                    // Manejar eventos de la fila recién creada
+                    manejarEventosFila(fila, precioProducto, cantidadDisponible);
+                }
+
+                // Actualizar el total de la factura
+                actualizarTotalFactura();
+            });
+        });
+
+        // Función para manejar eventos en la fila
+        function manejarEventosFila(fila, precioProducto, cantidadDisponible) {
+            // Botón restar cantidad
+            fila.querySelector('.restar').addEventListener('click', () => {
+                const input = fila.querySelector('.cantidad');
+                let cantidadActual = parseInt(input.value);
+
+                if (cantidadActual > 1) {
+                    input.value = cantidadActual - 1; // Reducir la cantidad
+                    actualizarPrecio(fila, precioProducto); // Actualizar el precio
+                } else {
+                        fila.remove(); // Eliminar la fila de la tabla
+                }
+
+                // Actualizar el total de la factura
+                actualizarTotalFactura();
             });
 
-            if (data.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-    <td colspan="7" class="text-center">
-        <div class="alert alert-danger" role="alert">
-            No se encontraron productos disponibles con ese nombre
-        </div>
-    </td>
-</tr>
-                `;
-            }
-        })
-        .catch(error => {
-            console.error('Error durante la búsqueda:', error);
-        });
-});
+            // Botón sumar cantidad
+        fila.querySelector('.sumar').addEventListener('click', () => {
+            const input = fila.querySelector('.cantidad');
+            let cantidadActual = parseInt(input.value);
 
+            if (cantidadActual < cantidadDisponible) {
+                input.value = cantidadActual + 1; // Incrementar la cantidad
+                actualizarPrecio(fila, precioProducto); // Actualizar el precio
+                ocultarMensaje(fila); // Ocultar el mensaje si la cantidad es válida
+            } else {
+                mostrarMensaje(fila); // Mostrar mensaje si la cantidad excede
+            }
+        });
+            // Evento para el botón eliminar (eliminar la fila)
+            fila.querySelector('.eliminar').addEventListener('click', (event) => {
+                event.preventDefault(); // Evitar que se recargue la página
+                    fila.remove(); // Eliminar la fila de la tabla
+                // Actualizar el total de la factura
+                actualizarTotalFactura();
+            });
+        }
+
+        // Función para actualizar el precio total al cambiar la cantidad
+        function actualizarPrecio(fila, precioProducto) {
+            const cantidad = fila.querySelector('.cantidad').value;
+            const totalPrecio = precioProducto * parseInt(cantidad); // Calcular el precio total
+            fila.querySelector('.precio').innerText = totalPrecio.toFixed(2); // Actualizar el precio total en la tabla
+        }
+
+        // Función para mostrar el mensaje de "Has alcanzado el máximo disponible"
+    function mostrarMensaje(fila) {
+        const mensaje = fila.querySelector('.mensaje-maximo');
+        mensaje.style.display = 'block'; // Mostrar mensaje
+    }
+
+    // Función para ocultar el mensaje de "Has alcanzado el máximo disponible"
+    function ocultarMensaje(fila) {
+        const mensaje = fila.querySelector('.mensaje-maximo');
+        mensaje.style.display = 'none'; // Ocultar mensaje
+    }
     </script>
 @endsection
-
