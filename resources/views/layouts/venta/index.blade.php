@@ -1,5 +1,7 @@
 @extends('layouts.app')
 @section('nombreBarra', 'Facturar')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <style>
     .sidebar {
         width: 250px;
@@ -76,6 +78,8 @@
 @section('title', 'Ventas')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 @section('contenido')
+
+
     <h1>comienza el camino de las ventas</h1>
     <div class="container mt-5">
         <div class="row response">
@@ -89,7 +93,7 @@
                         </span>
                         <input type="search" id="search-productos" class="form-control border-success rounded"
                             placeholder="Buscar productos">
-                        <a href="{{ route('producto.index') }}" class="btn btn-outline-primary ms-1" type="button">Nuevo
+                        <a href="{{ route('producto.index') }}" class="btn btn-outline-success ms-1" type="button">Nuevo
                             producto + </a>
                     </div>
                     <div class="card">
@@ -128,7 +132,7 @@
                                                         @foreach ($producto->colores as $color)
                                                             <span class="badge d-inline-block"
                                                                 style="display: inline-block; width: 20px; height: 20px; background-color: {{ $color->codigoHexa }};
-                                                                       border-radius: 50%; {{ strtolower($color->codigoHexa) == '#ffffff' ? 'border: 2px solid #ccc;' : '' }}"></span>
+                                                                    border-radius: 50%; {{ strtolower($color->codigoHexa) == '#ffffff' ? 'border: 2px solid #ccc;' : '' }}"></span>
                                                         @endforeach
                                                     @else
                                                         Sin colores
@@ -136,13 +140,14 @@
                                                 </td>
 
                                                 <td>
-                                                    <button class="btn btn-primary btn-sm agregar-producto"
-                                                        data-precio="{{ $producto->precioUnitarioProducto }}"
-                                                        data-nombre="{{ $producto->nombreProducto }}"
-                                                        data-id="{{ $producto->id }}"
-                                                        data-cantidad-disponible="{{ $producto->cantidadDisponibleProducto }}">
+                                                    <a class="btn btn-success btn-sm agregar-producto"
+                                                            data-precio="{{ $producto->precioUnitarioProducto }}"
+                                                            data-nombre="{{ $producto->nombreProducto }}"
+                                                            data-id="{{ $producto->id }}"
+                                                            data-cantidad-disponible="{{ $producto->cantidadDisponibleProducto }}">
                                                         Agregar
-                                                    </button>
+                                                </a>
+
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -157,7 +162,7 @@
             </div>
 
             <!-- SEGUNDOOO PASOOOOOO -->
-            <div class="col-12 col-md-5 border response" style="height: 500px; background-color: rgb(255, 255, 255);">
+            <div class="col-12 col-md-5 border response" style="height: 500px; background-color: rgb(255, 255, 255); display: flex; flex-direction: column;">
                 <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
                     <h5 class="h3 m-0">Factura de venta</h5>
                     <div>
@@ -169,136 +174,178 @@
                         <a class="btn btn-light" title="Configuración">
                             <i class="bi bi-sliders"></i>
                         </a>
-
                     </div>
                 </div>
 
-                <div class="table-responsive">
+                <!-- Contenedor con scroll para los productos -->
+                <div class="table-responsive" style="flex-grow: 1; overflow-y: auto;">
                     <table class="table table-hover border-top">
                         <tbody id="tabla-factura">
-                            <!-- Productos seleccionados aparecerán aquí -->
+                            <!-- Los productos seleccionados aparecerán aquí -->
                         </tbody>
                     </table>
                 </div>
+                <!-- Espacio para los totales, pegado a la parte inferior -->
+                <div class="mt-4 py-2" style="margin-top: auto;">
+                    <!-- Botones de resumen y acción, alineados al final -->
+                    <div style="margin-top: auto;">
+                        <!-- Botón de "Vender" con el total de la factura -->
+                        <!-- Botón Vender que abre el modal -->
+                        <button class="btn btn-success btn-lg d-flex justify-content-between w-100"
+                                id="procesarVenta">
+                            <span>Vender</span>
+                            <span id="totalFactura" style="font-weight: bold;">$0.00</span>
+                        </button>
+                        <!-- Botón con la cantidad de productos y el botón de "Cancelar" -->
+                        <a class="btn btn-outline-success  d-flex justify-content-between w-100 mt-2" id="cancelarVenta">
+                            <span id="totalProductos">0 productos</span>
+                            <span>Cancelar</span>
+
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- Modal de Detalles de la Venta -->
+            <div class="modal fade" id="modalDetalles" tabindex="-1" aria-labelledby="modalDetallesLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalDetallesLabel">Detalles de la Venta</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" style="background-color: #ececec">
+                            <ul id="productosDetalles">
+                                @foreach ($basura as $item)
+                                    <li class="list-group-item">
+                                        <div class="card mx-auto">
+                                            <div class="card-body mx-auto">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <label for="" class="form-label">Producto Id</label>
+                                                        <input type="text" value="{{ $item->producto_id }}" class="form-control" readonly>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="" class="form-label">Producto Nombre</label>
+                                                        <input type="text" value="{{ $item->producto_nombre }}" class="form-control" readonly>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="" class="form-label">Cantidad Seleccionada</label>
+                                                        <input type="text" value="{{ $item->cantidad_seleccionada }}" class="form-control" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Aquí el select para los colores -->
+                                            <select class="form-select form-select-lg me-2" aria-label="Large select example" style="max-width: 300px; height: auto;">
+                                                <option value="">Seleccione un color</option>
+                                                @if(isset($productoColores[$item->producto_id]))
+                                                    @foreach ($productoColores[$item->producto_id] as $color)
+                                                        <option value="{{ $color->id }}" style="background-color: {{ $color->codigoHexa }};">{{ $color->nombreColor }}</option>
+                                                    @endforeach
+                                                @else
+                                                    <option value="">No hay colores disponibles</option>
+                                                @endif
+                                            </select>
+                                        </div>
+                                    </li>
+                                @endforeach
+
+
+                            </ul>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+
+                    </div>
+                </div>
             </div>
 
         </div>
     </div>
+
     {{-- aqui terminan las 2 columnas --}}
 
-    {{-- aqui comienza la ventana derecha para editar --}}
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-        <div class="offcanvas-header border-bottom" style="background-color: white;">
-            <h3 class="offcanvas-title" id="offcanvasRightLabel">Editar Venta</h3>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body" style="background-color: white;">
-            <div class="py-4 border-bottom">
-                Sección de la factura
-            </div>
-            <br>
-            <!-- Campos de entrada -->
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="precioBaseCanvas" class="form-label">Precio Base</label>
-                    <input type="text" class="form-control" id="precioBaseCanvas">
-                </div>
-                <div class="col-md-6">
-                    <label for="cantidadCanvas" class="form-label">Cantidad</label>
-                    <input type="text" class="form-control" id="cantidadCanvas">
-                </div>
-            </div>
-            <br>
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="descuento" class="form-label">Descuento (%)</label>
-                    <input type="text" class="form-control" id="descuento">
-                </div>
-                <div class="col-md-6">
-                    <label for="precioTotalCanvas" class="form-label">Precio final</label>
-                    <input type="text" class="form-control" id="precioTotalCanvas" readonly>
-                </div>
-            </div>
-            <br>
-            <div class="row">
-                <div class="col-md-12">
-                    <label for="descripcionCanvas" class="form-label">Descripción</label>
-                    <textarea class="form-control" id="descripcionCanvas" rows="3" style="resize: none"></textarea>
-                </div>
-            </div>
-            <br>
-            <div id="dynamicFieldsContainer">
-                <div class="row align-items-center gy-2 dynamic-row">
-                    <div class="col-md-3">
-                        <label for="ColorDisponibleCnavas" class="form-label">Colores:</label>
-                        <select id="ColorDisponibleCnavas" class="form-select">
-                            <option value="red">Red</option>
-                            <option value="blue">Blue</option>
-                            <option value="green">Green</option>
-                            <option value="yellow">Yellow</option>
-                            <option value="purple">Purple</option>
-                        </select>
-                    </div>
-                    <div class="col-md-5">
-                        <label for="CantidadDisponibleCanvas" class="form-label">Cantidad:</label>
-                        <input type="text" id="CantidadDisponibleCanvas" class="form-control">
-                    </div>
-                    <div class="col-md-2 d-grid">
-                        <i id="eliminarColor" class="bi bi-dash-lg text-danger fs-3 mt-4" style="cursor: pointer;"></i>
-                    </div>
-                    <div class="col-md-2 d-grid">
-                        <i id="agregarColor" class="bi bi-plus-lg text-primary fs-3 mt-4" style="cursor: pointer;"></i>
-                    </div>
-                </div>
-            </div>
-            <br><br><br><br><br><br>
-            <!-- Sección de subtotal, descuento y total -->
-            <div class="p-3" style="background-color: #f0f8ff; border-radius: 5px;">
-                <div class="row">
-                    <div class="col-6">
-                        <h5>Subtotal:</h5>
-                    </div>
-                    <div class="col-6 text-end">
-                        <h5 id="subtotalDisplay">$0.00</h5>
-                    </div>
-                </div>
-                <div id="discountSection" class="row" style="display: none;">
-                    <div class="col-6">
-                        <h5>Descuento:</h5>
-                    </div>
-                    <div class="col-6 text-end text-danger">
-                        <h5 id="discountDisplay">- $0.00</h5>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <h4>Total:</h4>
-                    </div>
-                    <div class="col-6 text-end">
-                        <h4 id="totalDisplay">$0.00</h4>
-                    </div>
-                </div>
-            </div>
-            <br>
-            <!-- Botones de acción -->
-            <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-outline-primary me-3" data-bs-dismiss="offcanvas">Cancelar</button>
-                <button type="button" class="btn btn-primary">Guardar</button>
-            </div>
-        </div>
-    </div>
 
 
 
+    {{-- scrip que maneja las ventas --}}
+    <script>
+        // Evento para el botón "Vender"
+        document.getElementById('procesarVenta').addEventListener('click', () => {
+            const filas = document.querySelectorAll('#tabla-factura tr');
 
+            // Guardar datos
+            filas.forEach(fila => {
+                const idProducto = fila.id.split('-')[1];
+                const nombreProducto = fila.querySelector('td span').innerText;
+                const cantidadSeleccionada = fila.querySelector('.cantidad').value;
 
+                guardarEnBasura(idProducto, nombreProducto, cantidadSeleccionada);
+            });
 
+            // Recargar la página después de guardar
+            setTimeout(() => {
+                location.reload(); // Recargar la página para actualizar datos
+            }, 500);
+        });
 
+        // Función para guardar datos en la base de datos
+        function guardarEnBasura(idProducto, nombreProducto, cantidadSeleccionada) {
+            fetch('/guardar-en-basura', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                },
+                body: JSON.stringify({
+                    producto_id: idProducto,
+                    producto_nombre: nombreProducto,
+                    cantidad_seleccionada: cantidadSeleccionada,
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Datos guardados:', data);
+                })
+                .catch(error => {
+                    console.error('Error al guardar los datos:', error);
+                });
+        }
+    </script>
 
+    {{-- scritp que controla el borra la tabla basura --}}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Seleccionar el modal
+            const modalDetalles = document.getElementById('modalDetalles');
 
+            // Escuchar el evento 'hidden.bs.modal' que ocurre al cerrar el modal
+            modalDetalles.addEventListener('hidden.bs.modal', function () {
+                // Realizar una solicitud al servidor para eliminar los registros
+                fetch('/vaciar-basura', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // Token CSRF
+                    },
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Tabla basura vaciada correctamente');
+                    } else {
+                        console.error('Error al vaciar la tabla basura');
+                    }
+                })
+                .catch(error => console.error('Error en la solicitud:', error));
+            });
+        });
+    </script>
 
-
-    {{-- aqui comienzan los scrips --}}
+    {{-- aqui comienzan los scrips controla el sidebar --}}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const sidebar = document.getElementById('sidebar');
@@ -310,6 +357,8 @@
             }
         });
     </script>
+
+    {{-- controla los toolstips --}}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -318,6 +367,8 @@
             });
         });
     </script>
+
+    {{-- controla los input para buscar --}}
     <script>
         document.querySelector('#search-productos').addEventListener('input', function() {
             const query = this.value
@@ -392,9 +443,21 @@
 
     {{-- scrips que controlan los botones de pasar los productos a la factura --}}
     <script>
-            // Obtener botones y tabla de factura
+        // Obtener botones y tabla de factura
             const botonesAgregar = document.querySelectorAll('.agregar-producto');
             const tablaFactura = document.getElementById('tabla-factura');
+
+            // Función para actualizar el total de productos
+            function actualizarTotalProductos() {
+                let totalProductos = 0;
+                const filas = document.querySelectorAll('#tabla-factura tr');
+                filas.forEach(fila => {
+                    const cantidad = parseInt(fila.querySelector('.cantidad').value);
+                    totalProductos += cantidad;
+                });
+                // Actualizar el total en la interfaz
+                document.getElementById('totalProductos').innerText = `${totalProductos} productos`;
+            }
 
             // Función para actualizar el total de la factura
             function actualizarTotalFactura() {
@@ -405,7 +468,7 @@
                     totalFactura += precio;
                 });
                 // Actualizar el total en la interfaz
-                document.getElementById('total-factura').innerText = `$${totalFactura.toFixed(2)}`;
+                document.getElementById('totalFactura').innerText = `$${totalFactura.toFixed(2)}`;
             }
 
             // Manejar el evento de clic en el botón "Agregar"
@@ -457,16 +520,13 @@
                                         <i class="bi bi-plus-lg mx-2"></i>
                                     </a>
                                 </div>
-                                <!-- Aquí va el mensaje que inicialmente está oculto -->
                                 <div class="mensaje-maximo" style="color: red; font-size: 12px; display: none;">
                                     Has alcanzado el máximo disponible.
                                 </div>
-
                             </td>
-                            <td class="celda-precio ">
+                            <td class="celda-precio">
                                 $<span class="precio">${precioProducto.toFixed(2)}</span>
                                 <div class="cuadro-acciones">
-                                    <a class="editar" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"><i class="bi bi-pencil"></i></a></a>
                                     <a href="#" class="eliminar"><i class="bi bi-trash"></i></a>
                                 </div>
                             </td>
@@ -482,8 +542,9 @@
                         manejarEventosFila(fila, precioProducto, cantidadDisponible);
                     }
 
-                    // Actualizar el total de la factura
+                    // Actualizar el total de la factura y productos
                     actualizarTotalFactura();
+                    actualizarTotalProductos();
                 });
             });
 
@@ -498,32 +559,39 @@
                         input.value = cantidadActual - 1; // Reducir la cantidad
                         actualizarPrecio(fila, precioProducto); // Actualizar el precio
                     } else {
-                            fila.remove(); // Eliminar la fila de la tabla
+                        fila.remove(); // Eliminar la fila de la tabla
                     }
 
-                    // Actualizar el total de la factura
+                    // Actualizar el total de la factura y productos
                     actualizarTotalFactura();
+                    actualizarTotalProductos();
                 });
 
                 // Botón sumar cantidad
-            fila.querySelector('.sumar').addEventListener('click', () => {
-                const input = fila.querySelector('.cantidad');
-                let cantidadActual = parseInt(input.value);
+                fila.querySelector('.sumar').addEventListener('click', () => {
+                    const input = fila.querySelector('.cantidad');
+                    let cantidadActual = parseInt(input.value);
 
-                if (cantidadActual < cantidadDisponible) {
-                    input.value = cantidadActual + 1; // Incrementar la cantidad
-                    actualizarPrecio(fila, precioProducto); // Actualizar el precio
-                    ocultarMensaje(fila); // Ocultar el mensaje si la cantidad es válida
-                } else {
-                    mostrarMensaje(fila); // Mostrar mensaje si la cantidad excede
-                }
-            });
+                    if (cantidadActual < cantidadDisponible) {
+                        input.value = cantidadActual + 1; // Incrementar la cantidad
+                        actualizarPrecio(fila, precioProducto); // Actualizar el precio
+                        ocultarMensaje(fila); // Ocultar el mensaje si la cantidad es válida
+                    } else {
+                        mostrarMensaje(fila); // Mostrar mensaje si la cantidad excede
+                    }
+
+                    // Actualizar el total de la factura y productos
+                    actualizarTotalFactura();
+                    actualizarTotalProductos();
+                });
+
                 // Evento para el botón eliminar (eliminar la fila)
                 fila.querySelector('.eliminar').addEventListener('click', (event) => {
                     event.preventDefault(); // Evitar que se recargue la página
-                        fila.remove(); // Eliminar la fila de la tabla
-                    // Actualizar el total de la factura
+                    fila.remove(); // Eliminar la fila de la tabla
+                    // Actualizar el total de la factura y productos
                     actualizarTotalFactura();
+                    actualizarTotalProductos();
                 });
             }
 
@@ -535,112 +603,29 @@
             }
 
             // Función para mostrar el mensaje de "Has alcanzado el máximo disponible"
-        function mostrarMensaje(fila) {
-            const mensaje = fila.querySelector('.mensaje-maximo');
-            mensaje.style.display = 'block'; // Mostrar mensaje
-        }
-
-        // Función para ocultar el mensaje de "Has alcanzado el máximo disponible"
-        function ocultarMensaje(fila) {
-            const mensaje = fila.querySelector('.mensaje-maximo');
-            mensaje.style.display = 'none'; // Ocultar mensaje
-        }
-    </script>
-
-    {{-- scrips para el canvas --}}
-    <script>
-        const precioBaseInput = document.getElementById('precioBaseCanvas');
-        const cantidadInput = document.getElementById('cantidadCanvas');
-        const descuentoInput = document.getElementById('descuento');
-        const precioTotalInput = document.getElementById('precioTotalCanvas');
-        const subtotalDisplay = document.getElementById('subtotalDisplay');
-        const totalDisplay = document.getElementById('totalDisplay');
-        const discountDisplay = document.getElementById('discountDisplay');
-        const discountSection = document.getElementById('discountSection');
-
-        // Añadir eventos para recalcular cuando cambien los valores
-        precioBaseInput.addEventListener('input', calculateTotal);
-        cantidadInput.addEventListener('input', calculateTotal);
-        descuentoInput.addEventListener('input', calculateTotal);
-
-        function calculateTotal() {
-            // Obtener los valores
-            const precioBaseCanvas = parseFloat(precioBaseInput.value) || 0;
-            const cantidadCanvas = parseInt(cantidadInput.value) || 0;
-            const descuento = parseFloat(descuentoInput.value) || 0;
-
-            // Calcular el subtotal
-            let subtotal = precioBaseCanvas * cantidadCanvas;
-
-            // Calcular el descuento y el total
-            let descuentoValor = 0;
-            if (descuento > 0) {
-                descuentoValor = subtotal * (descuento / 100);
-            }
-            let total = subtotal - descuentoValor;
-
-            // Mostrar u ocultar la sección de descuento
-            if (descuentoValor > 0) {
-                discountSection.style.display = 'flex';
-                discountDisplay.textContent = `- $${descuentoValor.toFixed(2)}`;
-            } else {
-                discountSection.style.display = 'none';
+            function mostrarMensaje(fila) {
+                const mensaje = fila.querySelector('.mensaje-maximo');
+                mensaje.style.display = 'block'; // Mostrar mensaje
             }
 
-            // Actualizar los valores en pantalla
-            subtotalDisplay.textContent = `$${subtotal.toFixed(2)}`;
-            totalDisplay.textContent = `$${total.toFixed(2)}`;
-            precioTotalInput.value = total.toFixed(2);
-        }
+            // Función para ocultar el mensaje de "Has alcanzado el máximo disponible"
+            function ocultarMensaje(fila) {
+                const mensaje = fila.querySelector('.mensaje-maximo');
+                mensaje.style.display = 'none'; // Ocultar mensaje
+            }
+
     </script>
 
 
-
-    {{-- aqui es el scrip que genera los select de colores para estar pila sera cambiado mas adelante --}}
+    @if(count($basura) > 0)
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('dynamicFieldsContainer');
-
-            // Delegación de eventos para manejar los botones agregar y eliminar
-            container.addEventListener('click', (event) => {
-                const target = event.target;
-
-                if (target.id === 'agregarColor') {
-                    // Crear un nuevo grupo de campos
-                    const newRow = document.createElement('div');
-                    newRow.className = 'row align-items-center gy-2 dynamic-row';
-                    newRow.innerHTML = `
-                        <div class="col-md-3">
-                            <label for="ColorDisponibleCnavas" class="form-label">Colores:</label>
-                            <select id="ColorDisponibleCnavas" class="form-select">
-                                <option value="red">Red</option>
-                                <option value="blue">Blue</option>
-                                <option value="green">Green</option>
-                                <option value="yellow">Yellow</option>
-                                <option value="purple">Purple</option>
-                            </select>
-                        </div>
-                        <div class="col-md-5">
-                            <label for="CantidadDisponibleCanvas" class="form-label">Cantidad:</label>
-                            <input type="text" id="CantidadDisponibleCanvas" class="form-control">
-                        </div>
-                        <div class="col-md-2 d-grid">
-                            <i id="eliminarColor" class="bi bi-dash-lg text-danger fs-3 mt-3" style="cursor: pointer;"></i>
-                        </div>
-                        <div class="col-md-2 d-grid">
-                        <i id="agregarColor" class="bi bi-plus-lg text-primary fs-3 mt-3" style="cursor: pointer;"></i>
-                        </div>
-
-                    `;
-                    container.appendChild(newRow);
-                } else if (target.id === 'eliminarColor') {
-                    // Eliminar la fila correspondiente
-                    const rowToDelete = target.closest('.dynamic-row');
-                    if (rowToDelete) {
-                        rowToDelete.remove();
-                    }
-                }
-            });
+        document.addEventListener("DOMContentLoaded", function () {
+                // Crear una instancia del modal y mostrarlo si hay registros
+                const modalDetalles = new bootstrap.Modal(document.getElementById('modalDetalles'));
+                modalDetalles.show();
         });
     </script>
+    @endif
+
+
 @endsection
