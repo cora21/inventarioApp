@@ -26,15 +26,13 @@ class VentaController extends Controller{
     $productoColores = [];
 
     foreach ($basura as $item) {
-        // Obtener los colores relacionados con el producto_id en la tabla intermedia 'producto_colores'
-        $coloresRelacionados = DB::table('productos_colores')
-            ->join('colores', 'colores.id', '=', 'productos_colores.color_id')
-            ->where('productos_colores.producto_id', $item->producto_id)
-            ->get(['colores.id', 'colores.nombreColor', 'colores.codigoHexa']); // Obtener los colores asociados con este producto
+    $coloresRelacionados = DB::table('productos_colores')
+        ->join('colores', 'colores.id', '=', 'productos_colores.color_id')
+        ->where('productos_colores.producto_id', $item->producto_id)
+        ->get(['colores.id', 'colores.nombreColor', 'colores.codigoHexa', 'productos_colores.unidadesDisponibleProducto']); // Agregar unidades disponibles
 
-        // Agregar los colores relacionados a cada producto en el array
-        $productoColores[$item->producto_id] = $coloresRelacionados;
-    }
+    $productoColores[$item->producto_id] = $coloresRelacionados;
+}
 
 
 

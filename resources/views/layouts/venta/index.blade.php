@@ -208,53 +208,82 @@
             </div>
 
 
+
+
             <!-- Modal de Detalles de la Venta -->
             <div class="modal fade" id="modalDetalles" tabindex="-1" aria-labelledby="modalDetallesLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog modal-dialog-scrollable modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="modalDetallesLabel">Detalles de la Venta</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body" style="background-color: #ececec">
-                            <ul id="productosDetalles">
-                                @foreach ($basura as $item)
-                                    <li class="list-group-item">
-                                        <div class="card mx-auto">
-                                            <div class="card-body mx-auto">
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <label for="" class="form-label">Producto Id</label>
-                                                        <input type="text" value="{{ $item->producto_id }}" class="form-control" readonly>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <label for="" class="form-label">Producto Nombre</label>
-                                                        <input type="text" value="{{ $item->producto_nombre }}" class="form-control" readonly>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <label for="" class="form-label">Cantidad Seleccionada</label>
-                                                        <input type="text" value="{{ $item->cantidad_seleccionada }}" class="form-control" readonly>
-                                                    </div>
+                            <div id="productosDetalles">
+                                @foreach ($basura as $index => $item)
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <label for="" class="form-label">Producto Id</label>
+                                                    <input type="text" value="{{ $item->producto_id }}" class="form-control" readonly>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="" class="form-label">Producto Nombre</label>
+                                                    <input type="text" value="{{ $item->producto_nombre }}" class="form-control" readonly>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="cantidad-seleccionada" class="form-label">Cantidad Seleccionada</label>
+                                                    <input type="text" id="cantidad-seleccionada" value="{{ $item->cantidad_seleccionada }}" class="form-control" readonly>
                                                 </div>
                                             </div>
-                                            <!-- Aquí el select para los colores -->
-                                            <select class="form-select form-select-lg me-2" aria-label="Large select example" style="max-width: 300px; height: auto;">
-                                                <option value="">Seleccione un color</option>
-                                                @if(isset($productoColores[$item->producto_id]))
-                                                    @foreach ($productoColores[$item->producto_id] as $color)
-                                                        <option value="{{ $color->id }}" style="background-color: {{ $color->codigoHexa }};">{{ $color->nombreColor }}</option>
-                                                    @endforeach
-                                                @else
-                                                    <option value="">No hay colores disponibles</option>
-                                                @endif
-                                            </select>
                                         </div>
-                                    </li>
+                                        <div id="rows-container">
+                                            <!-- Fila inicial aquí si se necesita -->
+                                            <div class="row dynamic-row">
+                                                <div class="col-md-3 mx-2 py-3">
+                                                    <label for="color-select-0" class="form-label">Colores</label>
+                                                    <select id="color-select-0" class="form-select" onchange="updateColorInfo(0)">
+                                                        <option value="">- Seleccione -</option>
+                                                        <!-- Opciones generadas dinámicamente -->
+                                                        @if(isset($productoColores[$item->producto_id]))
+                                                            @foreach ($productoColores[$item->producto_id] as $color)
+                                                                <option value="{{ $color->id }}" 
+                                                                        data-hexa="{{ $color->codigoHexa }}" 
+                                                                        data-unidades="{{ $color->unidadesDisponibleProducto }}">
+                                                                    {{ $color->nombreColor }}
+                                                                </option>
+                                                            @endforeach
+                                                        @else
+                                                            <option value="" data-hexa="" data-unidades="0">No hay colores disponibles</option>
+                                                        @endif
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2 py-3 text-center">
+                                                    <label for="color-hexa-0" class="form-label">Vista del color</label>
+                                                    <input type="text" id="color-hexa-0" class="form-control rounded-circle" readonly 
+                                                           style="width: 30px; height: 30px; padding: 0; border: 2px solid #ccc; text-align: left;">
+                                                </div>
+                                                <div class="col-md-3 mx-2 py-3">
+                                                    <label for="cantidad-almacen-0" class="form-label">Cantidad en almacen</label>
+                                                    <input type="text" id="cantidad-almacen-0" class="form-control" readonly>
+                                                </div>
+                                                <div class="col-md-3 mx-2 py-3">
+                                                    <label for="cantidad-producto" class="form-label">Cantidad x producto</label>
+                                                    <input type="text" id="cantidad-producto" class="form-control cantidad-producto">
+                                                    <small id="error-cantidad" class="text-danger d-none">La cantidad supera el límite.</small>
+                                                </div>
+                                                <div class="col-md-1 py-3 d-flex align-items-end">
+                                                    <button type="button" class="btn btn-danger remove-row mx-2 btn-sm"><i class="bi bi-dash-lg"></i></button>
+                                                    <button id="add-row-btn" class="btn btn-success mt-3 mx-2 btn-sm"><i class="bi bi-plus-lg"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
                                 @endforeach
-
-
-                            </ul>
-
+                            </div>
+                            
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Cerrar</button>
@@ -268,6 +297,94 @@
     </div>
 
     {{-- aqui terminan las 2 columnas --}}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    // Función para actualizar los IDs de los elementos en la fila clonada
+    function updateRowIds(row, index) {
+        row.querySelectorAll('[id]').forEach(element => {
+            const newId = element.id.replace(/\d+$/, index); // Reemplazar el número al final del ID con el nuevo índice
+            element.id = newId;
+        });
+        row.querySelectorAll('[for]').forEach(label => {
+            const newFor = label.htmlFor.replace(/\d+$/, index);
+            label.htmlFor = newFor;
+        });
+    }
+
+    // Función para manejar el cambio de color
+    function updateColorInfo(index) {
+        const select = document.getElementById(`color-select-${index}`);
+        const colorHexa = document.getElementById(`color-hexa-${index}`);
+        const cantidadAlmacen = document.getElementById(`cantidad-almacen-${index}`);
+        
+        const selectedOption = select.options[select.selectedIndex];
+        const hexa = selectedOption.getAttribute('data-hexa');
+        const unidades = selectedOption.getAttribute('data-unidades');
+        
+        // Actualiza la vista del color y la cantidad en el almacen
+        colorHexa.style.backgroundColor = hexa || '';
+        cantidadAlmacen.value = unidades || '';
+    }
+
+    // Inicializar el evento de cambio de color para las filas existentes
+    const initialRows = document.querySelectorAll('.dynamic-row');
+    initialRows.forEach((row, index) => {
+        const select = row.querySelector(`#color-select-${index}`);
+        if (select) {
+            select.addEventListener('change', () => updateColorInfo(index));
+        }
+    });
+
+    // Evento para agregar nueva fila
+    document.getElementById('productosDetalles').addEventListener('click', function (e) {
+        // Verifica si se hizo clic en el botón "Agregar fila"
+        if (e.target.closest('#add-row-btn')) {
+            const button = e.target.closest('#add-row-btn');
+            const rowsContainer = button.closest('#rows-container');
+            const rowIndex = rowsContainer.querySelectorAll('.dynamic-row').length; // Calcula el índice de la nueva fila
+
+            // Clona la fila
+            const templateRow = rowsContainer.querySelector('.dynamic-row').cloneNode(true);
+
+            // Actualiza los IDs y nombres para la nueva fila
+            updateRowIds(templateRow, rowIndex);
+
+            // Limpia los valores de los campos de entrada
+            templateRow.querySelectorAll('input').forEach(input => {
+                input.value = '';
+                if (input.type === 'text') {
+                    input.classList.remove('is-invalid');
+                }
+            });
+
+            // Agrega la nueva fila al contenedor
+            rowsContainer.appendChild(templateRow);
+
+            // Vuelve a asociar el evento 'change' al nuevo select de color
+            const newSelect = templateRow.querySelector(`#color-select-${rowIndex}`);
+            if (newSelect) {
+                newSelect.addEventListener('change', () => updateColorInfo(rowIndex));
+            }
+        }
+
+        // Verifica si se hizo clic en el botón "Eliminar fila"
+        if (e.target.closest('.remove-row')) {
+            const button = e.target.closest('.remove-row');
+            const row = button.closest('.dynamic-row');
+
+            // Solo elimina si hay más de una fila
+            const rowsContainer = button.closest('#rows-container');
+            if (rowsContainer.querySelectorAll('.dynamic-row').length > 1) {
+                row.remove();
+            }
+        }
+    });
+});
+
+    </script>
+    
+    
 
 
 

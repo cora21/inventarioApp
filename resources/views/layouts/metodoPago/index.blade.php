@@ -4,7 +4,23 @@
 @section('estilos')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-@endsection
+    <style>
+        /* Limitar el tamaño máximo de las imágenes */
+        .img-fluid {
+            max-height: 80px;
+        }
+
+        /* Efecto hover para las tarjetas (opcional) */
+        .bg-light:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+        @endsection
 
 @section('title', 'Nuevo Metodo de pago')
 
@@ -29,64 +45,57 @@
         </button>
     </div>
     <br>
-    <br><br>
     <div class="container">
-        <table class="table table-hover response">
-            <thead class="thead-dark">
-                <tr style="background-color: rgb(212, 212, 212); ">
-                    <th scope="col" style="border-radius: 15px 0px 0px 0px;">Método de Pago</th>
-                    <th scope="col">Observaciones</th>
-                    <th scope="col">Imagen</th>
-                    <th scope="col" style="border-radius: 0px 15px 0px 0px;">Acciones</th>
-                </tr>
-            </thead>
+        <div class="row">
             @foreach ($metPago as $row)
-                <tbody>
-                    <tr>
-                        <th class="border">{{ $row->nombreMetPago }}</th>
-                        <td class="border">{{ $row->observacionesMetPago }}</td>
-                        <td class="border">
-                            @if ($row->imagenMetPago)
-                                <a href="{{ $row->imagenMetPago }}" target="_blank">
-                                    <img src="{{ $row->imagenMetPago }}" alt="Imagen del método"
-                                        style="width: 50px; height: auto; border-radius: 5px;">
-                                </a>
-                            @else
-                                <span>No hay imagen disponible</span>
-                            @endif
-                        </td>
-                        <td class="border">
-                            <a class="btn btn-primary dropdown-toggle d-none d-sm-inline-block" type="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <span class="text-light">Acciones</span>
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                <div class="bg-light border rounded shadow-sm p-3 text-center">
+                    <h5 class="fw-bold text-secondary mb-2">{{ $row->nombreMetPago }}</h5>
+                    <p class="text-muted small">{{ $row->observacionesMetPago }}</p>
+                    <div class="mb-3">
+                        @if ($row->imagenMetPago)
+                            <a href="{{ $row->imagenMetPago }}" target="_blank">
+                                <img src="{{ $row->imagenMetPago }}" alt="Imagen del método" class="img-fluid rounded" style="max-width: 80px;">
                             </a>
-                            <div class="dropdown-menu dropdown-menu-tod">
-                                <div class="dropdown-item text-center">
-                                    <a <a href="{{ route('metodo.show', $row->id) }}"
-                                        class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
-                                        <i data-feather="eye" class="me-2"></i> <span>Ver</span>
-                                    </a>
-                                </div>
-                                @can('users.show')
-                                    <a href="{{ route('metodoPago.edit', $row->id) }}"
-                                        class="btn btn-success w-100 d-flex align-items-center justify-content-center">
-                                        <i data-feather="edit-2" class="me-2"></i> <span>Editar</span>
-                                    </a>
-                                @endcan
-                                <div class="dropdown-item text-center">
-                                    @can('users.show')
-                                        <a class="btn btn-danger w-100 d-flex align-items-center justify-content-center">
-                                            <i data-feather="trash" class="me-2"></i> <span>Eliminar</span>
-                                        </a>
-                                    @endcan
-                                </div>
+                        @else
+                            <!-- Ícono de banco cuando no hay imagen -->
+                            <div class="text-muted">
+                                <i class="bi bi-bank" style="font-size: 3rem;"></i>
+                                <p class="small mt-1">No hay imagen disponible</p>
                             </div>
-                        </td>
-                    </tr>
-                </tbody>
+                        @endif
+                    </div>
+                    <a class="btn btn-primary dropdown-toggle d-none d-sm-inline-block" type="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="text-light">Acciones</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-tod">
+                    <div class="dropdown-item text-center">
+                        <a href="{{ route('metodo.show', $row->id) }}" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                            <i data-feather="eye" class="me-2"></i> <span>Ver</span>
+                        <a/>
+                    </div>
+                    <div class="dropdown-item text-center">
+                    @can('users.show')
+                        <a href="{{ route('metodoPago.edit', $row->id) }}" class="btn btn-success w-100 d-flex align-items-center justify-content-center">
+                            <i data-feather="edit-2" class="me-2"></i> <span>Editar</span>
+                        </a>
+                    @endcan
+                </div>
+                    <div class="dropdown-item text-center">
+                        @can('users.show')
+                            <a class="btn btn-danger w-100 d-flex align-items-center justify-content-center">
+                                <i data-feather="trash" class="me-2"></i> <span>Eliminar</span>
+                            </a>
+                        @endcan
+                    </div>
+                </div>
+                </div>
+            </div>
             @endforeach
-        </table>
+        </div>
     </div>
+    
 
 
 
