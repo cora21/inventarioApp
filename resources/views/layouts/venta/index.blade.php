@@ -1,90 +1,43 @@
 @extends('layouts.app')
 @section('nombreBarra', 'Facturar')
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
-<style>
-    .sidebar {
-        width: 250px;
-        transition: all 0.3s ease;
-    }
-
-    .sidebar.collapsed {
-        width: 0;
-        overflow: hidden;
-    }
-    /* Animación para el deslizamiento de izquierda a derecha */
-    @keyframes slideIn {
-        from {
-            transform: translateX(-100%); /* Comienza fuera de la pantalla (hacia la izquierda) */
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0); /* Finaliza en su posición original */
-            opacity: 1;
-        }
-    }
-
-    .producto-fila {
-        animation: slideIn 0.3s ease-in-out; /* Aplica la animación con una duración de 0.5 segundos */
-    }
-
-/* Estilos para la celda del precio */
-.celda-precio {
-    position: relative;
-    overflow: hidden; /* Evita que el cuadro sobresalga fuera de la celda */
-}
-
-/* El cuadro emergente con animación de deslizamiento de derecha a izquierda */
-.cuadro-acciones {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 0; /* Inicialmente el cuadro tiene un ancho de 0 */
-    height: 100%; /* Cubrir toda la altura de la celda */
-    padding: 10px;
-    background-color: #ffffff;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateX(100%); /* Desplazado fuera de la celda a la derecha */
-    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease, width 0.3s ease;
-}
-
-/* Mostrar el cuadro emergente al pasar el ratón */
-.celda-precio:hover .cuadro-acciones {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(0); /* El cuadro se desliza hacia la izquierda */
-    width: 100%; /* Expandir para cubrir todo el ancho de la celda */
-}
-
-/* Estilos para los botones dentro del cuadro */
-.cuadro-acciones a {
-    cursor: pointer;
-    font-size: 1.5em;
-    color: #333;
-    transition: color 0.3s ease;
-}
-
-.cuadro-acciones a:hover {
-    color: #c01e1e;
-}
 
 
-</style>
 
 @section('title', 'Ventas')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+    .icon-eliminar {
+        color: black;
+        /* Color inicial */
+        font-size: 20px;
+        /* Tamaño inicial */
+        transition: color 0.3s ease, transform 0.3s ease;
+        /* Transiciones suaves */
+        position: absolute;
+        /* Para que no afecte el tamaño de la celda */
+        top: 50%;
+        /* Centrar verticalmente */
+        left: 50%;
+        /* Centrar horizontalmente */
+        transform: translate(-50%, -50%);
+        /* Ajustar posición */
+        cursor: pointer;
+        /* Cambiar cursor al pasar */
+    }
+
+    .icon-eliminar:hover {
+        color: red;
+        /* Color al pasar el cursor */
+        transform: translate(-50%, -50%) scale(1.2);
+        /* Aumentar tamaño al pasar */
+}
+
+</style>
 @section('contenido')
-
-
-    <h1>comienza el camino de las ventas</h1>
-    <div class="container mt-5">
+    <div class="container">
         <div class="row response">
-            <!-- Cuadro 1 (3 partes) -->
-            <div class="col-12 col-md-7 border" style="height: 500px; background-color: rgb(215, 224, 227);">
+            <div class="col-12 col-md-12 border" style="height: 400px; background-color: rgb(215, 224, 227);">
                 <div class="py-4">
                     <div class="input-group mb-3">
                         <span class="input-group-text border-success" style="background-color: rgb(189, 225, 201)"
@@ -92,28 +45,31 @@
                             <i class="bi bi-search"></i>
                         </span>
                         <input type="search" id="search-productos" class="form-control border-success rounded"
-                            placeholder="Buscar productos">
+                            placeholder="Buscar productos por nombre o marca...">
                         <a href="{{ route('producto.index') }}" class="btn btn-outline-success ms-1" type="button">Nuevo
                             producto + </a>
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
+                            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                <table class="table w-100">
+                                    <thead style="position: sticky; top: 0; z-index: 100;">
                                         <tr style="background-color: rgb(212, 212, 212);">
                                             <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top"
                                                 title="Nombre del producto" style="border-radius: 15px 0px 0px 0px;">
-                                                Producto</th>
+                                                Producto
+                                            </th>
                                             <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="Categoria donde esta registrado el producto">Categoría</th>
+                                                title="Categoria donde esta registrado el producto">
+                                                Categoría
+                                            </th>
                                             <th scope="col">Marca</th>
                                             <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top"
                                                 title="Cantidad disponible en el inventario">Cant.</th>
                                             <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top"
                                                 title="Precio Unitario">Precio</th>
                                             <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="Productos disponibles en estos colores">Colores</th>
+                                                title="Productos disponibles en estos colores">Colores disponibles</th>
                                             <th scope="col" style="border-radius: 0px 15px 0px 0px;">Acciones</th>
                                         </tr>
                                     </thead>
@@ -132,22 +88,21 @@
                                                         @foreach ($producto->colores as $color)
                                                             <span class="badge d-inline-block"
                                                                 style="display: inline-block; width: 20px; height: 20px; background-color: {{ $color->codigoHexa }};
-                                                                    border-radius: 50%; {{ strtolower($color->codigoHexa) == '#ffffff' ? 'border: 2px solid #ccc;' : '' }}"></span>
+                                                                border-radius: 50%; {{ strtolower($color->codigoHexa) == '#ffffff' ? 'border: 2px solid #ccc;' : '' }}"></span>
                                                         @endforeach
                                                     @else
-                                                        Sin colores
+                                                        Sin colores disponibles
                                                     @endif
                                                 </td>
-
-                                                <td>
-                                                    <a class="btn btn-success btn-sm agregar-producto"
-                                                            data-precio="{{ $producto->precioUnitarioProducto }}"
-                                                            data-nombre="{{ $producto->nombreProducto }}"
-                                                            data-id="{{ $producto->id }}"
-                                                            data-cantidad-disponible="{{ $producto->cantidadDisponibleProducto }}">
-                                                        Agregar
-                                                </a>
-
+                                                <td style="position: relative;">
+                                                    <form action="{{ route('venta.agregar') }}" method="POST"
+                                                        style="display: inline;">
+                                                        @csrf
+                                                        <input type="hidden" name="producto_id"
+                                                            value="{{ $producto->id }}">
+                                                        <button type="submit"
+                                                            class="btn btn-success btn-sm">Agregar</button>
+                                                    </form>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -158,13 +113,16 @@
                         </div>
                     </div>
                 </div>
-
             </div>
+        </div>
+    </div>
+    <br>
 
-            <!-- SEGUNDOOO PASOOOOOO -->
-            <div class="col-12 col-md-5 border response" style="height: 500px; background-color: rgb(255, 255, 255); display: flex; flex-direction: column;">
+    <div class="container" style="height: 500px; background-color: rgb(228, 227, 227);">
+        <div class="row response">
+            <div>
                 <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
-                    <h5 class="h3 m-0">Factura de venta</h5>
+                    <h5 class="h3">Factura de Venta</h5>
                     <div>
                         <!-- Ícono de impresión -->
                         <a class="btn btn-light" title="Imprimir">
@@ -176,573 +134,435 @@
                         </a>
                     </div>
                 </div>
+                <div class="col-12 col-md-12 border" style="height: 300px; background-color: rgb(255, 255, 255); max-height: 420px; overflow-y: auto;">
+                    <table id="tabla-agregados" class="table table-hover">
+                        <div class="card" style="">
+                            <tbody>
+                            @foreach ($productosAgregados as $producto)
+                                <tr id="producto-{{ $producto->id }}">
+                                    <td style="width: 170px; height: 50px;">
+                                        {{ $producto->nombreProducto }} <br>
+                                        <small
+                                            style="color: gray; font-size: 0.8em;">${{ $producto->precioUnitarioProducto }}</small>
+                                    </td>
+                                    <td style="width: 200px; height: 50px;">
+                                        <div class="d-flex align-items-center">
+                                            <a class="restar" data-id="{{ $producto->id }}">
+                                                <i class="bi bi-dash-lg mx-2"></i>
+                                            </a>
+                                            <input type="text" value="1" min="1"
+                                                class="form-control text-center mx-2 cantidad" data-bs-toggle="tooltip"
+                                                data-bs-placement="top" title="Cantidad seleccionada" style="width: 80px;"
+                                                readonly>
+                                            <a class="sumar" data-id="{{ $producto->id }}">
+                                                <i class="bi bi-plus-lg mx-2"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td style="width: 180px; height: 50px;">
+                                        <input type="hidden" name="producto_id" value="{{ $producto->id }}">
+                                        <!-- Select de colores -->
+                                        <select name="color_id" class="form-control select-color"
+                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                            title="Seleccione el color del producto">
+                                            @if ($producto->colores->isNotEmpty())
+                                                @foreach ($producto->colores as $color)
+                                                    <option value="{{ $color->id }}"
+                                                        data-color="{{ $color->codigoHexa }}"
+                                                        data-unidades="{{ $color->pivot->unidadesDisponibleProducto }}">
+                                                        {{ $color->nombreColor }}
+                                                    </option>
+                                                @endforeach
+                                            @else
+                                                <option value="" disabled selected>Color no disponible</option>
+                                            @endif
+                                        </select>
+                                    </td>
 
-                <!-- Contenedor con scroll para los productos -->
-                <div class="table-responsive" style="flex-grow: 1; overflow-y: auto;">
-                    <table class="table table-hover border-top">
-                        <tbody id="tabla-factura">
-                            <!-- Los productos seleccionados aparecerán aquí -->
-                        </tbody>
+                                    <td style="width: 100px; height: 50px;">
+                                        <!-- Verificar si el producto tiene colores disponibles -->
+                                        @if (!empty($producto->colores) && $producto->colores->count() > 0)
+                                            <!-- Verificar si el color es blanco -->
+                                            @if ($producto->colores[0]->codigoHexa == '#FFFFFF')
+                                                <div class="color-circulo"
+                                                    style="width: 30px; height: 30px; border-radius: 50%; background-color: {{ $producto->colores[0]->codigoHexa }}; border: 2px solid #928f8f;">
+                                                </div>
+                                            @else
+                                                <div class="color-circulo"
+                                                    style="width: 30px; height: 30px; border-radius: 50%; background-color: {{ $producto->colores[0]->codigoHexa }};">
+                                                </div>
+                                            @endif
+                                        @else
+                                            <!-- Mostrar un círculo vacío si no hay colores disponibles -->
+                                            <div class="color-circulo disabled"
+                                                style="width: 30px; height: 30px; border-radius: 50%; background-color: transparent; border: 2px solid #928f8f; display: flex; align-items: center; justify-content: center;">
+                                                <span class="x-icon" style="color: gray; font-size: 20px;">&times;</span>
+                                            </div>
+                                        @endif
+                                    </td>
+                                    <td style="width: 150px; height: 50px;">
+                                        <!-- Mostrar unidades disponibles -->
+                                        <input type="text" id="unidades-{{ $producto->id }}" data-bs-toggle="tooltip"
+                                            data-bs-placement="top" title="Cantidad disponible por color"
+                                            value="{{ $producto->colores->isNotEmpty() ? $producto->colores[0]->pivot->unidadesDisponibleProducto : $producto->cantidadDisponibleProducto }}"
+                                            readonly class="form-control">
+                                    </td>
+                                    <!-- Nueva celda para el monto calculado -->
+                                    <td style="width: 170px; height: 50px;">
+                                        <input type="text" value="${{ $producto->precioUnitarioProducto }}"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Precio total por productos" class="form-control text-center mx-2 monto" value="0" readonly
+                                            style="width: 120px; color: black; font-size: 15px">
+                                    </td>
+
+                                    <td style="position: relative;">
+                                        <a href="#" class="eliminar-producto" data-id="{{ $producto->id }}"
+                                            onclick="event.preventDefault();">
+                                            <i class="fas fa-trash-alt icon-eliminar" title="Eliminar"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </div>
                     </table>
                 </div>
-                <!-- Espacio para los totales, pegado a la parte inferior -->
-                <div class="mt-4 py-2" style="margin-top: auto;">
-                    <!-- Botones de resumen y acción, alineados al final -->
-                    <div style="margin-top: auto;">
-                        <!-- Botón de "Vender" con el total de la factura -->
-                        <!-- Botón Vender que abre el modal -->
-                        <button class="btn btn-success btn-lg d-flex justify-content-between w-100"
-                                id="procesarVenta">
-                            <span>Vender</span>
-                            <span id="totalFactura" style="font-weight: bold;">$0.00</span>
-                        </button>
-                        <!-- Botón con la cantidad de productos y el botón de "Cancelar" -->
-                        <a class="btn btn-outline-success  d-flex justify-content-between w-100 mt-2" id="cancelarVenta">
-                            <span id="totalProductos">0 productos</span>
-                            <span>Cancelar</span>
-
-                        </a>
-                    </div>
-
+            </div>
+            <div class="mt-4 py-2 d-flex sticky-bottom" style="margin-top: auto; flex-direction: column; height: 100%;">
+                <div style="margin-top: auto;">
+                    <button class="btn btn-success btn-lg d-flex justify-content-between w-100" id="procesarVenta">
+                        <span>Vender</span>
+                        <span id="totalFactura" style="font-weight: bold;">$729.00</span>
+                    </button>
+                    <a class="btn btn-outline-success  d-flex justify-content-between w-100 mt-2" id="cancelarVenta">
+                        <span id="totalProductos">9 productos</span>
+                        <span>Cancelar</span>
+                    </a>
                 </div>
             </div>
-
-
-
-
-            <!-- Modal de Detalles de la Venta -->
-            <div class="modal fade" id="modalDetalles" tabindex="-1" aria-labelledby="modalDetallesLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-scrollable modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalDetallesLabel">Detalles de la Venta</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body" style="background-color: #ececec">
-                            <div id="productosDetalles">
-                                @foreach ($basura as $index => $item)
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    <label for="" class="form-label">Producto Id</label>
-                                                    <input type="text" value="{{ $item->producto_id }}" class="form-control" readonly>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label for="" class="form-label">Producto Nombre</label>
-                                                    <input type="text" value="{{ $item->producto_nombre }}" class="form-control" readonly>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <label for="cantidad-seleccionada" class="form-label">Cantidad Seleccionada</label>
-                                                    <input type="text" id="cantidad-seleccionada" value="{{ $item->cantidad_seleccionada }}" class="form-control" readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="rows-container">
-                                            <!-- Fila inicial aquí si se necesita -->
-                                            <div class="row dynamic-row">
-                                                <div class="col-md-3 mx-2 py-3">
-                                                    <label for="color-select-0" class="form-label">Colores</label>
-                                                    <select id="color-select-0" class="form-select" onchange="updateColorInfo(0)">
-                                                        <option value="">- Seleccione -</option>
-                                                        <!-- Opciones generadas dinámicamente -->
-                                                        @if(isset($productoColores[$item->producto_id]))
-                                                            @foreach ($productoColores[$item->producto_id] as $color)
-                                                                <option value="{{ $color->id }}" 
-                                                                        data-hexa="{{ $color->codigoHexa }}" 
-                                                                        data-unidades="{{ $color->unidadesDisponibleProducto }}">
-                                                                    {{ $color->nombreColor }}
-                                                                </option>
-                                                            @endforeach
-                                                        @else
-                                                            <option value="" data-hexa="" data-unidades="0">No hay colores disponibles</option>
-                                                        @endif
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-2 py-3 text-center">
-                                                    <label for="color-hexa-0" class="form-label">Vista del color</label>
-                                                    <input type="text" id="color-hexa-0" class="form-control rounded-circle" readonly 
-                                                           style="width: 30px; height: 30px; padding: 0; border: 2px solid #ccc; text-align: left;">
-                                                </div>
-                                                <div class="col-md-3 mx-2 py-3">
-                                                    <label for="cantidad-almacen-0" class="form-label">Cantidad en almacen</label>
-                                                    <input type="text" id="cantidad-almacen-0" class="form-control" readonly>
-                                                </div>
-                                                <div class="col-md-3 mx-2 py-3">
-                                                    <label for="cantidad-producto" class="form-label">Cantidad x producto</label>
-                                                    <input type="text" id="cantidad-producto" class="form-control cantidad-producto">
-                                                    <small id="error-cantidad" class="text-danger d-none">La cantidad supera el límite.</small>
-                                                </div>
-                                                <div class="col-md-1 py-3 d-flex align-items-end">
-                                                    <button type="button" class="btn btn-danger remove-row mx-2 btn-sm"><i class="bi bi-dash-lg"></i></button>
-                                                    <button id="add-row-btn" class="btn btn-success mt-3 mx-2 btn-sm"><i class="bi bi-plus-lg"></i></button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                    </div>
-                                @endforeach
-                            </div>
-                            
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Cerrar</button>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 
-    {{-- aqui terminan las 2 columnas --}}
+        {{-- hasta aqui todo funciona --}}
+        {{-- calculo del precio total --}}
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-    // Función para actualizar los IDs de los elementos en la fila clonada
-    function updateRowIds(row, index) {
-        row.querySelectorAll('[id]').forEach(element => {
-            const newId = element.id.replace(/\d+$/, index); // Reemplazar el número al final del ID con el nuevo índice
-            element.id = newId;
-        });
-        row.querySelectorAll('[for]').forEach(label => {
-            const newFor = label.htmlFor.replace(/\d+$/, index);
-            label.htmlFor = newFor;
-        });
-    }
 
-    // Función para manejar el cambio de color
-    function updateColorInfo(index) {
-        const select = document.getElementById(`color-select-${index}`);
-        const colorHexa = document.getElementById(`color-hexa-${index}`);
-        const cantidadAlmacen = document.getElementById(`cantidad-almacen-${index}`);
-        
-        const selectedOption = select.options[select.selectedIndex];
-        const hexa = selectedOption.getAttribute('data-hexa');
-        const unidades = selectedOption.getAttribute('data-unidades');
-        
-        // Actualiza la vista del color y la cantidad en el almacen
-        colorHexa.style.backgroundColor = hexa || '';
-        cantidadAlmacen.value = unidades || '';
-    }
 
-    // Inicializar el evento de cambio de color para las filas existentes
-    const initialRows = document.querySelectorAll('.dynamic-row');
-    initialRows.forEach((row, index) => {
-        const select = row.querySelector(`#color-select-${index}`);
-        if (select) {
-            select.addEventListener('change', () => updateColorInfo(index));
-        }
-    });
 
-    // Evento para agregar nueva fila
-    document.getElementById('productosDetalles').addEventListener('click', function (e) {
-        // Verifica si se hizo clic en el botón "Agregar fila"
-        if (e.target.closest('#add-row-btn')) {
-            const button = e.target.closest('#add-row-btn');
-            const rowsContainer = button.closest('#rows-container');
-            const rowIndex = rowsContainer.querySelectorAll('.dynamic-row').length; // Calcula el índice de la nueva fila
 
-            // Clona la fila
-            const templateRow = rowsContainer.querySelector('.dynamic-row').cloneNode(true);
 
-            // Actualiza los IDs y nombres para la nueva fila
-            updateRowIds(templateRow, rowIndex);
 
-            // Limpia los valores de los campos de entrada
-            templateRow.querySelectorAll('input').forEach(input => {
-                input.value = '';
-                if (input.type === 'text') {
-                    input.classList.remove('is-invalid');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        {{-- controla los colores en los circulos, asi como la cantidad disponible --}}
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                // Selecciona todos los selects de colores
+                document.querySelectorAll('.select-color').forEach(select => {
+                    select.addEventListener('change', function() {
+                        // Obtener el option seleccionado
+                        const selectedOption = this.options[this.selectedIndex];
+
+                        // Obtener los valores del color y las unidades
+                        const unidadesDisponibles = selectedOption.getAttribute('data-unidades');
+                        const productoId = this.closest('tr').querySelector('input[name="producto_id"]')
+                            .value;
+
+                        // Actualizar el círculo del color
+                        const colorCirculo = this.closest('tr').querySelector('.color-circulo');
+
+                        if (selectedOption.value) { // Si hay un color seleccionado
+                            const colorHex = selectedOption.getAttribute('data-color');
+                            colorCirculo.style.backgroundColor = colorHex;
+                            colorCirculo.style.border = 'none'; // Quitar borde
+                        } else { // Si no hay color seleccionado
+                            colorCirculo.style.backgroundColor = 'transparent';
+                            colorCirculo.style.border = '2px solid #ccc'; // Borde visible
+                        }
+
+                        // Actualizar el input con las unidades disponibles
+                        const unidadesInput = document.getElementById('unidades-' + productoId);
+                        if (unidadesDisponibles && unidadesDisponibles !== "undefined") {
+                            unidadesInput.value = unidadesDisponibles; // Actualiza el valor del input
+                        } else {
+                            unidadesInput.value = ''; // Limpia el valor si no hay unidades
+                        }
+                    });
+                });
+            });
+        </script>
+
+        {{-- hace de todo, aumenta el valor, multiplica elimina con el menos de todo --}}
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                // Manejar cambio en el select de colores
+                document.querySelectorAll('.select-color').forEach(select => {
+                    select.addEventListener('change', () => {
+                        const productoRow = select.closest('tr'); // Encuentra la fila del producto
+                        const cantidadInput = productoRow.querySelector(
+                        '.cantidad'); // Encuentra el campo de cantidad
+                        cantidadInput.value = 1; // Restablece el valor a 1
+                        actualizarMonto(productoRow); // Actualiza el monto al cambiar el color
+                    });
+                });
+
+                // Manejar clic en botones de restar
+                document.querySelectorAll('.restar').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const input = button.parentElement.querySelector('.cantidad');
+                        let currentValue = parseInt(input.value) || 1;
+
+                        if (currentValue > 1) {
+                            input.value = currentValue - 1;
+                        } else if (currentValue === 1) {
+                            eliminarProductoConAjax(button);
+                        }
+
+                        // Actualizar monto
+                        const productoRow = button.closest('tr');
+                        actualizarMonto(productoRow);
+                    });
+                });
+
+                // Manejar clic en botones de sumar
+                document.querySelectorAll('.sumar').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const input = button.parentElement.querySelector('.cantidad');
+                        const maxUnidades = obtenerMaxUnidades(button);
+                        let currentValue = parseInt(input.value) || 1;
+
+                        if (currentValue < maxUnidades) {
+                            input.value = currentValue + 1;
+                        } else {
+                            alt(
+                            `No puedes seleccionar más de ${maxUnidades} unidades de este producto.`);
+                        }
+
+                        // Actualizar monto
+                        const productoRow = button.closest('tr');
+                        actualizarMonto(productoRow);
+                    });
+                });
+
+                // Función para obtener el máximo de unidades disponibles
+                function obtenerMaxUnidades(button) {
+                    const productoRow = button.closest('tr');
+                    const unidadesInput = productoRow.querySelector('[id^="unidades-"]');
+                    return parseInt(unidadesInput.value) || 0;
+                }
+
+                // Función para eliminar el producto mediante AJAX
+                function eliminarProductoConAjax(button) {
+                    const productoId = button.getAttribute('data-id');
+
+                    fetch("{{ route('venta.eliminar') }}", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                producto_id: productoId
+                            })
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('No se pudo eliminar el producto.');
+                            }
+                            return response.json();
+                        })
+                        .then(() => {
+                            const productoRow = button.closest('tr');
+                            productoRow.remove();
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                }
+
+                // Función para actualizar el monto del producto
+                function actualizarMonto(productoRow) {
+                    const precioUnitario = parseFloat(productoRow.querySelector('small').textContent.replace('$', '')
+                        .trim());
+                    const cantidadInput = productoRow.querySelector('.cantidad');
+                    const cantidad = parseInt(cantidadInput.value) || 1;
+
+
+                    const monto = precioUnitario * cantidad;
+
+                    // Actualizamos el campo de monto
+                    const montoInput = productoRow.querySelector('.monto');
+                    montoInput.value = monto.toFixed(2); // Redondeamos a 2 decimales
+                    // Agregar el símbolo de dólar en el input
+                        montoInput.setAttribute('placeholder', `$${monto.toFixed(2)}`); // Solo visualiza el símbolo $ en el placeholder
+
+                    // Si se requiere mostrar el símbolo directamente dentro del valor del campo
+                    montoInput.value = `$${monto.toFixed(2)}`;
+                                    }
+            });
+        </script>
+
+
+        {{-- para eliminar los productos en el segundo div --}}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const botonesEliminar = document.querySelectorAll('.eliminar-producto');
+
+                botonesEliminar.forEach(boton => {
+                    boton.addEventListener('click', function() {
+                        const productoId = this.getAttribute('data-id');
+
+                        // Enviar solicitud AJAX al servidor
+                        fetch("{{ route('venta.eliminar') }}", {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                body: JSON.stringify({
+                                    producto_id: productoId
+                                })
+                            })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('No se pudo eliminar el producto.');
+                                }
+                                return response.json();
+                            })
+                            .then(() => {
+                                // Eliminar la fila del producto en la tabla
+                                const fila = this.closest('tr');
+                                fila.remove();
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                    });
+                });
+            });
+        </script>
+
+        {{-- aqui comienzan los scrips controla el sidebar --}}
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const sidebar = document.getElementById('sidebar');
+                const isIndexPage = window.location.pathname.includes('producto'); // Ajusta según tu ruta
+
+                if (isIndexPage) {
+                    // Cierra automáticamente el sidebar quitando 'expand'
+                    sidebar.classList.remove('expand');
                 }
             });
+        </script>
 
-            // Agrega la nueva fila al contenedor
-            rowsContainer.appendChild(templateRow);
-
-            // Vuelve a asociar el evento 'change' al nuevo select de color
-            const newSelect = templateRow.querySelector(`#color-select-${rowIndex}`);
-            if (newSelect) {
-                newSelect.addEventListener('change', () => updateColorInfo(rowIndex));
-            }
-        }
-
-        // Verifica si se hizo clic en el botón "Eliminar fila"
-        if (e.target.closest('.remove-row')) {
-            const button = e.target.closest('.remove-row');
-            const row = button.closest('.dynamic-row');
-
-            // Solo elimina si hay más de una fila
-            const rowsContainer = button.closest('#rows-container');
-            if (rowsContainer.querySelectorAll('.dynamic-row').length > 1) {
-                row.remove();
-            }
-        }
-    });
-});
-
-    </script>
-    
-    
-
-
-
-
-    {{-- scrip que maneja las ventas --}}
-    <script>
-        // Evento para el botón "Vender"
-        document.getElementById('procesarVenta').addEventListener('click', () => {
-            const filas = document.querySelectorAll('#tabla-factura tr');
-
-            // Guardar datos
-            filas.forEach(fila => {
-                const idProducto = fila.id.split('-')[1];
-                const nombreProducto = fila.querySelector('td span').innerText;
-                const cantidadSeleccionada = fila.querySelector('.cantidad').value;
-
-                guardarEnBasura(idProducto, nombreProducto, cantidadSeleccionada);
-            });
-
-            // Recargar la página después de guardar
-            setTimeout(() => {
-                location.reload(); // Recargar la página para actualizar datos
-            }, 500);
-        });
-
-        // Función para guardar datos en la base de datos
-        function guardarEnBasura(idProducto, nombreProducto, cantidadSeleccionada) {
-            fetch('/guardar-en-basura', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                },
-                body: JSON.stringify({
-                    producto_id: idProducto,
-                    producto_nombre: nombreProducto,
-                    cantidad_seleccionada: cantidadSeleccionada,
-                }),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Datos guardados:', data);
-                })
-                .catch(error => {
-                    console.error('Error al guardar los datos:', error);
-                });
-        }
-    </script>
-
-    {{-- scritp que controla el borra la tabla basura --}}
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Seleccionar el modal
-            const modalDetalles = document.getElementById('modalDetalles');
-
-            // Escuchar el evento 'hidden.bs.modal' que ocurre al cerrar el modal
-            modalDetalles.addEventListener('hidden.bs.modal', function () {
-                // Realizar una solicitud al servidor para eliminar los registros
-                fetch('/vaciar-basura', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // Token CSRF
-                    },
-                })
-                .then(response => {
-                    if (response.ok) {
-                        console.log('Tabla basura vaciada correctamente');
-                    } else {
-                        console.error('Error al vaciar la tabla basura');
-                    }
-                })
-                .catch(error => console.error('Error en la solicitud:', error));
-            });
-        });
-    </script>
-
-    {{-- aqui comienzan los scrips controla el sidebar --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const sidebar = document.getElementById('sidebar');
-            const isIndexPage = window.location.pathname.includes('producto'); // Ajusta según tu ruta
-
-            if (isIndexPage) {
-                // Cierra automáticamente el sidebar quitando 'expand'
-                sidebar.classList.remove('expand');
-            }
-        });
-    </script>
-
-    {{-- controla los toolstips --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            tooltipTriggerList.forEach(function(tooltipTriggerEl) {
-                new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-        });
-    </script>
-
-    {{-- controla los input para buscar --}}
-    <script>
-        document.querySelector('#search-productos').addEventListener('input', function() {
-            const query = this.value
-                .toLowerCase(); // Convertimos a minúsculas para comparación insensible a mayúsculas/minúsculas.
-
-            fetch(`/buscar-productos?q=${encodeURIComponent(query)}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Error en la respuesta del servidor: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    const tableBody = document.querySelector('#tabla-productos');
-                    tableBody.innerHTML = '';
-
-                    data.forEach(producto => {
-                        const highlight = (text, query) => {
-                            if (!query)
-                                return text; // Si no hay término, devolvemos el texto original.
-                            const regex = new RegExp(`(${query})`,
-                                'gi'); // Creamos una expresión regular para resaltar el término.
-                            return text.replace(regex,
-                                '<mark style="background-color: #FFFFFFFF; color: #0F0F0FFF;">$1</mark>'
-                            ); // Envolvemos la coincidencia en <mark>.
-                        };
-
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>
-                                <a href="/producto/${producto.id}">
-                                    ${highlight(producto.nombreProducto, query)}
-                                </a>
-                            </td>
-                            <td>${producto.categoria ? highlight(producto.categoria.nombre, query) : 'Sin Categoría'}</td>
-                            <td>${highlight(producto.marcaProducto, query)}</td>
-                            <td>${producto.cantidadDisponibleProducto}</td>
-                            <td>$${producto.precioUnitarioProducto}</td>
-                            <td>
-                                ${
-                                    producto.colores.length > 0
-                                        ? producto.colores.map(color => `
-                                                    <span class="badge" style="background-color: ${color.codigoHexa};"></span>
-                                                `).join('')
-                                        : 'Sin colores'
-                                }
-                            </td>
-                            <td>
-                                <button class="btn btn-primary btn-sm">Agregar</button>
-                            </td>
-                        `;
-                        tableBody.appendChild(row);
+        {{-- controla los toolstips --}}
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                // Inicializar los tooltips
+                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+                    new bootstrap.Tooltip(tooltipTriggerEl, {
+                        trigger: 'hover', // El tooltip aparece al pasar el cursor
+                        delay: {
+                            show: 0,
+                            hide: 200
+                        } // Retardo de aparición y desaparición del tooltip (en milisegundos)
                     });
-
-                    if (data.length === 0) {
-                        tableBody.innerHTML = `
-                            <tr>
-                                <td colspan="7" class="text-center">
-                                    <div class="alert alert-danger" role="alert">
-                                        No se encontraron productos disponibles con ese nombre
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error durante la búsqueda:', error);
-                });
-        });
-    </script>
-
-    {{-- scrips que controlan los botones de pasar los productos a la factura --}}
-    <script>
-        // Obtener botones y tabla de factura
-            const botonesAgregar = document.querySelectorAll('.agregar-producto');
-            const tablaFactura = document.getElementById('tabla-factura');
-
-            // Función para actualizar el total de productos
-            function actualizarTotalProductos() {
-                let totalProductos = 0;
-                const filas = document.querySelectorAll('#tabla-factura tr');
-                filas.forEach(fila => {
-                    const cantidad = parseInt(fila.querySelector('.cantidad').value);
-                    totalProductos += cantidad;
-                });
-                // Actualizar el total en la interfaz
-                document.getElementById('totalProductos').innerText = `${totalProductos} productos`;
-            }
-
-            // Función para actualizar el total de la factura
-            function actualizarTotalFactura() {
-                let totalFactura = 0;
-                const filas = document.querySelectorAll('#tabla-factura tr');
-                filas.forEach(fila => {
-                    const precio = parseFloat(fila.querySelector('.precio').innerText.replace('$', ''));
-                    totalFactura += precio;
-                });
-                // Actualizar el total en la interfaz
-                document.getElementById('totalFactura').innerText = `$${totalFactura.toFixed(2)}`;
-            }
-
-            // Manejar el evento de clic en el botón "Agregar"
-            botonesAgregar.forEach((boton) => {
-                boton.addEventListener('click', () => {
-                    // Obtener datos del producto
-                    const precioProducto = parseFloat(boton.getAttribute('data-precio'));
-                    const nombreProducto = boton.getAttribute('data-nombre');
-                    const idProducto = boton.getAttribute('data-id');
-                    const cantidadDisponible = parseInt(boton.getAttribute('data-cantidad-disponible')); // Cantidad disponible en el inventario
-
-                    // Validar que el precio del producto sea un número válido
-                    if (isNaN(precioProducto) || precioProducto <= 0) {
-                        alert('Precio del producto no válido.');
-                        return;
-                    }
-
-                    // Verificar si el producto ya está en la factura
-                    const filaExistente = document.querySelector(`#producto-${idProducto}`);
-                    if (filaExistente) {
-                        // Si el producto ya existe, solo se actualiza la cantidad
-                        const cantidadInput = filaExistente.querySelector('.cantidad');
-                        let cantidadActual = parseInt(cantidadInput.value);
-
-                        // Verificar que la cantidad no supere la disponible en inventario
-                        if (cantidadActual < cantidadDisponible) {
-                            cantidadInput.value = cantidadActual + 1; // Incrementar la cantidad
-                            actualizarPrecio(filaExistente, precioProducto); // Actualizar precio
-                        } else {
-                            alert(`Solo quedan ${cantidadDisponible} unidades disponibles.`);
-                        }
-                    } else {
-                        // Crear nueva fila para la tabla de factura
-                        const fila = document.createElement('tr');
-                        fila.id = `producto-${idProducto}`; // Asignar un id único al producto
-
-                        fila.innerHTML = `
-                            <td>
-                                <span class="text-dark">${nombreProducto}</span>
-                                <div style="font-size: 13px; color: rgb(142, 142, 142)">$${precioProducto.toFixed(2)}</div>
-                            </td>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <a class="restar">
-                                        <i class="bi bi-dash-lg mx-2"></i>
-                                    </a>
-                                    <input type="text" value="1" min="1" class="form-control text-center mx-2 cantidad" style="width: 80px;">
-                                    <a class="sumar">
-                                        <i class="bi bi-plus-lg mx-2"></i>
-                                    </a>
-                                </div>
-                                <div class="mensaje-maximo" style="color: red; font-size: 12px; display: none;">
-                                    Has alcanzado el máximo disponible.
-                                </div>
-                            </td>
-                            <td class="celda-precio">
-                                $<span class="precio">${precioProducto.toFixed(2)}</span>
-                                <div class="cuadro-acciones">
-                                    <a href="#" class="eliminar"><i class="bi bi-trash"></i></a>
-                                </div>
-                            </td>
-                        `;
-
-                        // Agregar fila a la tabla de factura
-                        tablaFactura.appendChild(fila);
-
-                        // Agregar la clase de animación a la fila recién agregada
-                        fila.classList.add('producto-fila'); // Esta clase contiene la animación CSS
-
-                        // Manejar eventos de la fila recién creada
-                        manejarEventosFila(fila, precioProducto, cantidadDisponible);
-                    }
-
-                    // Actualizar el total de la factura y productos
-                    actualizarTotalFactura();
-                    actualizarTotalProductos();
                 });
             });
+        </script>
 
-            // Función para manejar eventos en la fila
-            function manejarEventosFila(fila, precioProducto, cantidadDisponible) {
-                // Botón restar cantidad
-                fila.querySelector('.restar').addEventListener('click', () => {
-                    const input = fila.querySelector('.cantidad');
-                    let cantidadActual = parseInt(input.value);
+        {{-- controla los input para buscar --}}
+        <script>
+            document.querySelector('#search-productos').addEventListener('input', function() {
+                const query = this.value
+            .toLowerCase(); // Convertimos a minúsculas para comparación insensible a mayúsculas/minúsculas.
+                const tableBody = document.querySelector('#tabla-productos'); // Contenedor de las filas originales.
+                const allRows = Array.from(tableBody.querySelectorAll('tr')); // Guardamos todas las filas originales.
 
-                    if (cantidadActual > 1) {
-                        input.value = cantidadActual - 1; // Reducir la cantidad
-                        actualizarPrecio(fila, precioProducto); // Actualizar el precio
-                    } else {
-                        fila.remove(); // Eliminar la fila de la tabla
+                let hasMatch = false; // Bandera para verificar si hay coincidencias.
+
+                // Mostrar todas las filas si no hay búsqueda
+                if (!query) {
+                    allRows.forEach(row => row.style.display = ''); // Restablecer la visibilidad
+                    // Eliminar mensaje de "sin coincidencias" si existe
+                    const noMatchRow = tableBody.querySelector('.no-match-row');
+                    if (noMatchRow) noMatchRow.remove();
+                    return;
+                }
+
+                // Filtrar y mostrar filas que coincidan con la búsqueda
+                allRows.forEach(row => {
+                    const cells = Array.from(row.querySelectorAll(
+                    'td')); // Obtenemos todas las celdas de la fila.
+                    const matches = cells.some(cell =>
+                        cell.textContent.toLowerCase().includes(
+                        query) // Comprobamos si alguna celda contiene el texto.
+                    );
+
+                    // Mostrar fila si coincide, ocultar si no
+                    row.style.display = matches ? '' : 'none';
+                    if (matches) hasMatch =
+                    true; // Si hay al menos una coincidencia, establecemos la bandera en true.
+                });
+
+                // Verificar si no hubo coincidencias
+                const noMatchRow = tableBody.querySelector(
+                '.no-match-row'); // Comprobar si ya existe una fila de "sin coincidencias".
+                if (!hasMatch) {
+                    // Si no hay coincidencias y no existe una fila de "sin coincidencias", la añadimos.
+                    if (!noMatchRow) {
+                        const noMatchHtml = `
+                        <tr class="no-match-row">
+                            <td colspan="7" class="text-center">
+                                <div class="alert alert-danger" role="alert">
+                                    No se encontraron productos disponibles con ese nombre
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                        tableBody.insertAdjacentHTML('beforeend', noMatchHtml);
                     }
+                } else {
+                    // Si hay coincidencias y existe la fila de "sin coincidencias", la eliminamos.
+                    if (noMatchRow) noMatchRow.remove();
+                }
+            });
+        </script>
 
-                    // Actualizar el total de la factura y productos
-                    actualizarTotalFactura();
-                    actualizarTotalProductos();
-                });
+        {{-- mantener la posicion de la pagina --}}
+        <script>
+            // Guardar la posición de desplazamiento al recargar la página
+            window.addEventListener("beforeunload", function() {
+                localStorage.setItem("scrollPosition", window.scrollY); // Guardamos la posición actual del scroll
+            });
 
-                // Botón sumar cantidad
-                fila.querySelector('.sumar').addEventListener('click', () => {
-                    const input = fila.querySelector('.cantidad');
-                    let cantidadActual = parseInt(input.value);
+            // Restaurar la posición de desplazamiento después de cargar la página
+            window.addEventListener("load", function() {
+                const scrollPosition = localStorage.getItem("scrollPosition"); // Obtenemos la posición guardada
 
-                    if (cantidadActual < cantidadDisponible) {
-                        input.value = cantidadActual + 1; // Incrementar la cantidad
-                        actualizarPrecio(fila, precioProducto); // Actualizar el precio
-                        ocultarMensaje(fila); // Ocultar el mensaje si la cantidad es válida
-                    } else {
-                        mostrarMensaje(fila); // Mostrar mensaje si la cantidad excede
-                    }
-
-                    // Actualizar el total de la factura y productos
-                    actualizarTotalFactura();
-                    actualizarTotalProductos();
-                });
-
-                // Evento para el botón eliminar (eliminar la fila)
-                fila.querySelector('.eliminar').addEventListener('click', (event) => {
-                    event.preventDefault(); // Evitar que se recargue la página
-                    fila.remove(); // Eliminar la fila de la tabla
-                    // Actualizar el total de la factura y productos
-                    actualizarTotalFactura();
-                    actualizarTotalProductos();
-                });
-            }
-
-            // Función para actualizar el precio total al cambiar la cantidad
-            function actualizarPrecio(fila, precioProducto) {
-                const cantidad = fila.querySelector('.cantidad').value;
-                const totalPrecio = precioProducto * parseInt(cantidad); // Calcular el precio total
-                fila.querySelector('.precio').innerText = totalPrecio.toFixed(2); // Actualizar el precio total en la tabla
-            }
-
-            // Función para mostrar el mensaje de "Has alcanzado el máximo disponible"
-            function mostrarMensaje(fila) {
-                const mensaje = fila.querySelector('.mensaje-maximo');
-                mensaje.style.display = 'block'; // Mostrar mensaje
-            }
-
-            // Función para ocultar el mensaje de "Has alcanzado el máximo disponible"
-            function ocultarMensaje(fila) {
-                const mensaje = fila.querySelector('.mensaje-maximo');
-                mensaje.style.display = 'none'; // Ocultar mensaje
-            }
-
-    </script>
+                if (scrollPosition) {
+                    window.scrollTo(0, scrollPosition); // Restauramos la posición guardada
+                    localStorage.removeItem("scrollPosition"); // Limpiamos el valor guardado en localStorage
+                }
+            });
+        </script>
 
 
-    @if(count($basura) > 0)
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-                // Crear una instancia del modal y mostrarlo si hay registros
-                const modalDetalles = new bootstrap.Modal(document.getElementById('modalDetalles'));
-                modalDetalles.show();
-        });
-    </script>
-    @endif
 
 
-@endsection
+    @endsection

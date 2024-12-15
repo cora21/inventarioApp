@@ -62,8 +62,8 @@ Route::get('/buscar-productos', [ProductoController::class, 'buscar'])->name('pr
 
 //rutas de las ventas
 Route::resource('venta', VentaController::class);
-Route::post('/guardar-en-basura', [VentaController::class, 'guardarEnBasura'])->name('guardar.en.basura');
-Route::post('/vaciar-basura', [VentaController::class, 'vaciarBasura']);
+Route::post('/venta/agregar', [VentaController::class, 'agregarProducto'])->name('venta.agregar');
+Route::post('/venta/eliminar', [VentaController::class, 'eliminarProducto'])->name('venta.eliminar');
 
 
 

@@ -8,67 +8,54 @@ use App\Models\Categoria;
 use App\Models\Color;
 use App\Models\Proveedor;
 use App\Models\Producto;
-use App\Models\Imagen;
-use App\Models\Basura;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
-class VentaController extends Controller{
+class VentaController extends Controller
+{
+    public function index()
+    {
+        $almacen = Almacen::all();
+        $categoria = Categoria::all();
+        $colores = Color::all();
+        $proveedor = Proveedor::all();
+        $producto = Producto::with(['categoria', 'colores', 'almacen', 'proveedor'])->get();
 
-    public function index(){
-    $almacen = Almacen::all();
-    $categoria = Categoria::all();
-    $colores = Color::all();
-    $proveedor = Proveedor::all();
-    $basura = Basura::all();
-    $producto = Producto::with(['categoria', 'colores', 'almacen','proveedor' ])->get();
+        // Convertir los productos almacenados en sesión a objetos Producto
+        $productosAgregados = collect(session('productos_agregados', []))->map(function ($producto) {
+            return Producto::find($producto['id']); // Convertimos cada array en una instancia de Producto
+        });
 
-    $productoColores = [];
+        return view('layouts.venta.index', compact(
+            'almacen',
+            'categoria',
+            'colores',
+            'proveedor',
+            'producto',
+            'productosAgregados'
+        ));
+    }
 
-    foreach ($basura as $item) {
-    $coloresRelacionados = DB::table('productos_colores')
-        ->join('colores', 'colores.id', '=', 'productos_colores.color_id')
-        ->where('productos_colores.producto_id', $item->producto_id)
-        ->get(['colores.id', 'colores.nombreColor', 'colores.codigoHexa', 'productos_colores.unidadesDisponibleProducto']); // Agregar unidades disponibles
+    public function agregarProducto(Request $request){
+        // Validar el producto_id
+        $request->validate([
+            'producto_id' => 'required|exists:productos,id',
+        ]);
+        // Obtener el producto desde la base de datos
+        $producto = Producto::find($request->producto_id);
+        // Agregar el producto a la sesión
+        session()->push('productos_agregados', ['id' => $producto->id]);
+        return redirect()->route('venta.index')->with('mensaje', 'Producto agregado temporalmente.');
+    }
 
-    $productoColores[$item->producto_id] = $coloresRelacionados;
-}
-
-
-
-
-
-
-
-    return view('layouts.venta.index', compact('almacen', 'categoria', 'colores', 'proveedor', 'producto', 'basura', 'productoColores'));
-}
-
-public function guardarEnBasura(Request $request) {
-    // Validación y guardado
+    public function eliminarProducto(Request $request){
     $request->validate([
-        'producto_id' => 'required|string',
-        'producto_nombre' => 'required|string',
-        'cantidad_seleccionada' => 'required|string',
+        'producto_id' => 'required|exists:productos,id',
     ]);
-
-    Basura::create([
-        'producto_id' => $request->producto_id,
-        'producto_nombre' => $request->producto_nombre,
-        'cantidad_seleccionada' => $request->cantidad_seleccionada,
-    ]);
-
-    // Pasar indicador a la vista
-    return redirect()->back()->with('abrirModal', true);
+    $productosAgregados = session('productos_agregados', []);
+    $productosAgregados = array_filter($productosAgregados, function ($producto) use ($request) {
+        return $producto['id'] != $request->producto_id;
+    });
+    session(['productos_agregados' => $productosAgregados]);
+    return response()->json(['mensaje' => 'Producto eliminado correctamente.']);
 }
 
-public function vaciarBasura() {
-    // Vaciar la tabla 'basura'
-    \App\Models\Basura::truncate();
-    // Devolver respuesta
-    return response()->json(['message' => 'Tabla basura vaciada correctamente'], 200);
 }
-
-
-}
-
-
