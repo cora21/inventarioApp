@@ -8,16 +8,24 @@ use App\Models\Categoria;
 use App\Models\Color;
 use App\Models\Proveedor;
 use App\Models\Producto;
+use App\Models\MetodoPago;
+use App\Models\Venta;
+use App\Models\DetalleVenta;
+use App\models\DetallePago;
 
 class VentaController extends Controller
 {
     public function index()
     {
+        $metPago = MetodoPago::all();
         $almacen = Almacen::all();
         $categoria = Categoria::all();
         $colores = Color::all();
         $proveedor = Proveedor::all();
         $producto = Producto::with(['categoria', 'colores', 'almacen', 'proveedor'])->get();
+        $venta = Venta::latest()->first(); // Última venta registrada (o selecciona una venta específica)
+        $detalleVenta = DetalleVenta::all();
+        $detallePago = DetallePago::all();
 
         // Convertir los productos almacenados en sesión a objetos Producto
         $productosAgregados = collect(session('productos_agregados', []))->map(function ($producto) {
@@ -30,7 +38,11 @@ class VentaController extends Controller
             'colores',
             'proveedor',
             'producto',
-            'productosAgregados'
+            'productosAgregados',
+            'metPago',
+            'venta',
+            'detalleVenta',
+            'detallePago',
         ));
     }
 
@@ -56,6 +68,31 @@ class VentaController extends Controller
     });
     session(['productos_agregados' => $productosAgregados]);
     return response()->json(['mensaje' => 'Producto eliminado correctamente.']);
+}
+
+
+// Paso 1: Registrar la venta
+public function registrarVenta(Request $request){
+    $venta = Venta::create([
+        'montoTotalVenta' => $request->montoTotal
+    ]);
+    return response()->json(['venta_id' => $venta->id], 201);
+}
+
+// Paso 2: Registrar los detalles de la venta
+public function registrarDetallesVenta(Request $request){
+    $detalles = $request->detalles;
+    foreach ($detalles as $detalle) {
+        DetalleVenta::create([
+            'venta_id' => $detalle['venta_id'],
+            'producto_id' => $detalle['producto_id'],
+            'cantidadSeleccionadaVenta' => $detalle['cantidad'],
+            'color_id' => $detalle['color_id'],
+            'precioUnitarioProducto' => $detalle['precio_unitario'],
+            'precioTotalPorVenta' => $detalle['precio_total']
+        ]);
+    }
+    return response()->json(['message' => 'Detalles registrados exitosamente'], 201);
 }
 
 }

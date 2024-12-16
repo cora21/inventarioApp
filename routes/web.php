@@ -64,6 +64,8 @@ Route::get('/buscar-productos', [ProductoController::class, 'buscar'])->name('pr
 Route::resource('venta', VentaController::class);
 Route::post('/venta/agregar', [VentaController::class, 'agregarProducto'])->name('venta.agregar');
 Route::post('/venta/eliminar', [VentaController::class, 'eliminarProducto'])->name('venta.eliminar');
+Route::post('/venta/registrar', [VentaController::class, 'registrarVenta'])->name('venta.registrar');
+Route::post('/venta/detalles', [VentaController::class, 'registrarDetallesVenta'])->name('venta.detalles');
 
 
 

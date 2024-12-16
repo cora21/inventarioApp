@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBasuraTable extends Migration
+class CreateVentasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,15 +12,13 @@ class CreateBasuraTable extends Migration
      * @return void
      */
     public function up()
-{
-    Schema::create('basura', function (Blueprint $table) {
-        $table->id();
-        $table->string('producto_id');
-        $table->string('producto_nombre');
-        $table->string('cantidad_seleccionada');
-        $table->timestamps();
-    });
-}
+    {
+        Schema::create('ventas', function (Blueprint $table) {
+            $table->id();
+            $table->decimal('montoTotalVenta', 10, 2)->nullable();
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.
@@ -29,6 +27,6 @@ class CreateBasuraTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('basura');
+        Schema::dropIfExists('ventas');
     }
 }

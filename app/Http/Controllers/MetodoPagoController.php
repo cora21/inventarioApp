@@ -16,7 +16,7 @@ class MetodoPagoController extends Controller{
         return view('layouts.metodo.index', compact('metPago'));
     }
 
-
+    // se debe borrar siempre y generar con php artisan storage:link
     public function store(Request $request){
     // Validar los campos
     $request->validate([
@@ -26,7 +26,7 @@ class MetodoPagoController extends Controller{
         'nombreMetPago.required' => 'Este campo es obligatorio.',
         'imageMetodo.image' => 'Debe subir una imagen válida.',
     ]);
-    
+
     // Subir la imagen y obtener la URL
     if ($request->hasFile('imageMetodo')) {
         $imagenes = $request->file('imageMetodo')->store('public/imagenes');
