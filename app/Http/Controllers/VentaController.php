@@ -95,4 +95,25 @@ public function registrarDetallesVenta(Request $request){
     return response()->json(['message' => 'Detalles registrados exitosamente'], 201);
 }
 
+
+public function guardarPago(Request $request)
+    {
+        try {
+            // Guardar el pago sin validación previa
+            $detallePago = new DetallePago();
+            $detallePago->venta_id = $request->venta_id;
+            $detallePago->metodo_pago_id = $request->metodo_pago_id;
+            $detallePago->monto = $request->monto;
+            $detallePago->save();
+
+            // Responder con éxito
+            return response()->json(['success' => true, 'message' => 'Pago guardado correctamente.']);
+        } catch (\Exception $e) {
+            // En caso de error, capturar y mostrar el mensaje de error
+            Log::error('Error al guardar el pago: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Hubo un error al guardar el pago.', 'error' => $e->getMessage()]);
+        }
+    }
+
+
 }

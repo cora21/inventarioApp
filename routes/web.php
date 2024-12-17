@@ -66,6 +66,7 @@ Route::post('/venta/agregar', [VentaController::class, 'agregarProducto'])->name
 Route::post('/venta/eliminar', [VentaController::class, 'eliminarProducto'])->name('venta.eliminar');
 Route::post('/venta/registrar', [VentaController::class, 'registrarVenta'])->name('venta.registrar');
 Route::post('/venta/detalles', [VentaController::class, 'registrarDetallesVenta'])->name('venta.detalles');
+Route::post('/venta/guardar-pago', [VentaController::class, 'guardarPago'])->name('venta.guardarPago');
 
 
 

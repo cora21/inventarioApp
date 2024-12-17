@@ -52,9 +52,15 @@
         transform: scale(1.1); /* Ligero aumento de tamaño */
     }
 
+            #selectedPaymentMethod,
+        #totalVentaModal {
+            visibility: visible !important;
+            display: inline-block !important;
+            color: #000 !important; /* Asegurar que el texto sea visible */
+        }
+
 </style>
 @section('contenido')
-<button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal">Open first modal</button>
     <div class="container">
         <div class="row response">
             <div class="col-12 col-md-12 border" style="height: 400px; background-color: rgb(215, 224, 227);">
@@ -136,6 +142,7 @@
             </div>
         </div>
     </div>
+
     <br>
 
     <div class="container" style="height: 550px; background-color: rgb(228, 227, 227);">
@@ -287,15 +294,25 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-
-
-
-                    <div class="container mt-6">
+                    <div class="container mt-3">
                         <!-- Aquí agregamos un campo oculto para almacenar el venta_id -->
                         <input type="hidden" id="ventaIdModal" name="venta_id" value="">
+
+                        <!-- Mostrar el monto total de la venta en grande -->
+                        <div class="text-center mb-4">
+                            <h4><strong>Total de la venta: </strong><span id="totalVentaModal" style="font-size: 2rem;">$0.00</span></h4>
+                        </div>
+
                         <div class="row justify-content-center">
                             @foreach ($metPago as $row)
-                            <div class="col-lg-3 col-md-3 col-sm-12 mb-3 payment-card-item" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal" data-method-id="{{ $row->id }}" data-method-name="{{ $row->nombreMetPago }}">
+                            @php
+                                $isCombinado = ($row->id == 13 && $row->nombreMetPago == 'Combinado');
+                            @endphp
+                            <div class="col-lg-3 col-md-3 col-sm-12 mb-3 payment-card-item"
+                                 data-bs-target="{{ $isCombinado ? '#modalCombinado' : '#exampleModalToggle2' }}"
+                                 data-bs-toggle="modal"
+                                 data-method-id="{{ $row->id }}"
+                                 data-method-name="{{ $row->nombreMetPago }}">
                                 <div class="bg-light border p-2 text-center payment-card">
                                     <div class="mb-2">
                                         @if ($row->imagenMetPago)
@@ -306,15 +323,15 @@
                                             <div class="text-muted">
                                                 <i class="bi bi-bank" style="font-size: 2.5rem;"></i>
                                                 <br>
-                                                <p class="small mt-1">No hay imagen disponible</p>
                                             </div>
                                         @endif
                                         <h6 class="fw-bold text-secondary mb-1">{{ $row->nombreMetPago }}</h6>
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
+                            @endforeach
                         </div>
+
                         <div class="row justify-content-center">
                             <div class="col-lg-3 col-md-5 col-sm-12 mb-3">
                                 <div class="bg-light border rounded shadow-sm p-2 text-center payment-card">
@@ -330,18 +347,6 @@
                             </div>
                         </div>
                     </div>
-
-
-
-
-
-
-
-                    {{-- final del body del modal --}}
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal">Open
-                        second modal</button>
                 </div>
             </div>
         </div>
@@ -352,41 +357,178 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">Pagar factura paso 2</h1>
+                    <h1 class="modal-title fs-3" id="exampleModalToggleLabel2">Pagar factura paso 2</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                    <div class="modal-body">
-                        <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal">
-                            <i class="bi bi-arrow-down-up"></i> Regresar al primer modal
-                        </button>
-                        <!-- Aquí mostramos el nombre del método de pago seleccionado -->
-                        <p><strong>Método de pago seleccionado: </strong><span id="selectedPaymentMethod">Ninguno</span></p>
+                <div class="modal-body">
+                    <!-- Botón para regresar al primer modal -->
+                    <button class="btn btn-outline-success" data-bs-target="#exampleModalToggle" data-bs-toggle="modal">
+                        <i class="bi bi-arrow-down-up"></i> Regresar al primer modal
+                    </button>
+                    <br><br>
 
-                        <!-- Campo oculto para almacenar el ID del método de pago -->
-                        <input type="hidden" id="paymentMethodId" name="payment_method_id">
+                    <!-- Mostrar el método de pago seleccionado -->
+                    <p>
+                        <strong>Método de pago seleccionado: </strong>
+                        <span id="selectedPaymentMethod" class="text-success">Ninguno</span>
+                    </p>
 
-                        <!-- Campo para ingresar el monto pagado -->
-                        <div class="form-group">
-                            <label for="amountPaid">Monto pagado</label>
-                            <input type="number" class="form-control" id="amountPaid" name="amount_paid" placeholder="Ingrese el monto pagado" required>
+                    <!-- Campo oculto para el ID del método de pago -->
+                    <input type="hidden" id="paymentMethodId" name="payment_method_id">
+
+                    <!-- Campo oculto para el ID de la venta -->
+                    <input type="hidden" id="ventaIdModal" name="venta_id">
+
+                    <!-- Mostrar el total de la venta -->
+                    <div class="text-center mb-4">
+                        <h3><strong>Total de la venta:</strong>
+                            <span id="totalVentaSpan" style="font-size: 2rem;"></span>
+                        </h3>
+                    </div>
+                    <!-- Resto del contenido del modal -->
+                    <div class="container mt-3">
+                        <div class="card">
+                            <div class="container mt-3">
+                                <div class="row m-3">
+                                    <!-- Columna Izquierda -->
+                                    <div class="col-md-6 border-end">
+                                            <div class="mb-3 pb-2 border-bottom">
+                                                <label for="valorPago" class="form-label fw-bold">Valor del pago *</label>
+                                                <input type="number" class="form-control" id="valorPago" placeholder="Ingresa el valor">
+                                            </div>
+
+                                        <!-- Opciones rápidas -->
+                                        <div class="mb-3">
+                                        <label class="form-label fw-bold">Opciones rápidas</label>
+                                        <div id="opcionesRapidas">
+                                            <!-- Los botones se generarán aquí dinámicamente -->
+                                        </div>
+                                    </div>
+                                    </div>
+
+                                    <!-- Columna Derecha -->
+                                    <div class="col-md-6">
+                                        <label for="observaciones" class="form-label fw-bold">Observaciones</label>
+                                        <textarea class="form-control" id="observaciones" rows="5" placeholder="Ingresa tu observación"></textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                    </div>
 
-                        <!-- Opcionalmente, puedes agregar un campo de comentario -->
-                        <div class="form-group">
-                            <label for="comment">Comentario</label>
-                            <textarea class="form-control" id="comment" name="comment" rows="3" placeholder="Comentario (opcional)"></textarea>
-                        </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary">Back to first</button>
+                    <button type="button" class="btn btn-primary" id="btnGuardarPago">Guardar</button>
                 </div>
             </div>
         </div>
     </div>
+
     {{-- final del segundo modal --}}
 
 
+    {{-- modal para el combinado ojito con esto por favor  --}}
+    <div class="modal fade" id="modalCombinado" aria-hidden="true" aria-labelledby="modalCombinadoLabel" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-3" id="modalCombinadoLabel">Pagar factura - Método Combinado</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Este es un modal específico para el método de pago "Combinado".</p>
+                    <!-- Aquí puedes agregar más campos específicos si necesitas -->
+                    <div class="container mt-3">
+                        <div class="card">
+                            <div class="container mt-3">
+                                <!-- Contenedor donde se agregarán las filas -->
+                                <div id="metodoPagoContainer">
+                                    <!-- Primera fila: Método de pago, Valor del pago, Tipo de moneda -->
+                                    <div class="row mb-3 metodo-row">
+                                        <!-- Método de pago -->
+                                        <div class="col-md-4">
+                                            <label for="metodoPago1" class="form-label fw-bold">Método de pago*</label>
+                                            <select class="form-select">
+                                                <option selected>Efectivo</option>
+                                                <option>Débito</option>
+                                                <option>Crédito</option>
+                                            </select>
+                                        </div>
+                                        <!-- Valor del pago -->
+                                        <div class="col-md-4">
+                                            <label for="valorPago1" class="form-label fw-bold">Valor del pago*</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="text" class="form-control" placeholder="0.00">
+                                            </div>
+                                        </div>
+                                        <!-- Tipo de moneda -->
+                                        <div class="col-md-4">
+                                            <label for="tipoMoneda1" class="form-label fw-bold">Tipo de moneda*</label>
+                                            <select class="form-select">
+                                                <option selected>Bolivares</option>
+                                                <option>Dólares</option>
+                                                <option>Euros</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3 metodo-row">
+                                        <!-- Método de pago -->
+                                        <div class="col-md-4">
+                                            <label for="metodoPago1" class="form-label fw-bold">Método de pago*</label>
+                                            <select class="form-select">
+                                                <option selected>Efectivo</option>
+                                                <option>Débito</option>
+                                                <option>Crédito</option>
+                                            </select>
+                                        </div>
+                                        <!-- Valor del pago -->
+                                        <div class="col-md-4">
+                                            <label for="valorPago1" class="form-label fw-bold">Valor del pago*</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="text" class="form-control" placeholder="0.00">
+                                            </div>
+                                        </div>
+                                        <!-- Tipo de moneda -->
+                                        <div class="col-md-4">
+                                            <label for="tipoMoneda1" class="form-label fw-bold">Tipo de moneda*</label>
+                                            <select class="form-select">
+                                                <option selected>Bolivares</option>
+                                                <option>Dólares</option>
+                                                <option>Euros</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Botón alineado a la izquierda -->
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <button type="button" class="btn btn-outline-success btn-md" id="btnAgregarMetodo">
+                                            + Agregar método
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Observaciones -->
+                                <div class="m-2">
+                                    <label for="observaciones" class="form-label fw-bold">Observaciones</label>
+                                    <textarea class="form-control" id="observaciones" rows="3" placeholder="Ingresa tu observación" style="resize: none; box-shadow: none; outline: none;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    <!-- Botón de cerrar -->
+                    <button type="button" class="btn btn-secondary mt-3" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -395,24 +537,203 @@
 
 
 
-    <script>
-        // Agregar un evento de clic a cada elemento del método de pago
-        $('.payment-card-item').on('click', function () {
-            // Capturamos el ID y el nombre del método de pago
-            var methodId = $(this).data('method-id');
-            var methodName = $(this).data('method-name');
 
-            // Asignamos estos valores a los campos del segundo modal
-            $('#selectedPaymentMethod').text(methodName); // Muestra el nombre del método de pago
-            $('#paymentMethodId').val(methodId);  // Almacena el ID del método de pago en un campo oculto
 
-            // Si es necesario, también puedes agregar más lógica aquí para otras partes del modal
+
+
+
+
+
+
+
+
+
+
+{{-- calcular las opciones rapidas --}}
+<script>
+    // Evento al abrir el segundo modal para generar montos sugeridos
+    $('#exampleModalToggle2').on('show.bs.modal', function () {
+        // Capturamos el total de la venta, eliminamos el símbolo '$' y lo convertimos a número
+        var totalVenta = parseFloat($('#totalVentaModal').text().replace('$', '').trim());
+
+        // Imprimir el valor de totalVenta en la consola
+        console.log('Total de la venta:', totalVenta);
+
+        // Actualizar el span en la vista con el valor de totalVenta
+        $('#totalVentaSpan').text('$' + totalVenta.toFixed(2));  // Se muestra con el símbolo '$' y formato
+
+        // Generar montos sugeridos basados en el total
+        var opciones = generarMontosRapidos(totalVenta);
+
+        // Limpiar el contenedor de opciones rápidas
+        $('#opcionesRapidas').empty();
+
+        // Crear botones dinámicamente con las opciones generadas
+        opciones.forEach(function (monto) {
+            var boton = `<button type="button" class="btn btn-outline-secondary me-2 opcion-rapida">${monto.toFixed(2)}</button>`;
+            $('#opcionesRapidas').append(boton);
         });
+    });
+
+    // Función para generar montos rápidos (menos 10% y 15%)
+    function generarMontosRapidos(total) {
+        var opciones = [];
+        opciones.push(total);              // Total exacto
+        opciones.push(total * 0.9);        // 10% menos
+        opciones.push(total * 0.85);       // 15% menos
+        return opciones;
+    }
+
+    // Evento para capturar clic en los botones de opciones rápidas
+    $(document).on('click', '.opcion-rapida', function () {
+        var valorSeleccionado = $(this).text(); // Capturar el valor del botón
+        var valorFormateado = parseFloat(valorSeleccionado).toFixed(2); // Asegurarnos de que tenga 2 decimales
+        $('#valorPago').val(valorFormateado); // Pasarlo al input
+    });
+
+    // Pasa los datos a los modales cuando se selecciona un método de pago
+    $('.payment-card-item').on('click', function () {
+        var methodId = $(this).data('method-id');
+        var methodName = $(this).data('method-name');
+        var totalFactura = $('#totalVentaModal').data('total'); // Captura con respaldo en el atributo data-total
+
+        // Captura el ID de la venta
+        var ventaId = $('#ventaIdModal').val();
+
+        // Verificación de totalFactura antes de asignar
+        if (totalFactura === undefined || totalFactura === null || isNaN(totalFactura)) {
+            totalFactura = $('#totalVentaModal').text().replace('$', '').trim(); // Captura desde el texto del DOM
+        }
+
+        // Asignar valores al segundo modal
+        $('#selectedPaymentMethod').text(methodName);
+        $('#paymentMethodId').val(methodId);
+        $('#ventaIdModal').val(ventaId);
+        $('#totalVentaModal').text('$' + parseFloat(totalFactura).toFixed(2));
+
+        // Debug en consola
+        console.log('Método de Pago:', methodName);
+        console.log('ID del Método:', methodId);
+        console.log('ID Venta:', ventaId);
+        console.log('Total de la Venta:', totalFactura);
+
+        // Mostrar el segundo modal
+        $('#exampleModalToggle2').modal('show');
+    });
+
+    // Manejo de la acción de guardar el pago
+    $('.btn-primary').on('click', function () {
+        // Recoger los datos del formulario
+        var monto = parseFloat($('#valorPago').val()).toFixed(2);
+        var ventaId = $('#ventaIdModal').val();
+        var metodoPagoId = $('#paymentMethodId').val();
+
+        // Validación antes de enviar la solicitud
+        if (!monto || !ventaId || !metodoPagoId) {
+            // Usar SweetAlert2 para el mensaje de error
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Por favor, complete todos los campos antes de guardar.'
+            });
+            return; // Detener ejecución si falta algún dato
+        }
+
+        // Enviar los datos por AJAX
+        $.ajax({
+            url: '/venta/guardar-pago', // La ruta a la que se enviará la solicitud
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}', // Token CSRF de Laravel
+                venta_id: ventaId,
+                metodo_pago_id: metodoPagoId,
+                monto: monto
+            },
+            success: function (response) {
+                if (response.success) {
+                    // Usar SweetAlert2 para el mensaje de éxito
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Pago guardado correctamente.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(function () {
+                        $('#exampleModalToggle2').modal('hide'); // Cerrar modal después de guardar
+                    });
+                } else {
+                    // Usar SweetAlert2 para el mensaje de error
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al guardar el pago',
+                        text: response.message
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log('Error en la solicitud:', error); // Imprimir error
+                // Usar SweetAlert2 para el mensaje de error AJAX
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error en la solicitud',
+                    text: 'Hubo un problema el campo valor de pago no puede estar vacio.'
+                });
+            }
+        });
+    });
+</script>
+
+
+
+
+    {{-- pasa los datos a los modales  --}}
+    <script>
+       $('.payment-card-item').on('click', function () {
+        var methodId = $(this).data('method-id');
+        var methodName = $(this).data('method-name');
+        var totalFactura = $('#totalVentaModal').data('total'); // Captura con respaldo en el atributo data-total
+
+        // Captura el ID de la venta
+        var ventaId = $('#ventaIdModal').val();
+
+        // Verificación de totalFactura antes de asignar
+        if (totalFactura === undefined || totalFactura === null || isNaN(totalFactura)) {
+            totalFactura = $('#totalVentaModal').text().replace('$', '').trim(); // Captura desde el texto del DOM
+        }
+
+        // Asignar valores al segundo modal
+        $('#selectedPaymentMethod').text(methodName);
+        $('#paymentMethodId').val(methodId);
+        $('#ventaIdModal').val(ventaId);
+        $('#totalVentaModal').text('$' + parseFloat(totalFactura).toFixed(2));
+
+        // Debug en consola
+        console.log('Método de Pago:', methodName);
+        console.log('ID del Método:', methodId);
+        console.log('ID Venta:', ventaId);
+        console.log('Total de la Venta:', totalFactura);
+
+        // Mostrar el segundo modal
+        $('#exampleModalToggle2').modal('show');
+    });
+
     </script>
 
+ <!-- Script para clonar solo una fila -->
+    <script>
+        $(document).ready(function () {
+            $('#btnAgregarMetodo').click(function () {
+                // Clonar solo la primera fila (con la clase 'metodo-row')
+                var clonedRow = $('.metodo-row').first().clone();
 
+                // Limpiar los campos de la fila clonada
+                clonedRow.find('input').val(''); // Limpia los inputs
+                clonedRow.find('select').prop('selectedIndex', 0); // Resetea selects al primer valor
 
-
+                // Agregar la fila clonada al contenedor
+                $('#metodoPagoContainer').append(clonedRow);
+            });
+        });
+    </script>
 
 
     {{-- guarda en la base de datos ventas y detalle venta, me abre el modal ni loco se elimina --}}
@@ -421,7 +742,7 @@
         $('#procesarVenta').on('click', function (event) {
             event.preventDefault(); // Evitar que la página se recargue al hacer clic
 
-            const totalFactura = parseFloat($('#totalFactura').text().replace('$', ''));
+            const totalFactura = parseFloat($('#totalFactura').text().replace('$', '').trim());
 
             // Paso 1: Registrar la venta
             $.ajax({
@@ -436,6 +757,29 @@
 
                     // Paso 2: Registrar los detalles de la venta
                     registrarDetallesVenta(ventaId);
+
+                    // Paso 3: Mostrar el monto total en el primer modal y no recargar hasta que el usuario presione aceptar
+                    Swal.fire({
+                        title: 'Venta registrada',
+                        text: 'Venta y detalles registrados exitosamente.',
+                        icon: 'success',
+                        showCancelButton: false,
+                        confirmButtonText: 'Aceptar',
+                        allowOutsideClick: false,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Paso 4: Abrir el modal y pasar el venta_id y totalFactura después de que se haya registrado todo
+                            $('#ventaIdModal').val(ventaId);  // Asignamos el ID de la venta al campo oculto en el modal
+                            $('#exampleModalToggle').modal('show');  // Mostrar el modal
+
+                            // Actualizamos el monto total de la venta en el primer modal
+                            $('#totalVentaModal').text('$' + totalFactura.toFixed(2));
+
+                            // Imprimir el id de la venta en consola para asegurarnos de que es correcto
+                            console.log('ID de la venta registrada:', ventaId);
+                            console.log('Monto total de la venta:', totalFactura);
+                        }
+                    });
                 },
                 error: function (xhr, status, error) {
                     console.error('Error al registrar la venta:', error);
@@ -478,25 +822,6 @@
                 },
                 success: function (response) {
                     console.log('Detalles registrados exitosamente:', response);
-
-                    // Paso 3: Mostrar SweetAlert2 y no recargar hasta que el usuario presione aceptar
-                    Swal.fire({
-                        title: 'Venta registrada',
-                        text: 'Venta y detalles registrados exitosamente.',
-                        icon: 'success',
-                        showCancelButton: false,
-                        confirmButtonText: 'Aceptar',
-                        allowOutsideClick: false,
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Paso 4: Abrir el modal y pasar el venta_id después de que se haya registrado todo
-                            $('#ventaIdModal').val(ventaId);  // Asignamos el ID de la venta al campo oculto en el modal
-                            $('#exampleModalToggle').modal('show');  // Mostrar el modal
-
-                            // Imprimir el id de la venta en consola para asegurarnos de que es correcto
-                            console.log('ID de la venta registrada:', ventaId);
-                        }
-                    });
                 },
                 error: function (xhr, status, error) {
                     console.error('Error al registrar los detalles:', error);
@@ -504,6 +829,7 @@
                 }
             });
         }
+
     </script>
 
     {{-- calculo del precio total --}}
