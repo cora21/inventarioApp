@@ -386,25 +386,29 @@
                             <span id="totalVentaSpan" style="font-size: 2rem;"></span>
                         </h3>
                     </div>
-                    <!-- Resto del contenido del modal -->
-                    <div class="container mt-3">
+
+                    <!-- Contenido específico para el método "Combinado" -->
+                    <div id="modalContent"></div>
+
+                    <!-- Resto del contenido del modal (campos regulares) -->
+                    <div class="container mt-3 regular-fields">
                         <div class="card">
                             <div class="container mt-3">
                                 <div class="row m-3">
                                     <!-- Columna Izquierda -->
                                     <div class="col-md-6 border-end">
-                                            <div class="mb-3 pb-2 border-bottom">
-                                                <label for="valorPago" class="form-label fw-bold">Valor del pago *</label>
-                                                <input type="number" class="form-control" id="valorPago" placeholder="Ingresa el valor">
-                                            </div>
+                                        <div class="mb-3 pb-2 border-bottom">
+                                            <label for="valorPago" class="form-label fw-bold">Valor del pago *</label>
+                                            <input type="number" class="form-control" id="valorPago" placeholder="Ingresa el valor">
+                                        </div>
 
                                         <!-- Opciones rápidas -->
                                         <div class="mb-3">
-                                        <label class="form-label fw-bold">Opciones rápidas</label>
-                                        <div id="opcionesRapidas">
-                                            <!-- Los botones se generarán aquí dinámicamente -->
+                                            <label class="form-label fw-bold">Opciones rápidas</label>
+                                            <div id="opcionesRapidas">
+                                                <!-- Los botones se generarán aquí dinámicamente -->
+                                            </div>
                                         </div>
-                                    </div>
                                     </div>
 
                                     <!-- Columna Derecha -->
@@ -415,121 +419,163 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="btnGuardarPago">Guardar</button>
+                        </div>
                     </div>
+                                <!-- Nuevos campos alineados en la misma fila -->
+                               <!-- Contenedor principal para los campos Combinados -->
+                        <div id="combinadoFields" class="card mt-3" style="display: none;">
+                            <div class="card-body">
+                                <!-- Primera fila (modelo) -->
+                                <div class="row m-3 combinado-row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="select1" class="form-label fw-bold">Metodo Pago</label>
+                                            <select class="form-control select1">
+                                                <option value="">Selecciona una opción</option>
+                                                @foreach ($metPago as $row)
+                                                    @if ($row->nombreMetPago !== 'Combinado')
+                                                        <option value="{{ $row->id }}">{{ $row->nombreMetPago }}</option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="input1" class="form-label fw-bold">Valor del Pago</label>
+                                            <input type="text" required class="form-control input1" placeholder="0.00" pattern="^\d+(\.\d{1,2})?$" title="Ingrese un monto válido con hasta dos decimales">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="select2" class="form-label fw-bold">Moneda</label>
+                                            <select class="form-control" id="select2">
+                                                <option value="">Selecciona una opción</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Botones para agregar y eliminar fila -->
+                                <div class="d-flex justify-content-end">
+                                    <button type="button" class="btn btn-success btn-add me-2">
+                                        <i class="bi bi-plus-lg"></i> <!-- Icono de + -->
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-remove">
+                                        <i class="bi bi-trash"></i> <!-- Icono de basura -->
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" id="btnGuardarPagoCombinado">Guardar</button>
+                            </div>
+                        </div>
 
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="btnGuardarPago">Guardar</button>
-                </div>
+
             </div>
         </div>
     </div>
 
     {{-- final del segundo modal --}}
 
+{{-- guardar en metodo combinado --}}
 
-    {{-- modal para el combinado ojito con esto por favor  --}}
-    <div class="modal fade" id="modalCombinado" aria-hidden="true" aria-labelledby="modalCombinadoLabel" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-3" id="modalCombinadoLabel">Pagar factura - Método Combinado</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Este es un modal específico para el método de pago "Combinado".</p>
-                    <!-- Aquí puedes agregar más campos específicos si necesitas -->
-                    <div class="container mt-3">
-                        <div class="card">
-                            <div class="container mt-3">
-                                <!-- Contenedor donde se agregarán las filas -->
-                                <div id="metodoPagoContainer">
-                                    <!-- Primera fila: Método de pago, Valor del pago, Tipo de moneda -->
-                                    <div class="row mb-3 metodo-row">
-                                        <!-- Método de pago -->
-                                        <div class="col-md-4">
-                                            <label for="metodoPago1" class="form-label fw-bold">Método de pago*</label>
-                                            <select class="form-select">
-                                                <option selected>Efectivo</option>
-                                                <option>Débito</option>
-                                                <option>Crédito</option>
-                                            </select>
-                                        </div>
-                                        <!-- Valor del pago -->
-                                        <div class="col-md-4">
-                                            <label for="valorPago1" class="form-label fw-bold">Valor del pago*</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">$</span>
-                                                <input type="text" class="form-control" placeholder="0.00">
-                                            </div>
-                                        </div>
-                                        <!-- Tipo de moneda -->
-                                        <div class="col-md-4">
-                                            <label for="tipoMoneda1" class="form-label fw-bold">Tipo de moneda*</label>
-                                            <select class="form-select">
-                                                <option selected>Bolivares</option>
-                                                <option>Dólares</option>
-                                                <option>Euros</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3 metodo-row">
-                                        <!-- Método de pago -->
-                                        <div class="col-md-4">
-                                            <label for="metodoPago1" class="form-label fw-bold">Método de pago*</label>
-                                            <select class="form-select">
-                                                <option selected>Efectivo</option>
-                                                <option>Débito</option>
-                                                <option>Crédito</option>
-                                            </select>
-                                        </div>
-                                        <!-- Valor del pago -->
-                                        <div class="col-md-4">
-                                            <label for="valorPago1" class="form-label fw-bold">Valor del pago*</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">$</span>
-                                                <input type="text" class="form-control" placeholder="0.00">
-                                            </div>
-                                        </div>
-                                        <!-- Tipo de moneda -->
-                                        <div class="col-md-4">
-                                            <label for="tipoMoneda1" class="form-label fw-bold">Tipo de moneda*</label>
-                                            <select class="form-select">
-                                                <option selected>Bolivares</option>
-                                                <option>Dólares</option>
-                                                <option>Euros</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
+<script>
+    $(document).ready(function () {
+        $('#btnGuardarPagoCombinado').click(function () {
+            let ventaId = $('#ventaIdModal').val();
+            let totalVentaText = $('#totalVentaSpan').text();
+            let totalVenta = parseFloat(totalVentaText.replace(/[^0-9.-]+/g, "")) || 0;
+            totalVenta = redondear(totalVenta);
 
-                                <!-- Botón alineado a la izquierda -->
-                                <div class="row mb-3">
-                                    <div class="col-12">
-                                        <button type="button" class="btn btn-outline-success btn-md" id="btnAgregarMetodo">
-                                            + Agregar método
-                                        </button>
-                                    </div>
-                                </div>
+            function redondear(valor) {
+                return Math.round(valor * 100) / 100;
+            }
 
-                                <!-- Observaciones -->
-                                <div class="m-2">
-                                    <label for="observaciones" class="form-label fw-bold">Observaciones</label>
-                                    <textarea class="form-control" id="observaciones" rows="3" placeholder="Ingresa tu observación" style="resize: none; box-shadow: none; outline: none;"></textarea>
-                                </div>
-                            </div>
-                        </div>
+            let sumaMontos = 0;
+            let pagos = [];
 
+            $('.combinado-row').each(function () {
+                let metodoPagoId = $(this).find('.select1').val();
+                let monto = parseFloat($(this).find('.input1').val()) || 0;
 
+                monto = redondear(monto);
 
-                    </div>
-                    <!-- Botón de cerrar -->
-                    <button type="button" class="btn btn-secondary mt-3" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+                if (!esMontoValido(monto)) {
+                    console.error("Monto inválido");
+                    return;
+                }
 
+                if (metodoPagoId && monto > 0) {
+                    pagos.push({
+                        venta_id: ventaId,
+                        metodo_pago_id: metodoPagoId,
+                        monto: monto
+                    });
+                    sumaMontos += monto;
+                }
+            });
+
+            sumaMontos = redondear(sumaMontos);
+
+            console.log("ID de la venta:", ventaId);
+            console.log("Total de la venta:", totalVenta);
+            console.log("Suma de los montos ingresados:", sumaMontos);
+            console.log("Detalles de los pagos:", pagos);
+
+            if (sumaMontos !== totalVenta) {
+                console.warn("La suma de los pagos no coincide con el total de la venta.");
+            } else {
+                $.ajax({
+                    url: '/guardar-pagos-combinados', // Asegúrate de que esta ruta esté correcta
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}', // CSRF token para seguridad
+                        pagos: pagos // El array de pagos
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            // Mostrar alerta de éxito
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Éxito!',
+                                text: response.message, // Mensaje de éxito
+                                confirmButtonText: 'Aceptar'
+                            }).then(function() {
+                                // Recargar la página después de hacer clic en "Aceptar"
+                                location.reload(); // Recarga la página
+                            });
+                        } else {
+                            // Mostrar alerta de error
+                            Swal.fire({
+                                icon: 'error',
+                                title: '¡Error!',
+                                text: response.message || 'Hubo un error al guardar los pagos.',
+                                confirmButtonText: 'Aceptar'
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText); // Manejo de errores
+                        Swal.fire({
+                            icon: 'error',
+                            title: '¡Error!',
+                            text: 'Hubo un error en la conexión con el servidor.',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    }
+                });
+            }
+        });
+    });
+
+    function esMontoValido(monto) {
+        return /^\d+(\.\d{1,2})?$/.test(monto);
+    }
+</script>
 
 
 
@@ -550,191 +596,164 @@
 
 
 {{-- calcular las opciones rapidas --}}
-<script>
-    // Evento al abrir el segundo modal para generar montos sugeridos
-    $('#exampleModalToggle2').on('show.bs.modal', function () {
-        // Capturamos el total de la venta, eliminamos el símbolo '$' y lo convertimos a número
-        var totalVenta = parseFloat($('#totalVentaModal').text().replace('$', '').trim());
+    <script>
+        // Evento al abrir el segundo modal para generar montos sugeridos
+        $('#exampleModalToggle2').on('show.bs.modal', function () {
+            // Capturamos el total de la venta, eliminamos el símbolo '$' y lo convertimos a número
+            var totalVenta = parseFloat($('#totalVentaModal').text().replace('$', '').trim());
 
-        // Imprimir el valor de totalVenta en la consola
-        console.log('Total de la venta:', totalVenta);
+            // Imprimir el valor de totalVenta en la consola
+            console.log('Total de la venta:', totalVenta);
 
-        // Actualizar el span en la vista con el valor de totalVenta
-        $('#totalVentaSpan').text('$' + totalVenta.toFixed(2));  // Se muestra con el símbolo '$' y formato
+            // Actualizar el span en la vista con el valor de totalVenta
+            $('#totalVentaSpan').text('$' + totalVenta.toFixed(2));  // Se muestra con el símbolo '$' y formato
 
-        // Generar montos sugeridos basados en el total
-        var opciones = generarMontosRapidos(totalVenta);
+            // Generar montos sugeridos basados en el total
+            var opciones = generarMontosRapidos(totalVenta);
 
-        // Limpiar el contenedor de opciones rápidas
-        $('#opcionesRapidas').empty();
+            // Limpiar el contenedor de opciones rápidas
+            $('#opcionesRapidas').empty();
 
-        // Crear botones dinámicamente con las opciones generadas
-        opciones.forEach(function (monto) {
-            var boton = `<button type="button" class="btn btn-outline-secondary me-2 opcion-rapida">${monto.toFixed(2)}</button>`;
-            $('#opcionesRapidas').append(boton);
-        });
-    });
-
-    // Función para generar montos rápidos (menos 10% y 15%)
-    function generarMontosRapidos(total) {
-        var opciones = [];
-        opciones.push(total);              // Total exacto
-        opciones.push(total * 0.9);        // 10% menos
-        opciones.push(total * 0.85);       // 15% menos
-        return opciones;
-    }
-
-    // Evento para capturar clic en los botones de opciones rápidas
-    $(document).on('click', '.opcion-rapida', function () {
-        var valorSeleccionado = $(this).text(); // Capturar el valor del botón
-        var valorFormateado = parseFloat(valorSeleccionado).toFixed(2); // Asegurarnos de que tenga 2 decimales
-        $('#valorPago').val(valorFormateado); // Pasarlo al input
-    });
-
-    // Pasa los datos a los modales cuando se selecciona un método de pago
-    $('.payment-card-item').on('click', function () {
-        var methodId = $(this).data('method-id');
-        var methodName = $(this).data('method-name');
-        var totalFactura = $('#totalVentaModal').data('total'); // Captura con respaldo en el atributo data-total
-
-        // Captura el ID de la venta
-        var ventaId = $('#ventaIdModal').val();
-
-        // Verificación de totalFactura antes de asignar
-        if (totalFactura === undefined || totalFactura === null || isNaN(totalFactura)) {
-            totalFactura = $('#totalVentaModal').text().replace('$', '').trim(); // Captura desde el texto del DOM
-        }
-
-        // Asignar valores al segundo modal
-        $('#selectedPaymentMethod').text(methodName);
-        $('#paymentMethodId').val(methodId);
-        $('#ventaIdModal').val(ventaId);
-        $('#totalVentaModal').text('$' + parseFloat(totalFactura).toFixed(2));
-
-        // Debug en consola
-        console.log('Método de Pago:', methodName);
-        console.log('ID del Método:', methodId);
-        console.log('ID Venta:', ventaId);
-        console.log('Total de la Venta:', totalFactura);
-
-        // Mostrar el segundo modal
-        $('#exampleModalToggle2').modal('show');
-    });
-
-    // Manejo de la acción de guardar el pago
-    $('.btn-primary').on('click', function () {
-        // Recoger los datos del formulario
-        var monto = parseFloat($('#valorPago').val()).toFixed(2);
-        var ventaId = $('#ventaIdModal').val();
-        var metodoPagoId = $('#paymentMethodId').val();
-
-        // Validación antes de enviar la solicitud
-        if (!monto || !ventaId || !metodoPagoId) {
-            // Usar SweetAlert2 para el mensaje de error
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Por favor, complete todos los campos antes de guardar.'
+            // Crear botones dinámicamente con las opciones generadas
+            opciones.forEach(function (monto) {
+                var boton = `<button type="button" class="btn btn-outline-secondary me-2 opcion-rapida">${monto.toFixed(2)}</button>`;
+                $('#opcionesRapidas').append(boton);
             });
-            return; // Detener ejecución si falta algún dato
+        });
+
+        // Función para generar montos rápidos (menos 10% y 15%)
+        function generarMontosRapidos(total) {
+            var opciones = [];
+            opciones.push(total);              // Total exacto
+            opciones.push(total * 0.9);        // 10% menos
+            opciones.push(total * 0.85);       // 15% menos
+            return opciones;
         }
 
-        // Enviar los datos por AJAX
-        $.ajax({
-            url: '/venta/guardar-pago', // La ruta a la que se enviará la solicitud
-            method: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}', // Token CSRF de Laravel
-                venta_id: ventaId,
-                metodo_pago_id: metodoPagoId,
-                monto: monto
-            },
-            success: function (response) {
-                if (response.success) {
-                    // Usar SweetAlert2 para el mensaje de éxito
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Pago guardado correctamente.',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(function () {
-                        $('#exampleModalToggle2').modal('hide'); // Cerrar modal después de guardar
-                    });
-                } else {
-                    // Usar SweetAlert2 para el mensaje de error
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error al guardar el pago',
-                        text: response.message
-                    });
-                }
-            },
-            error: function (xhr, status, error) {
-                console.log('Error en la solicitud:', error); // Imprimir error
-                // Usar SweetAlert2 para el mensaje de error AJAX
+        // Evento para capturar clic en los botones de opciones rápidas
+        $(document).on('click', '.opcion-rapida', function () {
+            var valorSeleccionado = $(this).text(); // Capturar el valor del botón
+            var valorFormateado = parseFloat(valorSeleccionado).toFixed(2); // Asegurarnos de que tenga 2 decimales
+            $('#valorPago').val(valorFormateado); // Pasarlo al input
+        });
+
+        // Pasa los datos a los modales cuando se selecciona un método de pago
+        $('.payment-card-item').on('click', function () {
+            var methodId = $(this).data('method-id');
+            var methodName = $(this).data('method-name');
+            var totalFactura = $('#totalVentaModal').data('total'); // Captura con respaldo en el atributo data-total
+
+            // Captura el ID de la venta
+            var ventaId = $('#ventaIdModal').val();
+
+            // Verificación de totalFactura antes de asignar
+            if (totalFactura === undefined || totalFactura === null || isNaN(totalFactura)) {
+                totalFactura = $('#totalVentaModal').text().replace('$', '').trim(); // Captura desde el texto del DOM
+            }
+
+            // Asignar valores al segundo modal
+            $('#selectedPaymentMethod').text(methodName);
+            $('#paymentMethodId').val(methodId);
+            $('#ventaIdModal').val(ventaId);
+            $('#totalVentaModal').text('$' + parseFloat(totalFactura).toFixed(2));
+
+            // Debug en consola
+            console.log('Método de Pago:', methodName);
+            console.log('ID del Método:', methodId);
+            console.log('ID Venta:', ventaId);
+            console.log('Total de la Venta:', totalFactura);
+
+            // Mostrar el segundo modal
+            $('#exampleModalToggle2').modal('show');
+        });
+
+        // Manejo de la acción de guardar el pago
+        $('.btn-primary').on('click', function () {
+            // Recoger los datos del formulario
+            var monto = parseFloat($('#valorPago').val()).toFixed(2);
+            var ventaId = $('#ventaIdModal').val();
+            var metodoPagoId = $('#paymentMethodId').val();
+
+            // Validación antes de enviar la solicitud
+            if (!monto || !ventaId || !metodoPagoId) {
+                // Usar SweetAlert2 para el mensaje de error
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error en la solicitud',
-                    text: 'Hubo un problema el campo valor de pago no puede estar vacio.'
+                    title: 'Oops...',
+                    text: 'Por favor, complete todos los campos antes de guardar.'
                 });
+                return; // Detener ejecución si falta algún dato
             }
-        });
-    });
-</script>
 
-
-
-
-    {{-- pasa los datos a los modales  --}}
-    <script>
-       $('.payment-card-item').on('click', function () {
-        var methodId = $(this).data('method-id');
-        var methodName = $(this).data('method-name');
-        var totalFactura = $('#totalVentaModal').data('total'); // Captura con respaldo en el atributo data-total
-
-        // Captura el ID de la venta
-        var ventaId = $('#ventaIdModal').val();
-
-        // Verificación de totalFactura antes de asignar
-        if (totalFactura === undefined || totalFactura === null || isNaN(totalFactura)) {
-            totalFactura = $('#totalVentaModal').text().replace('$', '').trim(); // Captura desde el texto del DOM
-        }
-
-        // Asignar valores al segundo modal
-        $('#selectedPaymentMethod').text(methodName);
-        $('#paymentMethodId').val(methodId);
-        $('#ventaIdModal').val(ventaId);
-        $('#totalVentaModal').text('$' + parseFloat(totalFactura).toFixed(2));
-
-        // Debug en consola
-        console.log('Método de Pago:', methodName);
-        console.log('ID del Método:', methodId);
-        console.log('ID Venta:', ventaId);
-        console.log('Total de la Venta:', totalFactura);
-
-        // Mostrar el segundo modal
-        $('#exampleModalToggle2').modal('show');
-    });
-
-    </script>
-
- <!-- Script para clonar solo una fila -->
-    <script>
-        $(document).ready(function () {
-            $('#btnAgregarMetodo').click(function () {
-                // Clonar solo la primera fila (con la clase 'metodo-row')
-                var clonedRow = $('.metodo-row').first().clone();
-
-                // Limpiar los campos de la fila clonada
-                clonedRow.find('input').val(''); // Limpia los inputs
-                clonedRow.find('select').prop('selectedIndex', 0); // Resetea selects al primer valor
-
-                // Agregar la fila clonada al contenedor
-                $('#metodoPagoContainer').append(clonedRow);
+            // Enviar los datos por AJAX
+            $.ajax({
+                url: '/venta/guardar-pago', // La ruta a la que se enviará la solicitud
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}', // Token CSRF de Laravel
+                    venta_id: ventaId,
+                    metodo_pago_id: metodoPagoId,
+                    monto: monto
+                },
+                success: function (response) {
+                    if (response.success) {
+                        // Usar SweetAlert2 para el mensaje de éxito
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Pago guardado correctamente.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(function () {
+                            location.reload();  // Cerrar modal después de guardar
+                        });
+                    } else {
+                        // Usar SweetAlert2 para el mensaje de error
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al guardar el pago',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error en la solicitud:', error); // Imprimir error
+                    // Usar SweetAlert2 para el mensaje de error AJAX
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error en la solicitud',
+                        text: 'Hubo un problema el campo valor de pago no puede estar vacio.'
+                    });
+                }
             });
         });
     </script>
 
+    {{-- para cambiar entre metodo normal y combinado --}}
+    <script>
+        // Evento cuando se selecciona un método de pago
+        $('.payment-card-item').on('click', function () {
+            var methodId = $(this).data('method-id');    // ID del método de pago
+            var methodName = $(this).data('method-name'); // Nombre del método de pago
+
+            // Mostrar el método de pago seleccionado
+            $('#selectedPaymentMethod').text(methodName);
+            $('#paymentMethodId').val(methodId);
+
+            // Lógica para mostrar u ocultar contenido según el método seleccionado
+            if (methodName === 'Combinado') {
+                $('#combinadoFields').show();     // Mostrar el bloque combinado
+                $('.regular-fields').hide();      // Ocultar el bloque regular
+            } else {
+                $('#combinadoFields').hide();     // Ocultar el bloque combinado
+                $('.regular-fields').show();      // Mostrar el bloque regular
+            }
+
+            // Mostrar el modal secundario
+            $('#exampleModalToggle2').modal('show');
+        });
+
+
+    </script>
 
     {{-- guarda en la base de datos ventas y detalle venta, me abre el modal ni loco se elimina --}}
     <script>
@@ -829,6 +848,38 @@
                 }
             });
         }
+
+    </script>
+
+
+    {{-- crea las filas del metodo combinado --}}
+    <script>
+        $(document).ready(function () {
+            // Botón para agregar una nueva fila
+            $(document).on('click', '.btn-add', function () {
+                // Clona la fila de campos
+                var newRow = $(this).closest('.card-body').find('.combinado-row:first').clone();
+
+                // Limpia los valores de los campos en la nueva fila
+                newRow.find('select').val('');
+                newRow.find('input').val('');
+
+                // Agrega la nueva fila al contenedor
+                $(this).closest('.card-body').find('.combinado-row:last').after(newRow);
+            });
+
+            // Botón para eliminar una fila
+            $(document).on('click', '.btn-remove', function () {
+                // Verifica si hay más de una fila antes de eliminar
+                var rowCount = $(this).closest('.card-body').find('.combinado-row').length;
+                if (rowCount > 1) {
+                    $(this).closest('.combinado-row').remove(); // Elimina la fila
+                } else {
+                    alert('No puedes eliminar todas las filas.');
+                }
+            });
+        });
+
 
     </script>
 

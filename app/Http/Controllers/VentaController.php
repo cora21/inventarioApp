@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Models\Almacen;
 use App\Models\Categoria;
 use App\Models\Color;
@@ -12,6 +13,7 @@ use App\Models\MetodoPago;
 use App\Models\Venta;
 use App\Models\DetalleVenta;
 use App\models\DetallePago;
+use Illuminate\Support\Facades\DB;
 
 class VentaController extends Controller
 {
@@ -99,7 +101,7 @@ public function registrarDetallesVenta(Request $request){
 public function guardarPago(Request $request)
     {
         try {
-            // Guardar el pago sin validación previa
+            // Lógica para guardar el pago
             $detallePago = new DetallePago();
             $detallePago->venta_id = $request->venta_id;
             $detallePago->metodo_pago_id = $request->metodo_pago_id;
@@ -107,13 +109,67 @@ public function guardarPago(Request $request)
             $detallePago->save();
 
             // Responder con éxito
-            return response()->json(['success' => true, 'message' => 'Pago guardado correctamente.']);
+            return response()->json([
+                'success' => true,
+                'message' => 'Pago guardado correctamente.'
+            ]);
         } catch (\Exception $e) {
-            // En caso de error, capturar y mostrar el mensaje de error
+            // Puedes registrar el error para fines de depuración si lo necesitas
             Log::error('Error al guardar el pago: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Hubo un error al guardar el pago.', 'error' => $e->getMessage()]);
+
+            // Responder con un mensaje genérico sin detalles del error
+            return response()->json([
+                'success' => false,
+                'message' => 'Hubo un error al guardar el pago.'
+            ]);
         }
     }
+
+   public function guardarPagosCombinados(Request $request)
+{
+    try {
+        // Iniciar una transacción para asegurar que todos los pagos se guarden correctamente
+        DB::beginTransaction();
+
+        // Obtener el array de pagos desde la solicitud
+        $pagos = $request->input('pagos');
+
+        // Recorrer el array de pagos y guardarlos
+        foreach ($pagos as $pago) {
+            // Guardar el pago en la tabla detalles_pagos
+            DetallePago::create([
+                'venta_id' => $pago['venta_id'],
+                'metodo_pago_id' => $pago['metodo_pago_id'],
+                'monto' => $pago['monto']
+            ]);
+        }
+
+        // Confirmar la transacción si no hubo errores
+        DB::commit();
+
+        // Responder con éxito
+        return response()->json([
+            'success' => true,
+            'message' => 'Pagos guardados correctamente.'
+        ]);
+    } catch (\Exception $e) {
+        // Revertir la transacción si hubo un error
+        DB::rollback();
+
+        // Log del error
+        Log::error('Error al guardar los pagos combinados: ' . $e->getMessage());
+
+        // Responder con un error
+        return response()->json([
+            'success' => false,
+            'message' => 'Hubo un error al guardar los pagos.',
+            'error' => $e->getMessage()
+        ]);
+    }
+}
+
+
+
 
 
 }
