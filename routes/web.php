@@ -67,7 +67,7 @@ Route::post('/venta/eliminar', [VentaController::class, 'eliminarProducto'])->na
 Route::post('/venta/registrar', [VentaController::class, 'registrarVenta'])->name('venta.registrar');
 Route::post('/venta/detalles', [VentaController::class, 'registrarDetallesVenta'])->name('venta.detalles');
 Route::post('/venta/guardar-pago', [VentaController::class, 'guardarPago'])->name('venta.guardarPago');
-Route::post('/guardar-pagos-combinados', [VentaController::class, 'guardarPagosCombinados'])->name('venta.guardarPagosCombinados');
+Route::post('/venta/guardar-pagos-combinados', [VentaController::class, 'guardarPagosCombinados'])->name('venta.guardarPagosCombinados');
 
 
 

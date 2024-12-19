@@ -1,6 +1,14 @@
 @extends('layouts.app')
 @section('nombreBarra', 'Facturar')
+{{--
+        OJOOOOOOOO
+        totalDescontable es el total original recuerdalooooooooooooooooo
 
+
+        de donde eliminaremos es de cantidadDisponibleProducto
+
+        SUPER OJOOOOOOOO
+--}}
 
 
 @section('title', 'Ventas')
@@ -63,7 +71,7 @@
 @section('contenido')
     <div class="container">
         <div class="row response">
-            <div class="col-12 col-md-12 border" style="height: 400px; background-color: rgb(215, 224, 227);">
+            <div class="col-12 col-md-12 border" style="height: 500px; background-color: rgb(215, 224, 227);">
                 <div class="py-4">
                     <div class="input-group mb-3">
                         <span class="input-group-text border-success" style="background-color: rgb(189, 225, 201)"
@@ -77,7 +85,7 @@
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                            <div class="table-responsive" style="max-height: 350px; overflow-y: auto;">
                                 <table class="table w-100">
                                     <thead style="position: sticky; top: 0; z-index: 100;">
                                         <tr style="background-color: rgb(212, 212, 212);">
@@ -120,15 +128,17 @@
                                                         Sin colores disponibles
                                                     @endif
                                                 </td>
+                                                <!-- En el primer div, donde el usuario agrega productos -->
                                                 <td style="position: relative;">
-                                                    <form action="{{ route('venta.agregar') }}" method="POST"
-                                                        style="display: inline;">
-                                                        @csrf
-                                                        <input type="hidden" name="producto_id"
-                                                            value="{{ $producto->id }}">
-                                                        <button type="submit"
-                                                            class="btn btn-success btn-sm">Agregar</button>
-                                                    </form>
+                                                    <div>
+                                                        <form action="{{ route('venta.agregar') }}" method="POST" style="display: inline;">
+                                                            @csrf
+                                                            <input type="hidden" name="producto_id" value="{{ $producto->id }}">
+                                                            <button type="submit" class="btn btn-success btn-sm btn-agregar" id="btn-agregar-{{ $producto->id }}" data-id="{{ $producto->id }}">
+                                                                Agregar
+                                                            </button>
+                                                        </form>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -480,105 +490,185 @@
     </div>
 
     {{-- final del segundo modal --}}
-
-{{-- guardar en metodo combinado --}}
-
-<script>
-    $(document).ready(function () {
-        $('#btnGuardarPagoCombinado').click(function () {
-            let ventaId = $('#ventaIdModal').val();
-            let totalVentaText = $('#totalVentaSpan').text();
-            let totalVenta = parseFloat(totalVentaText.replace(/[^0-9.-]+/g, "")) || 0;
-            totalVenta = redondear(totalVenta);
-
-            function redondear(valor) {
-                return Math.round(valor * 100) / 100;
-            }
-
-            let sumaMontos = 0;
-            let pagos = [];
-
-            $('.combinado-row').each(function () {
-                let metodoPagoId = $(this).find('.select1').val();
-                let monto = parseFloat($(this).find('.input1').val()) || 0;
-
-                monto = redondear(monto);
-
-                if (!esMontoValido(monto)) {
-                    console.error("Monto inválido");
-                    return;
-                }
-
-                if (metodoPagoId && monto > 0) {
-                    pagos.push({
-                        venta_id: ventaId,
-                        metodo_pago_id: metodoPagoId,
-                        monto: monto
-                    });
-                    sumaMontos += monto;
-                }
+    <script>
+            document.querySelectorAll('.cantidad').forEach(input => {
+            input.addEventListener('input', () => {
+                console.log(input.value);  // Imprime el valor del input en la consola
             });
+        });
+    </script>
 
-            sumaMontos = redondear(sumaMontos);
+     {{-- calculo del precio total --}}
+    {{-- hace de todo, aumenta el valor, multiplica elimina con el menos de todo --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const totalFacturaSpan = document.getElementById('totalFactura');
+            const totalProductosSpan = document.getElementById('totalProductos');
 
-            console.log("ID de la venta:", ventaId);
-            console.log("Total de la venta:", totalVenta);
-            console.log("Suma de los montos ingresados:", sumaMontos);
-            console.log("Detalles de los pagos:", pagos);
+            // Función para actualizar el total general en el botón "Vender"
+            function calcularTotal() {
+                const montoInputs = document.querySelectorAll('.monto');
+                let total = 0;
 
-            if (sumaMontos !== totalVenta) {
-                console.warn("La suma de los pagos no coincide con el total de la venta.");
-            } else {
-                $.ajax({
-                    url: '/guardar-pagos-combinados', // Asegúrate de que esta ruta esté correcta
-                    type: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}', // CSRF token para seguridad
-                        pagos: pagos // El array de pagos
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            // Mostrar alerta de éxito
-                            Swal.fire({
-                                icon: 'success',
-                                title: '¡Éxito!',
-                                text: response.message, // Mensaje de éxito
-                                confirmButtonText: 'Aceptar'
-                            }).then(function() {
-                                // Recargar la página después de hacer clic en "Aceptar"
-                                location.reload(); // Recarga la página
-                            });
-                        } else {
-                            // Mostrar alerta de error
-                            Swal.fire({
-                                icon: 'error',
-                                title: '¡Error!',
-                                text: response.message || 'Hubo un error al guardar los pagos.',
-                                confirmButtonText: 'Aceptar'
-                            });
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error(xhr.responseText); // Manejo de errores
-                        Swal.fire({
-                            icon: 'error',
-                            title: '¡Error!',
-                            text: 'Hubo un error en la conexión con el servidor.',
-                            confirmButtonText: 'Aceptar'
-                        });
+                montoInputs.forEach(input => {
+                    const valor = parseFloat(input.value.replace('$', '').trim());
+                    if (!isNaN(valor)) {
+                        total += valor;
                     }
                 });
+
+                totalFacturaSpan.textContent = `$${total.toFixed(2)}`;
             }
+
+            // Función para contar el número total de productos seleccionados
+            function contarProductos() {
+                const cantidadInputs = document.querySelectorAll('.cantidad');
+                let totalProductos = 0;
+
+                cantidadInputs.forEach(input => {
+                    const cantidad = parseInt(input.value) || 0;
+                    totalProductos += cantidad;
+                });
+
+                totalProductosSpan.textContent = `${totalProductos} productos`;
+            }
+
+            // Manejar cambio en el select de colores
+            document.querySelectorAll('.select-color').forEach(select => {
+                select.addEventListener('change', () => {
+                    const productoRow = select.closest('tr'); // Encuentra la fila del producto
+                    const cantidadInput = productoRow.querySelector(
+                    '.cantidad'); // Encuentra el campo de cantidad
+                    cantidadInput.value = 1; // Restablece el valor a 1
+                    actualizarMonto(productoRow); // Actualiza el monto al cambiar el color
+                    calcularTotal(); // Recalcula el total general
+                    contarProductos(); // Actualiza el conteo de productos
+                });
+            });
+
+            // Manejar clic en botones de restar
+            document.querySelectorAll('.restar').forEach(button => {
+            button.addEventListener('click', () => {
+                const input = button.parentElement.querySelector('.cantidad');
+                let currentValue = parseInt(input.value) || 1;
+
+                if (currentValue > 1) {
+                    input.value = currentValue - 1;
+                } else if (currentValue === 1) {
+                    eliminarProductoConAjax(button);
+                }
+
+                // Actualizar monto
+                const productoRow = button.closest('tr');
+                actualizarMonto(productoRow);
+                calcularTotal(); // Recalcula el total general
+                contarProductos(); // Actualiza el conteo de productos
+            });
         });
-    });
-
-    function esMontoValido(monto) {
-        return /^\d+(\.\d{1,2})?$/.test(monto);
-    }
-</script>
 
 
 
+            // Manejar clic en botones de sumar
+            document.querySelectorAll('.sumar').forEach(button => {
+            button.addEventListener('click', () => {
+                const input = button.parentElement.querySelector('.cantidad');
+                const maxUnidades = obtenerMaxUnidades(button);
+                let currentValue = parseInt(input.value) || 1;
+                let totalCantidad = 0;
+                // Calcular la suma total de las cantidades de filas con el mismo data-id
+                const productoId = button.getAttribute('data-id'); // Obtenemos el ID del producto
+                document.querySelectorAll(`.cantidad`).forEach(input => {
+                    const inputId = input.parentElement.querySelector('.sumar').getAttribute('data-id');
+                    if (inputId === productoId) {
+                        totalCantidad += parseInt(input.value) || 0;
+                    }
+                });
+
+                console.log(`${totalCantidad}`);
+                if (currentValue < maxUnidades && totalCantidad < maxUnidades){
+                    input.value = currentValue + 1;
+                } else {
+                    alert(
+                        `No puedes seleccionar más de ${maxUnidades} unidades de este producto.`
+                    );
+                }
+
+                // Actualizar monto
+                const productoRow = button.closest('tr');
+                actualizarMonto(productoRow);
+                calcularTotal(); // Recalcula el total general
+                contarProductos(); // Actualiza el conteo de productos
+            });
+        });
+
+
+
+
+
+            // Manejar clic en el ícono de eliminar
+            document.querySelectorAll('.eliminar-producto').forEach(icon => {
+                icon.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    eliminarProductoConAjax(icon);
+                });
+            });
+
+            // Función para obtener el máximo de unidades disponibles
+            function obtenerMaxUnidades(button) {
+                const productoRow = button.closest('tr');
+                const unidadesInput = productoRow.querySelector('[id^="unidades-"]');
+                return parseInt(unidadesInput.value) || 0;
+            }
+
+            // Función para eliminar el producto mediante AJAX
+            function eliminarProductoConAjax(element) {
+                const productoId = element.getAttribute('data-id');
+
+                fetch("{{ route('venta.eliminar') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            producto_id: productoId
+                        })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('No se pudo eliminar el producto.');
+                        }
+                        return response.json();
+                    })
+                    .then(() => {
+                        const productoRow = element.closest('tr');
+                        productoRow.remove(); // Elimina la fila
+                        calcularTotal(); // Recalcula el total general
+                        contarProductos(); // Actualiza el conteo de productos
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+
+            // Función para actualizar el monto del producto
+            function actualizarMonto(productoRow) {
+                const precioUnitario = parseFloat(productoRow.querySelector('small').textContent.replace('$', '')
+                    .trim());
+                const cantidadInput = productoRow.querySelector('.cantidad');
+                const cantidad = parseInt(cantidadInput.value) || 1;
+                const monto = precioUnitario * cantidad;
+
+                // Actualizamos el campo de monto
+                const montoInput = productoRow.querySelector('.monto');
+                montoInput.value = `$${monto.toFixed(2)}`;
+            }
+
+            // Inicializar el total y conteo al cargar la página
+            calcularTotal();
+            contarProductos();
+        });
+    </script>
 
 
 
@@ -588,14 +678,89 @@
 
 
 
+{{-- guardar en metodo combinado tiene ajax--}}
+    <script>
+        $(document).ready(function () {
+            $('#btnGuardarPagoCombinado').click(function () {
+                let ventaId = $('#ventaIdModal').val();
+                let totalVentaText = $('#totalVentaSpan').text();
+                let totalVenta = parseFloat(totalVentaText.replace(/[^0-9.-]+/g, "")) || 0;
+                totalVenta = redondear(totalVenta);
+
+                function redondear(valor) {
+                    return Math.round(valor * 100) / 100;
+                }
+
+                let sumaMontos = 0;
+                let pagos = [];
+
+                $('.combinado-row').each(function () {
+                    let metodoPagoId = $(this).find('.select1').val();
+                    let monto = parseFloat($(this).find('.input1').val()) || 0;
+
+                    monto = redondear(monto);
+
+                    if (!esMontoValido(monto)) {
+                        console.error("Monto inválido");
+                        return;
+                    }
+
+                    if (metodoPagoId && monto > 0) {
+                        pagos.push({
+                            venta_id: ventaId,
+                            metodo_pago_id: metodoPagoId,
+                            monto: monto
+                        });
+                        sumaMontos += monto;
+                    }
+                });
+
+                sumaMontos = redondear(sumaMontos);
+
+                console.log("ID de la venta:", ventaId);
+                console.log("Total de la venta:", totalVenta);
+                console.log("Suma de los montos ingresados:", sumaMontos);
+                console.log("Detalles de los pagos:", pagos);
+
+                if (sumaMontos !== totalVenta) {
+                    console.warn("La suma de los pagos no coincide con el total de la venta.");
+                } else {
+                    $.ajax({
+                        url: 'venta/guardar-pagos-combinados', // Asegúrate de que esta ruta esté correcta
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}', // CSRF token para seguridad
+                            pagos: pagos // El array de pagos
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                // Mostrar alerta de éxito
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '¡Éxito!',
+                                    text: response.message, // Mensaje de éxito
+                                    confirmButtonText: 'Aceptar'
+                                }).then(function() {
+                                    // Recargar la página después de hacer clic en "Aceptar"
+                                    location.reload(); // Recarga la página
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText); // Manejo de errores
+                        }
+                    });
+                }
+            });
+        });
+
+        function esMontoValido(monto) {
+            return /^\d+(\.\d{1,2})?$/.test(monto);
+        }
+    </script>
 
 
-
-
-
-
-
-{{-- calcular las opciones rapidas --}}
+{{-- calcular las opciones rapidas tiene ajax guarda pagos individuales--}}
     <script>
         // Evento al abrir el segundo modal para generar montos sugeridos
         $('#exampleModalToggle2').on('show.bs.modal', function () {
@@ -676,12 +841,7 @@
 
             // Validación antes de enviar la solicitud
             if (!monto || !ventaId || !metodoPagoId) {
-                // Usar SweetAlert2 para el mensaje de error
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Por favor, complete todos los campos antes de guardar.'
-                });
+                console.log('Por favor, complete todos los campos antes de guardar.');
                 return; // Detener ejecución si falta algún dato
             }
 
@@ -697,36 +857,26 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        // Usar SweetAlert2 para el mensaje de éxito
+                        // Mostrar alerta de éxito con SweetAlert2
                         Swal.fire({
                             icon: 'success',
                             title: 'Pago guardado correctamente.',
                             showConfirmButton: false,
                             timer: 1500
                         }).then(function () {
-                            location.reload();  // Cerrar modal después de guardar
+                            location.reload(); // Recargar la página después de guardar
                         });
                     } else {
-                        // Usar SweetAlert2 para el mensaje de error
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error al guardar el pago',
-                            text: response.message
-                        });
+                        console.log('Error al guardar el pago:', response.message);
                     }
                 },
                 error: function (xhr, status, error) {
-                    console.log('Error en la solicitud:', error); // Imprimir error
-                    // Usar SweetAlert2 para el mensaje de error AJAX
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error en la solicitud',
-                        text: 'Hubo un problema el campo valor de pago no puede estar vacio.'
-                    });
+                    console.error('Error en la solicitud:', error); // Imprimir error en consola
                 }
             });
         });
     </script>
+
 
     {{-- para cambiar entre metodo normal y combinado --}}
     <script>
@@ -883,160 +1033,7 @@
 
     </script>
 
-    {{-- calculo del precio total --}}
-    {{-- hace de todo, aumenta el valor, multiplica elimina con el menos de todo --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const totalFacturaSpan = document.getElementById('totalFactura');
-            const totalProductosSpan = document.getElementById('totalProductos');
 
-            // Función para actualizar el total general en el botón "Vender"
-            function calcularTotal() {
-                const montoInputs = document.querySelectorAll('.monto');
-                let total = 0;
-
-                montoInputs.forEach(input => {
-                    const valor = parseFloat(input.value.replace('$', '').trim());
-                    if (!isNaN(valor)) {
-                        total += valor;
-                    }
-                });
-
-                totalFacturaSpan.textContent = `$${total.toFixed(2)}`;
-            }
-
-            // Función para contar el número total de productos seleccionados
-            function contarProductos() {
-                const cantidadInputs = document.querySelectorAll('.cantidad');
-                let totalProductos = 0;
-
-                cantidadInputs.forEach(input => {
-                    const cantidad = parseInt(input.value) || 0;
-                    totalProductos += cantidad;
-                });
-
-                totalProductosSpan.textContent = `${totalProductos} productos`;
-            }
-
-            // Manejar cambio en el select de colores
-            document.querySelectorAll('.select-color').forEach(select => {
-                select.addEventListener('change', () => {
-                    const productoRow = select.closest('tr'); // Encuentra la fila del producto
-                    const cantidadInput = productoRow.querySelector(
-                    '.cantidad'); // Encuentra el campo de cantidad
-                    cantidadInput.value = 1; // Restablece el valor a 1
-                    actualizarMonto(productoRow); // Actualiza el monto al cambiar el color
-                    calcularTotal(); // Recalcula el total general
-                    contarProductos(); // Actualiza el conteo de productos
-                });
-            });
-
-            // Manejar clic en botones de restar
-            document.querySelectorAll('.restar').forEach(button => {
-                button.addEventListener('click', () => {
-                    const input = button.parentElement.querySelector('.cantidad');
-                    let currentValue = parseInt(input.value) || 1;
-
-                    if (currentValue > 1) {
-                        input.value = currentValue - 1;
-                    } else if (currentValue === 1) {
-                        eliminarProductoConAjax(button);
-                    }
-
-                    // Actualizar monto
-                    const productoRow = button.closest('tr');
-                    actualizarMonto(productoRow);
-                    calcularTotal(); // Recalcula el total general
-                    contarProductos(); // Actualiza el conteo de productos
-                });
-            });
-
-            // Manejar clic en botones de sumar
-            document.querySelectorAll('.sumar').forEach(button => {
-                button.addEventListener('click', () => {
-                    const input = button.parentElement.querySelector('.cantidad');
-                    const maxUnidades = obtenerMaxUnidades(button);
-                    let currentValue = parseInt(input.value) || 1;
-
-                    if (currentValue < maxUnidades) {
-                        input.value = currentValue + 1;
-                    } else {
-                        alert(
-                            `No puedes seleccionar más de ${maxUnidades} unidades de este producto.`);
-                    }
-
-                    // Actualizar monto
-                    const productoRow = button.closest('tr');
-                    actualizarMonto(productoRow);
-                    calcularTotal(); // Recalcula el total general
-                    contarProductos(); // Actualiza el conteo de productos
-                });
-            });
-
-            // Manejar clic en el ícono de eliminar
-            document.querySelectorAll('.eliminar-producto').forEach(icon => {
-                icon.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    eliminarProductoConAjax(icon);
-                });
-            });
-
-            // Función para obtener el máximo de unidades disponibles
-            function obtenerMaxUnidades(button) {
-                const productoRow = button.closest('tr');
-                const unidadesInput = productoRow.querySelector('[id^="unidades-"]');
-                return parseInt(unidadesInput.value) || 0;
-            }
-
-            // Función para eliminar el producto mediante AJAX
-            function eliminarProductoConAjax(element) {
-                const productoId = element.getAttribute('data-id');
-
-                fetch("{{ route('venta.eliminar') }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            producto_id: productoId
-                        })
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('No se pudo eliminar el producto.');
-                        }
-                        return response.json();
-                    })
-                    .then(() => {
-                        const productoRow = element.closest('tr');
-                        productoRow.remove(); // Elimina la fila
-                        calcularTotal(); // Recalcula el total general
-                        contarProductos(); // Actualiza el conteo de productos
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            }
-
-            // Función para actualizar el monto del producto
-            function actualizarMonto(productoRow) {
-                const precioUnitario = parseFloat(productoRow.querySelector('small').textContent.replace('$', '')
-                    .trim());
-                const cantidadInput = productoRow.querySelector('.cantidad');
-                const cantidad = parseInt(cantidadInput.value) || 1;
-                const monto = precioUnitario * cantidad;
-
-                // Actualizamos el campo de monto
-                const montoInput = productoRow.querySelector('.monto');
-                montoInput.value = `$${monto.toFixed(2)}`;
-            }
-
-            // Inicializar el total y conteo al cargar la página
-            calcularTotal();
-            contarProductos();
-        });
-    </script>
 
     {{-- para eliminar los productos en el segundo div --}}
     <script>

@@ -60,6 +60,10 @@ class VentaController extends Controller
         return redirect()->route('venta.index')->with('mensaje', 'Producto agregado temporalmente.');
     }
 
+
+
+
+
     public function eliminarProducto(Request $request){
     $request->validate([
         'producto_id' => 'required|exists:productos,id',
@@ -73,6 +77,9 @@ class VentaController extends Controller
 }
 
 
+
+
+
 // Paso 1: Registrar la venta
 public function registrarVenta(Request $request){
     $venta = Venta::create([
@@ -80,6 +87,10 @@ public function registrarVenta(Request $request){
     ]);
     return response()->json(['venta_id' => $venta->id], 201);
 }
+
+
+
+
 
 // Paso 2: Registrar los detalles de la venta
 public function registrarDetallesVenta(Request $request){
@@ -98,8 +109,9 @@ public function registrarDetallesVenta(Request $request){
 }
 
 
-public function guardarPago(Request $request)
-    {
+
+
+public function guardarPago(Request $request){
         try {
             // Lógica para guardar el pago
             $detallePago = new DetallePago();
@@ -120,8 +132,11 @@ public function guardarPago(Request $request)
             // Responder con un mensaje genérico sin detalles del error
             return response()->json([
                 'success' => false,
-                'message' => 'Hubo un error al guardar el pago.'
+                'messageGenerico' => 'Hubo un error al guardar el pago.'
             ]);
+        }finally {
+            // Eliminar la sesión 'venta' al final de la función
+            session()->forget('productos_agregados');
         }
     }
 
@@ -165,11 +180,15 @@ public function guardarPago(Request $request)
             'message' => 'Hubo un error al guardar los pagos.',
             'error' => $e->getMessage()
         ]);
+    } finally {
+        // Eliminar la sesión 'venta' al final de la función
+        session()->forget('productos_agregados');
     }
 }
-
-
-
-
-
 }
+
+
+
+
+
+

@@ -20,8 +20,11 @@ class Producto extends Model
         'cantidadDisponibleProducto',
         'precioUnitarioProducto',
         'precioTotal',
+        'totalDescontable',
     ];
-
+    public function setTotalDescontableAttribute($value){
+    $this->attributes['totalDescontable'] = $this->cantidadDisponibleProducto;
+}
         public function categoria(){
         return $this->belongsTo(Categoria::class, 'categoria_id');
     }
@@ -49,6 +52,6 @@ class Producto extends Model
     public function imagenes(){
         return $this->hasMany(Imagen::class);
     }
-    
+
 
 }

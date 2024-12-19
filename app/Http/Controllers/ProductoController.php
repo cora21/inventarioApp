@@ -51,10 +51,9 @@ class ProductoController extends Controller{
             'almacen_id.required' => 'Este campo es obligatorio.',
             'cantidadDisponibleProducto.required' => 'Este campo es obligatorio.',
             'cantidadDisponibleProducto.integer' => 'Este campo debe contener números.',
-            'precioUnitarioProducto.required' => 'Este campo es obligatorio.',
         ]);
 
-        // Crear el producto manualmente
+       // Crear el producto manualmente
         $producto = new Producto();
         $producto->nombreProducto = $validated['nombreProducto'];
         $producto->marcaProducto = $validated['marcaProducto'];
@@ -64,6 +63,8 @@ class ProductoController extends Controller{
         $producto->proveedor_id = $validated['proveedor_id'];
         $producto->almacen_id = $validated['almacen_id'];
         $producto->cantidadDisponibleProducto = $validated['cantidadDisponibleProducto'];
+        // Asigna el valor de cantidadDisponibleProducto a totalDescontable
+        $producto->totalDescontable = $validated['cantidadDisponibleProducto'];  // Aquí lo asignamos
         $producto->precioUnitarioProducto = $validated['precioUnitarioProducto'];
         $producto->precioTotal = $validated['precioTotal'];
         $producto->save(); // Guarda el producto en la base de datos
@@ -74,6 +75,9 @@ class ProductoController extends Controller{
         // Redirigir al índice de productos con un mensaje de éxito
         return redirect()->route('producto.index')->with('success', 'Producto creado exitosamente.');
     }
+
+
+
     public function show($id){
         $almacen = Almacen::find($id);
         $categoria = Categoria::all();

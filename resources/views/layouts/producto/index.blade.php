@@ -176,10 +176,11 @@
                                         </div>
                                         @enderror
                                 </div>
+                                <input type="hidden" name="totalDescontable">
                                 <div class="col-md-4">
                                     <label for="" class="form-label">Precio Unitario:</label><span
                                         class="text-danger" style="font-size: 1.2rem;"> * </span>
-                                    <input type="text" step="0.01" name="precioUnitarioProducto"
+                                    <input type="number"  name="precioUnitarioProducto"
                                         class="form-control @error('precioUnitarioProducto') is-invalid @enderror" id="precioUnitarioProducto"
                                         oninput="formatDecimal(this); calcularPrecioTotal()">
                                         @error('precioUnitarioProducto')
@@ -229,20 +230,34 @@
                     </script>
                     <script>
                         function formatDecimal(input) {
-                            // Elimina cualquier carácter no numérico excepto el punto
-                            let value = input.value.replace(/[^0-9.]/g, "");
+                            // Obtener el valor ingresado
+                            let value = input.value;
 
-                            // Convierte el valor en un número flotante
+                            // Elimina cualquier carácter no numérico, excepto los números
+                            value = value.replace(/[^0-9]/g, "");
+
+                            // Si el valor tiene menos de 2 dígitos, se agrega un "0." al inicio
+                            if (value.length === 1) {
+                                value = '0.0' + value; // Lo convierte en un número con un decimal
+                            } else if (value.length === 2) {
+                                value = '0.' + value; // Lo convierte en un número con dos decimales
+                            } else if (value.length > 2) {
+                                value = value.substring(0, value.length - 2) + '.' + value.substring(value.length - 2);
+                            }
+
+                            // Convertir a flotante para asegurar la conversión adecuada
                             let number = parseFloat(value);
 
-                            // Si es un número válido, formatea a dos decimales
+                            // Si el número es válido, lo formatea con dos decimales
                             if (!isNaN(number)) {
-                                input.value = number.toFixed(2);
+                                input.value = number.toFixed(2); // Garantiza dos decimales
                             } else {
                                 input.value = ""; // Si no es válido, limpia el campo
                             }
                         }
                     </script>
+
+
                     {{-- da inicio lo de aqui para arriba el modal --}}
                 </div>
                 <div class="modal-footer">
