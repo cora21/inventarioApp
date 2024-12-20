@@ -134,7 +134,7 @@
                                                         <form action="{{ route('venta.agregar') }}" method="POST" style="display: inline;">
                                                             @csrf
                                                             <input type="hidden" name="producto_id" value="{{ $producto->id }}">
-                                                            <button type="submit" class="btn btn-success btn-sm btn-agregar" id="btn-agregar-{{ $producto->id }}" data-id="{{ $producto->id }}">
+                                                            <button type="submit" class="btn btn-success btn-sm btn-agregar" id="btn-agregar-{{ $producto->id }}" data-id="{{ $producto->id }}" data-cantidadDisponibleProducto="{{ $producto->cantidadDisponibleProducto }}">
                                                                 Agregar
                                                             </button>
                                                         </form>
@@ -192,7 +192,7 @@
                                                     class="form-control text-center mx-2 cantidad" data-bs-toggle="tooltip"
                                                     data-bs-placement="top" title="Cantidad seleccionada"
                                                     style="width: 80px;" readonly>
-                                                <a class="sumar" data-id="{{ $producto->id }}">
+                                                <a class="sumar" data-id="{{ $producto->id }}" data-cantDisponible="{{ $producto->cantidadDisponibleProducto }}">
                                                     <i class="bi bi-plus-lg mx-2"></i>
                                                 </a>
                                             </div>
@@ -558,39 +558,28 @@
                     eliminarProductoConAjax(button);
                 }
 
-                // Actualizar monto
-                const productoRow = button.closest('tr');
-                actualizarMonto(productoRow);
-                calcularTotal(); // Recalcula el total general
-                contarProductos(); // Actualiza el conteo de productos
-            });
-        });
-
-
-
-            // Manejar clic en botones de sumar
-            document.querySelectorAll('.sumar').forEach(button => {
-            button.addEventListener('click', () => {
-                const input = button.parentElement.querySelector('.cantidad');
-                const maxUnidades = obtenerMaxUnidades(button);
-                let currentValue = parseInt(input.value) || 1;
+                // Verificar la reversión de estado del botón "Agregar"
+                const productoId = button.getAttribute('data-id'); // Obtener el ID del producto
                 let totalCantidad = 0;
-                // Calcular la suma total de las cantidades de filas con el mismo data-id
-                const productoId = button.getAttribute('data-id'); // Obtenemos el ID del producto
-                document.querySelectorAll(`.cantidad`).forEach(input => {
-                    const inputId = input.parentElement.querySelector('.sumar').getAttribute('data-id');
+                const cantDisponible = parseInt(document.querySelector(`#btn-agregar-${productoId}`).getAttribute('data-cantidadDisponibleProducto'));
+
+                // Calcular el total de cantidad actual para el producto
+                document.querySelectorAll('.cantidad').forEach(input => {
+                    const inputId = input.closest('tr').querySelector('.sumar').getAttribute('data-id');
                     if (inputId === productoId) {
                         totalCantidad += parseInt(input.value) || 0;
                     }
                 });
 
-                console.log(`${totalCantidad}`);
-                if (currentValue < maxUnidades && totalCantidad < maxUnidades){
-                    input.value = currentValue + 1;
-                } else {
-                    alert(
-                        `No puedes seleccionar más de ${maxUnidades} unidades de este producto.`
-                    );
+                // Obtener el botón "Agregar" correspondiente
+                const btnAgregar = document.querySelector(`#btn-agregar-${productoId}`);
+                if (btnAgregar) {
+                    if (totalCantidad < cantDisponible) {
+                        // Revertir el estado del botón a habilitado
+                        btnAgregar.style.backgroundColor = ""; // Restaurar color original
+                        btnAgregar.style.color = "";          // Restaurar color original del texto
+                        btnAgregar.disabled = false;          // Habilitar el botón
+                    }
                 }
 
                 // Actualizar monto
@@ -600,6 +589,69 @@
                 contarProductos(); // Actualiza el conteo de productos
             });
         });
+
+
+
+
+            // Manejar clic en botones de sumar
+           // Manejar clic en botones de sumar
+            document.querySelectorAll('.sumar').forEach(button => {
+            button.addEventListener('click', () => {
+                const input = button.parentElement.querySelector('.cantidad');
+                const maxUnidades = obtenerMaxUnidades(button);
+                let currentValue = parseInt(input.value) || 1;
+                let totalCantidad = 0;
+
+                // Obtener el ID del producto
+                const productoId = button.getAttribute('data-id');
+
+                // Obtener directamente el valor de data-cantDisponible desde el botón
+                const cantDisponible = button.getAttribute('data-cantDisponible');
+
+                // Calcular la suma total de las cantidades de filas con el mismo data-id
+                document.querySelectorAll('.cantidad').forEach(input => {
+                    const inputId = input.parentElement.querySelector('.sumar').getAttribute('data-id');
+                    if (inputId === productoId) {
+                        totalCantidad += parseInt(input.value) || 0;
+                    }
+                });
+
+                // Verificar si el input existe
+                console.log(`Cantidad Disponible: ${cantDisponible}`);
+                console.log(`Total Cantidad: ${totalCantidad}`);
+
+
+                if (totalCantidad >= cantDisponible) {
+                    alert("Ya no quedan unidades disponibles.");
+                    const btnAgregar = document.querySelector(`#btn-agregar-${productoId}`);
+                    if (btnAgregar) {
+                        btnAgregar.style.backgroundColor = "gray"; // Fondo gris
+                        btnAgregar.style.color = "black";         // Letras negras
+                        btnAgregar.disabled = true;               // Deshabilitar el botón
+                    }else {
+                        const btnAgregar = document.querySelector(`#btn-agregar-${productoId}`);
+                        if (btnAgregar) {
+                            btnAgregar.style.backgroundColor = ""; // Restaurar color original
+                            btnAgregar.style.color = "";          // Restaurar color original del texto
+                            btnAgregar.disabled = false;          // Habilitar el botón
+                        }
+                    }
+
+
+                } else if (currentValue >= maxUnidades) {
+                    alert(`No puedes seleccionar más de ${maxUnidades} unidades de este producto.`);
+                } else {
+                    input.value = currentValue + 1;
+                }
+
+                // Actualizar monto
+                const productoRow = button.closest('tr');
+                actualizarMonto(productoRow);
+                calcularTotal(); // Recalcula el total general
+                contarProductos(); // Actualiza el conteo de productos
+            });
+        });
+
 
 
 
@@ -669,14 +721,6 @@
             contarProductos();
         });
     </script>
-
-
-
-
-
-
-
-
 
 {{-- guardar en metodo combinado tiene ajax--}}
     <script>
