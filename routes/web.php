@@ -8,6 +8,7 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\VentaController;
+use App\Http\Controllers\FacturaController;
 
 
 Route::get('/', function () {
@@ -68,6 +69,11 @@ Route::post('/venta/registrar', [VentaController::class, 'registrarVenta'])->nam
 Route::post('/venta/detalles', [VentaController::class, 'registrarDetallesVenta'])->name('venta.detalles');
 Route::post('/venta/guardar-pago', [VentaController::class, 'guardarPago'])->name('venta.guardarPago');
 Route::post('/venta/guardar-pagos-combinados', [VentaController::class, 'guardarPagosCombinados'])->name('venta.guardarPagosCombinados');
+
+//rutas de las facturas
+Route::resource('factura', FacturaController::class);
+Route::post('/factura/agregar', [FacturaController::class, 'agregarProducto'])->name('factura.agregar');
+
 
 
 

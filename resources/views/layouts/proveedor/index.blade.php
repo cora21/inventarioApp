@@ -7,7 +7,7 @@
 
 
 @section('contenido')
-    <h1>este es el modulo de proveedores</h1>
+    {{-- <h1>este es el modulo de proveedores</h1> --}}
     <div class="d-flex justify-content-between align-items-center">
         <!-- Botón alineado a la derecha -->
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalRegistroAlmacen">

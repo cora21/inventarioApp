@@ -92,6 +92,11 @@
             </a>
 					</li>
                     <li class="sidebar-item">
+						<a class="sidebar-link" href="{{ route('factura.index') }}">
+              <i class="align-middle" data-feather="grid"></i> <span class="align-middle">Facturas</span>
+            </a>
+					</li>
+                    <li class="sidebar-item">
 						<a class="sidebar-link" href="#">
               <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Configuraciones</span>
             </a>

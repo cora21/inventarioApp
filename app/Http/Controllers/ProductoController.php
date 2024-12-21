@@ -20,7 +20,10 @@ class ProductoController extends Controller{
         $colores = Color::all();
         $proveedor = Proveedor::all();
         $producto = Producto::all();
-        return view('layouts.producto.index', compact('almacen', 'categoria', 'colores','proveedor','producto'));
+        $bajoInventario = $producto->some(function ($row) {
+            return ($row->totalDescontable / $row->cantidadDisponibleProducto) * 100 <= 10;
+        });
+        return view('layouts.producto.index', compact('almacen', 'categoria', 'colores','proveedor','producto', 'bajoInventario'));
     }
 
     public function create(){

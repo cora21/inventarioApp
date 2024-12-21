@@ -13,7 +13,7 @@
         }
     </style>
 
-    <h1>comienza el modulo mas arrecho con la fé puesta en dios y creyendo en mi todo saldra bien</h1>
+    {{-- <h1>comienza el modulo mas arrecho con la fé puesta en dios y creyendo en mi todo saldra bien</h1> --}}
     @if(session('success'))
     <script>
         Swal.fire({
@@ -42,11 +42,24 @@
         </thead>
         <tbody>
             @foreach ($producto as $row)
+            @php
+                // Calcular el porcentaje de totalDescontable respecto a cantidadDisponibleProducto
+                $porcentaje = ($row->totalDescontable / $row->cantidadDisponibleProducto) * 100;
+                $bajoInventario = $porcentaje <= 10; // Si es menor o igual al 10%
+            @endphp
                 <tr>
                     <td  class="border" ><a href="{{route('producto.show', $row->id)}}" class="text-primary hover-shadow">{{ $row->nombreProducto }}</a></td>
                     <td class="border" >{{ $row->marcaProducto }}</td>
                     <td class="border" >${{ $row->precioUnitarioProducto }}</td>
-                    <td class="border" >{{ $row->cantidadDisponibleProducto }}</td>
+                    <td class="border" style="width: 200px;"> {{ $row->totalDescontable }}
+                        @if ($bajoInventario)
+                            <!-- Alerta de bajo inventario -->
+                            <div class="alert alert-warning p-2 m-0 d-inline-flex align-items-center gap-2">
+                                <i class="bi bi-exclamation-circle-fill text-danger"></i>
+                                <span>¡Bajo inventario!</span>
+                            </div>
+                        @endif
+                    </td>
                     <td class="border" >
                         <div class="d-flex gap-3">
                             <!-- Icono de Editar -->
@@ -70,6 +83,16 @@
             @endforeach
         </tbody>
     </table>
+    <!-- Alerta flotante -->
+    @if ($bajoInventario)
+    <div id="alertaFlotante"
+        class="alert alert-warning position-fixed top-0 end-0 m-3 p-4 border border-3 rounded shadow-lg d-none"
+        role="alert"
+        style="z-index: 1050; width: 350px; font-size: 1.2rem; background-color: #fffae6; border-color: #ffc107;">
+        <strong>¡Atención!</strong> Algunos productos tienen bajo inventario.
+    </div>
+    @endif
+
 
 
 
@@ -112,11 +135,6 @@
                                         class="text-light" style="font-size: 1.2rem;"> * </span>
                                     <input type="text" name="modeloProducto" class="form-control" id="inputAddress"
                                         placeholder="">
-                                </div>
-                                <div class="col-12 mb-3">
-                                    <label for="inputAddress" class="form-label">Descripción:</label>
-                                    <textarea name="descripcionProducto" class="form-control" aria-label="With textarea"
-                                        style="withd: 100%; height: 90%; resize: none;"></textarea>
                                 </div>
                                 <br>
                                 <div class="col-4">
@@ -195,7 +213,12 @@
                                     <input type="text" name="precioTotal" class="form-control" id="precioTotal"
                                         readonly>
                                 </div>
-
+                                <br>
+                                <div class="col-12 mb-3">
+                                    <label for="inputAddress" class="form-label">Descripción:</label>
+                                    <textarea name="descripcionProducto" class="form-control" aria-label="With textarea"
+                                        style="withd: 100%; height: 90%; resize: none;"></textarea>
+                                </div>
                         </div>
                     </div>
                     <script>
@@ -272,6 +295,24 @@
         </div>
     </div>
     </form>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const alertaFlotante = document.getElementById('alertaFlotante');
+
+        if (alertaFlotante) {
+            // Mostrar la alerta al cargar la página
+            alertaFlotante.classList.remove('d-none');
+
+            // Ocultar automáticamente después de 5 segundos
+            setTimeout(() => {
+                alertaFlotante.classList.add('d-none');
+            }, 1000);
+        }
+    });
+
+    </script>
+
 @endsection
 
 

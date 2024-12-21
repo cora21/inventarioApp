@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('nombreBarra', 'Facturar')
+@section('nombreBarra', 'Generar Venta')
 {{--
         OJOOOOOOOO
         totalDescontable es el total original recuerdalooooooooooooooooo
