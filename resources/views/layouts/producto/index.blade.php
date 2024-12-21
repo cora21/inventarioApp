@@ -3,6 +3,14 @@
 @section('title', 'Registro del producto')
 
 @section('contenido')
+{{--
+
+
+totalDescontable tienes el total del producto sin descuento ni ndasa
+
+
+
+--}}
     <!-- Agregar Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -43,15 +51,20 @@
         <tbody>
             @foreach ($producto as $row)
             @php
-                // Calcular el porcentaje de totalDescontable respecto a cantidadDisponibleProducto
-                $porcentaje = ($row->totalDescontable / $row->cantidadDisponibleProducto) * 100;
-                $bajoInventario = $porcentaje <= 10; // Si es menor o igual al 10%
+                // Calcular el porcentaje de cantidadDisponibleProducto respecto a totalDescontable
+                if ($row->totalDescontable > 0) {
+                    $porcentaje = ($row->cantidadDisponibleProducto / $row->totalDescontable) * 100;
+                    $bajoInventario = $porcentaje <= 10; // Si es menor o igual al 10%
+                } else {
+                    $bajoInventario = false; // Evitar división por cero
+                }
             @endphp
                 <tr>
                     <td  class="border" ><a href="{{route('producto.show', $row->id)}}" class="text-primary hover-shadow">{{ $row->nombreProducto }}</a></td>
                     <td class="border" >{{ $row->marcaProducto }}</td>
                     <td class="border" >${{ $row->precioUnitarioProducto }}</td>
-                    <td class="border" style="width: 200px;"> {{ $row->totalDescontable }}
+                    <td class="border" style="width: 200px;">
+                        {{ $row->cantidadDisponibleProducto }}
                         @if ($bajoInventario)
                             <!-- Alerta de bajo inventario -->
                             <div class="alert alert-warning p-2 m-0 d-inline-flex align-items-center gap-2">
@@ -298,19 +311,18 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-        const alertaFlotante = document.getElementById('alertaFlotante');
+            const alertaFlotante = document.getElementById('alertaFlotante');
 
-        if (alertaFlotante) {
-            // Mostrar la alerta al cargar la página
-            alertaFlotante.classList.remove('d-none');
+            if (alertaFlotante) {
+                // Mostrar la alerta al cargar la página
+                alertaFlotante.classList.remove('d-none');
 
-            // Ocultar automáticamente después de 5 segundos
-            setTimeout(() => {
-                alertaFlotante.classList.add('d-none');
-            }, 1000);
-        }
-    });
-
+                // Ocultar automáticamente después de 5 segundos
+                setTimeout(() => {
+                    alertaFlotante.classList.add('d-none');
+                }, 1000); // Mostrar la alerta por 5 segundos
+            }
+        });
     </script>
 
 @endsection

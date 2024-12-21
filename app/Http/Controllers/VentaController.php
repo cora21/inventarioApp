@@ -140,8 +140,7 @@ public function guardarPago(Request $request){
         }
     }
 
-   public function guardarPagosCombinados(Request $request)
-{
+   public function guardarPagosCombinados(Request $request){
     try {
         // Iniciar una transacción para asegurar que todos los pagos se guarden correctamente
         DB::beginTransaction();

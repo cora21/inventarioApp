@@ -16,7 +16,6 @@ class DetallePago extends Model
         'metodo_pago_id',
         'monto',
     ];
-
     public function venta()
     {
         return $this->belongsTo(Venta::class, 'venta_id');

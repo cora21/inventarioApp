@@ -9,6 +9,7 @@ use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\VentaController;
 use App\Http\Controllers\FacturaController;
+use App\Http\Controllers\PrincipalController;
 
 
 Route::get('/', function () {
@@ -17,9 +18,13 @@ Route::get('/', function () {
 
 require __DIR__.'/auth.php';
 
+
+
+
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('/dashboard', function () { return view('layouts.welcome'); })->name('dashboard');
+    Route::get('/dashboard', [PrincipalController::class, 'index'])->name('dashboard');
+
 
     /* USERS */
     Route::get('users', [UserController::class, 'index'])->name('users.index');
@@ -73,9 +78,6 @@ Route::post('/venta/guardar-pagos-combinados', [VentaController::class, 'guardar
 //rutas de las facturas
 Route::resource('factura', FacturaController::class);
 Route::post('/factura/agregar', [FacturaController::class, 'agregarProducto'])->name('factura.agregar');
-
-
-
 
 
 
