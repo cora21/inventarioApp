@@ -98,7 +98,13 @@ class ProductoController extends Controller{
         $colores = Color::all();
         $proveedor = Proveedor::all();
         $producto = Producto::find($id);
-        return view('layouts.producto.show', compact('almacen', 'categoria', 'colores','proveedor','producto'));
+        $vesBaseMoneda = DB::table('tasas_cambios')->where('id', 2)->value('baseMoneda');
+        $vesBaseMoneda = (int) $vesBaseMoneda;
+
+
+        $dolarBCV = DB::table('tasas_cambios')->where('id', 2)->value('valorMoneda');
+        $dolarBCV = number_format($dolarBCV, 2);
+        return view('layouts.producto.show', compact('almacen', 'categoria', 'colores','proveedor','producto', 'vesBaseMoneda', 'dolarBCV'));
     }
 
     public function colores($id){

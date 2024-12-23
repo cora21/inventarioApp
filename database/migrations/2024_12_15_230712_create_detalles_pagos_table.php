@@ -18,6 +18,7 @@ class CreateDetallesPagosTable extends Migration
             $table->unsignedBigInteger('venta_id')->nullable();
             $table->unsignedBigInteger('metodo_pago_id')->nullable();
             $table->decimal('monto', 10, 2)->nullable();
+            
             $table->timestamps();
 
             $table->foreign('venta_id')->references('id')->on('ventas');

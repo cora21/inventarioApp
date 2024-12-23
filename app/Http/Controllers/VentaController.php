@@ -13,6 +13,8 @@ use App\Models\MetodoPago;
 use App\Models\Venta;
 use App\Models\DetalleVenta;
 use App\models\DetallePago;
+use App\Models\TasasCambios;
+
 use Illuminate\Support\Facades\DB;
 
 class VentaController extends Controller
@@ -28,24 +30,18 @@ class VentaController extends Controller
         $venta = Venta::latest()->first(); // Última venta registrada (o selecciona una venta específica)
         $detalleVenta = DetalleVenta::all();
         $detallePago = DetallePago::all();
+        $tasas = TasasCambios::all();
 
+        $vesBaseMoneda = DB::table('tasas_cambios')->where('id', 2)->value('baseMoneda');
+        $vesBaseMoneda = (int) $vesBaseMoneda;
+        $dolarBCV = DB::table('tasas_cambios')->where('id', 2)->value('valorMoneda');
+        $dolarBCV = number_format($dolarBCV, 2);
         // Convertir los productos almacenados en sesión a objetos Producto
         $productosAgregados = collect(session('productos_agregados', []))->map(function ($producto) {
             return Producto::find($producto['id']); // Convertimos cada array en una instancia de Producto
         });
 
-        return view('layouts.venta.index', compact(
-            'almacen',
-            'categoria',
-            'colores',
-            'proveedor',
-            'producto',
-            'productosAgregados',
-            'metPago',
-            'venta',
-            'detalleVenta',
-            'detallePago',
-        ));
+        return view('layouts.venta.index', compact( 'almacen', 'categoria', 'colores', 'proveedor', 'producto', 'productosAgregados', 'metPago', 'venta', 'detalleVenta', 'detallePago', 'vesBaseMoneda', 'dolarBCV', 'tasas'));
     }
 
     public function agregarProducto(Request $request){

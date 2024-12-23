@@ -116,7 +116,12 @@
                                                 <td>{{ $producto->categoria->nombre ?? 'Sin Categoría' }}</td>
                                                 <td>{{ $producto->marcaProducto }}</td>
                                                 <td>{{ $producto->cantidadDisponibleProducto }}</td>
-                                                <td>${{ $producto->precioUnitarioProducto }}</td>
+                                                @if($vesBaseMoneda === 1)
+                                                <td>Bs.{{ number_format($producto->precioUnitarioProducto * $dolarBCV, 2) }}</td>
+                                                @else
+                                                <td  >${{ $producto->precioUnitarioProducto }}</td>
+                                                @endif
+                                                {{-- <td>${{ $producto->precioUnitarioProducto }}</td> --}}
                                                 <td>
                                                     @if ($producto->colores->isNotEmpty())
                                                         @foreach ($producto->colores as $color)
@@ -178,10 +183,10 @@
                             <tbody>
                                 @foreach ($productosAgregados as $producto)
                                     <tr id="producto-{{ $producto->id }}">
-                                        <td style="width: 170px; height: 50px;">
-                                            {{ $producto->nombreProducto }} <br>
+                                        <td style="width: 150px; height: 50px;">
                                             <small
-                                                style="color: gray; font-size: 0.8em;">${{ $producto->precioUnitarioProducto }}</small>
+                                                style="color: gray; font-size: 0.8em;">${{ $producto->precioUnitarioProducto }}
+                                            </small>
                                         </td>
                                         <td style="width: 200px; height: 50px;">
                                             <div class="d-flex align-items-center">
@@ -408,7 +413,7 @@
                                     <!-- Columna Izquierda -->
                                     <div class="col-md-6 border-end">
                                         <div class="mb-3 pb-2 border-bottom">
-                                            <label for="valorPago" class="form-label fw-bold">Valor del pago *</label>
+                                            <label for="valorPago" class="form-label fw-bold">Valor del pago: *</label>
                                             <input type="number" class="form-control" id="valorPago" placeholder="Ingresa el valor">
                                         </div>
 
@@ -433,62 +438,65 @@
                             <button type="button" class="btn btn-primary" id="btnGuardarPago">Guardar</button>
                         </div>
                     </div>
-                                <!-- Nuevos campos alineados en la misma fila -->
-                               <!-- Contenedor principal para los campos Combinados -->
-                        <div id="combinadoFields" class="card mt-3" style="display: none;">
-                            <div class="card-body">
-                                <!-- Primera fila (modelo) -->
-                                <div class="row m-3 combinado-row">
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="select1" class="form-label fw-bold">Metodo Pago</label>
-                                            <select class="form-control select1">
-                                                <option value="">Selecciona una opción</option>
-                                                @foreach ($metPago as $row)
-                                                    @if ($row->nombreMetPago !== 'Combinado')
-                                                        <option value="{{ $row->id }}">{{ $row->nombreMetPago }}</option>
-                                                    @endif
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="input1" class="form-label fw-bold">Valor del Pago</label>
-                                            <input type="text" required class="form-control input1" placeholder="0.00" pattern="^\d+(\.\d{1,2})?$" title="Ingrese un monto válido con hasta dos decimales">
 
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="select2" class="form-label fw-bold">Moneda</label>
-                                            <select class="form-control" id="select2">
-                                                <option value="">Selecciona una opción</option>
-                                            </select>
-                                        </div>
+                    <!-- Nuevos campos alineados en la misma fila -->
+                    <!-- Campos principales para los campos Combinados -->
+                    <div id="combinadoFields" class="card mt-3" style="display: none;">
+                        <div class="card-body">
+                            <!-- Primera fila (modelo) -->
+                            <div class="row m-3 combinado-row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="select1" class="form-label fw-bold">Metodo Pago</label>
+                                        <select class="form-control select1">
+                                            <option value="">Selecciona una opción</option>
+                                            @foreach ($metPago as $row)
+                                                @if ($row->nombreMetPago !== 'Combinado')
+                                                    <option value="{{ $row->id }}">{{ $row->nombreMetPago }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
-                                <!-- Botones para agregar y eliminar fila -->
-                                <div class="d-flex justify-content-end">
-                                    <button type="button" class="btn btn-success btn-add me-2">
-                                        <i class="bi bi-plus-lg"></i> <!-- Icono de + -->
-                                    </button>
-                                    <button type="button" class="btn btn-danger btn-remove">
-                                        <i class="bi bi-trash"></i> <!-- Icono de basura -->
-                                    </button>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="input1" class="form-label fw-bold">Valor del Pago</label>
+                                        <input type="text" required class="form-control input1" placeholder="0.00" pattern="^\d+(\.\d{1,2})?$" title="Ingrese un monto válido con hasta dos decimales">
+
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="select2" class="form-label fw-bold">Moneda</label>
+                                        <select class="form-control" id="select2">
+                                            <option value="">Selecciona una opción</option>
+                                            @foreach ($tasas as $row)
+                                                <option value="{{ $row->nombreMoneda }}">{{ $row->nombreMoneda }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" id="btnGuardarPagoCombinado">Guardar</button>
+                            <!-- Botones para agregar y eliminar fila -->
+                            <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-success btn-add me-2">
+                                    <i class="bi bi-plus-lg"></i> <!-- Icono de + -->
+                                </button>
+                                <button type="button" class="btn btn-danger btn-remove">
+                                    <i class="bi bi-trash"></i> <!-- Icono de basura -->
+                                </button>
                             </div>
                         </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="btnGuardarPagoCombinado">Guardar</button>
+                        </div>
+                    </div>
 
                 </div>
 
             </div>
         </div>
     </div>
-
     {{-- final del segundo modal --}}
     <script>
             document.querySelectorAll('.cantidad').forEach(input => {
@@ -1077,8 +1085,6 @@
 
     </script>
 
-
-
     {{-- para eliminar los productos en el segundo div --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -1153,19 +1159,6 @@
                     }
                 });
             });
-        });
-    </script>
-
-    {{-- aqui comienzan los scrips controla el sidebar --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const sidebar = document.getElementById('sidebar');
-            const isIndexPage = window.location.pathname.includes('producto'); // Ajusta según tu ruta
-
-            if (isIndexPage) {
-                // Cierra automáticamente el sidebar quitando 'expand'
-                sidebar.classList.remove('expand');
-            }
         });
     </script>
 
@@ -1261,7 +1254,18 @@
             }
         });
     </script>
+    {{-- aqui comienzan los scrips controla el sidebar --}}
+    {{-- <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const isIndexPage = window.location.pathname.includes('producto'); // Ajusta según tu ruta
 
+            if (isIndexPage) {
+                // Cierra automáticamente el sidebar quitando 'expand'
+                sidebar.classList.remove('expand');
+            }
+        });
+    </script> --}}
 
 
 

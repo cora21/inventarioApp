@@ -114,8 +114,11 @@
                         <li>Se encuentran: {{ $almacen->pivot->cantidad }} unidades disponibles</li>
                     @endforeach
                 </ul>
-                <h4 class="text-primary fw-bold display-6">$ {{ number_format($producto->precioUnitarioProducto, 2) }}</h4>
-
+                @if($vesBaseMoneda === 1)
+                    <h4 class="text-primary fw-bold display-6">Bs. {{ number_format($producto->precioUnitarioProducto * $dolarBCV, 2) }}</h4>
+                    @else
+                    <h4 class="text-primary fw-bold display-6">$ {{ number_format($producto->precioUnitarioProducto, 2) }}</h4>
+                    @endif
             </div>
         </div>
     </div>

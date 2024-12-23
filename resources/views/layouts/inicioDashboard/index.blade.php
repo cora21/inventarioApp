@@ -134,6 +134,7 @@
     </script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
     <script>
         function updateBaseMoneda(moneda) {
             // Establecer la cookie para recordar la selección de la moneda

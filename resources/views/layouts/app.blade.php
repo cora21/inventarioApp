@@ -33,8 +33,8 @@
 
 <body>
 	<div class="wrapper">
-        <nav id="sidebar" class="sidebar js-sidebar {{ request()->routeIs('venta.index') ? 'collapsed' : '' }}">
-		{{-- <nav id="sidebar" class="sidebar js-sidebar"> --}}
+        {{-- <nav id="sidebar" class="sidebar js-sidebar {{ request()->routeIs('venta.index') ? 'collapsed' : '' }}"> --}}
+		<nav id="sidebar" class="sidebar js-sidebar">
 			<div class="sidebar-content js-simplebar">
 				<a class="sidebar-brand" href="#">
 					<!-- titulo de la parte de arriba de la plantilla en la esquina donde puede ir un logo -->
