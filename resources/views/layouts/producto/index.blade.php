@@ -62,7 +62,14 @@ totalDescontable tienes el total del producto sin descuento ni ndasa
                 <tr>
                     <td  class="border" ><a href="{{route('producto.show', $row->id)}}" class="text-primary hover-shadow">{{ $row->nombreProducto }}</a></td>
                     <td class="border" >{{ $row->marcaProducto }}</td>
+                    {{-- <td class="border">
+                        {{ number_format($row->precioUnitarioProducto * 51.93, 2) }}
+                    </td> --}}
+                    @if($vesBaseMoneda === 1)
+                    <td class="border">Bs.{{ number_format($row->precioUnitarioProducto * $dolarBCV, 2) }}</td>
+                    @else
                     <td class="border" >${{ $row->precioUnitarioProducto }}</td>
+                    @endif
                     <td class="border" style="width: 200px;">
                         {{ $row->cantidadDisponibleProducto }}
                         @if ($bajoInventario)

@@ -9,7 +9,7 @@
         "fideloper/proxy": "^4.4",
         "flightsadmin/livewire-crud": "^1.0",
         "fruitcake/laravel-cors": "^3.0",
-        "guzzlehttp/guzzle": "^7.0.1",
+        "guzzlehttp/guzzle": "^7.9",
         "jeroennoten/laravel-adminlte": "^3.14",
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",

@@ -9,21 +9,32 @@ use App\Models\Color;
 use App\Models\Proveedor;
 use App\Models\Producto;
 use App\Models\Imagen;
+use App\Models\TasasCambios;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class ProductoController extends Controller{
 
 
     public function index(){
+        $tasas = TasasCambios::all();
         $almacen = Almacen::all();
         $categoria = Categoria::all();
         $colores = Color::all();
         $proveedor = Proveedor::all();
         $producto = Producto::all();
+
         $bajoInventario = $producto->some(function ($row) {
             return ($row->totalDescontable / $row->cantidadDisponibleProducto) * 100 <= 10;
         });
-        return view('layouts.producto.index', compact('almacen', 'categoria', 'colores','proveedor','producto', 'bajoInventario'));
+        // buscando la tasa de cambio de ves a dolares
+        $vesBaseMoneda = DB::table('tasas_cambios')->where('id', 2)->value('baseMoneda');
+        $vesBaseMoneda = (int) $vesBaseMoneda;
+
+
+        $dolarBCV = DB::table('tasas_cambios')->where('id', 2)->value('valorMoneda');
+        $dolarBCV = number_format($dolarBCV, 2);
+        return view('layouts.producto.index', compact('almacen', 'categoria', 'colores','proveedor','producto', 'bajoInventario', 'tasas', 'vesBaseMoneda', 'dolarBCV'));
     }
 
     public function create(){

@@ -24,6 +24,10 @@ require __DIR__.'/auth.php';
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboard', [PrincipalController::class, 'index'])->name('dashboard');
+    Route::post('/actualizar-tasa-cambio', [PrincipalController::class, 'actualizarTasaCambio'])->name('actualizar.tasa.cambio');
+    Route::post('/updateBaseMoneda', [PrincipalController::class, 'updateBaseMoneda'])->name('updateBaseMoneda');
+
+
 
 
     /* USERS */
