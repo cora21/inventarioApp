@@ -107,36 +107,52 @@ public function registrarDetallesVenta(Request $request){
 
 
 
-public function guardarPago(Request $request){
-        try {
-            // Lógica para guardar el pago
-            $detallePago = new DetallePago();
-            $detallePago->venta_id = $request->venta_id;
-            $detallePago->metodo_pago_id = $request->metodo_pago_id;
-            $detallePago->monto = $request->monto;
-            $detallePago->save();
+public function guardarPago(Request $request)
+{
+    try {
+        // Validar los datos entrantes
+        $request->validate([
+            'venta_id' => 'required|integer',
+            'metodo_pago_id' => 'required|integer',
+            'monto' => 'required|numeric',
+            'descripcionPago' => 'nullable|string|max:255', // Validar descripcionPago
+            'nombrePago' => 'required|string|max:255',
+        ]);
 
-            // Responder con éxito
-            return response()->json([
-                'success' => true,
-                'message' => 'Pago guardado correctamente.'
-            ]);
-        } catch (\Exception $e) {
-            // Puedes registrar el error para fines de depuración si lo necesitas
-            Log::error('Error al guardar el pago: ' . $e->getMessage());
+        // Lógica para guardar el pago
+        $detallePago = new DetallePago();
+        $detallePago->venta_id = $request->venta_id;
+        $detallePago->metodo_pago_id = $request->metodo_pago_id;
+        $detallePago->monto = $request->monto;
+        $detallePago->descripcionPago = $request->descripcionPago; // Guardar descripcionPago como observaciones
+        $detallePago->nombrePago = $request->nombrePago;
 
-            // Responder con un mensaje genérico sin detalles del error
-            return response()->json([
-                'success' => false,
-                'messageGenerico' => 'Hubo un error al guardar el pago.'
-            ]);
-        }finally {
-            // Eliminar la sesión 'venta' al final de la función
-            session()->forget('productos_agregados');
-        }
+        $detallePago->save();
+
+        // Responder con éxito
+        return response()->json([
+            'success' => true,
+            'message' => 'Pago guardado correctamente.'
+        ]);
+    } catch (\Exception $e) {
+        // Puedes registrar el error para fines de depuración si lo necesitas
+        Log::error('Error al guardar el pago: ' . $e->getMessage());
+
+        // Responder con un mensaje genérico sin detalles del error
+        return response()->json([
+            'success' => false,
+            'message' => 'Hubo un error al guardar el pago.'
+        ]);
+    } finally {
+        // Eliminar la sesión 'venta' al final de la función
+        session()->forget('productos_agregados');
     }
+}
 
-   public function guardarPagosCombinados(Request $request){
+
+
+public function guardarPagosCombinados(Request $request)
+{
     try {
         // Iniciar una transacción para asegurar que todos los pagos se guarden correctamente
         DB::beginTransaction();
@@ -150,7 +166,8 @@ public function guardarPago(Request $request){
             DetallePago::create([
                 'venta_id' => $pago['venta_id'],
                 'metodo_pago_id' => $pago['metodo_pago_id'],
-                'monto' => $pago['monto']
+                'monto' => $pago['monto'],
+                'nombrePago' => $pago['nombrePago'],
             ]);
         }
 
@@ -180,6 +197,14 @@ public function guardarPago(Request $request){
         session()->forget('productos_agregados');
     }
 }
+
+
+
+
+
+
+
+
 }
 
 

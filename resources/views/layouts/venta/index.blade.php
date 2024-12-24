@@ -157,9 +157,7 @@
             </div>
         </div>
     </div>
-
     <br>
-
     <div class="container" style="height: 550px; background-color: rgb(228, 227, 227);">
         <div class="row response">
             <div>
@@ -183,10 +181,10 @@
                             <tbody>
                                 @foreach ($productosAgregados as $producto)
                                     <tr id="producto-{{ $producto->id }}">
-                                        <td style="width: 150px; height: 50px;">
+                                        <td style="width: 170px; height: 50px;">
+                                            {{ $producto->nombreProducto }} <br>
                                             <small
-                                                style="color: gray; font-size: 0.8em;">${{ $producto->precioUnitarioProducto }}
-                                            </small>
+                                                style="color: gray; font-size: 0.8em;">${{ $producto->precioUnitarioProducto }}</small>
                                         </td>
                                         <td style="width: 200px; height: 50px;">
                                             <div class="d-flex align-items-center">
@@ -428,8 +426,19 @@
 
                                     <!-- Columna Derecha -->
                                     <div class="col-md-6">
-                                        <label for="observaciones" class="form-label fw-bold">Observaciones</label>
-                                        <textarea class="form-control" id="observaciones" rows="5" placeholder="Ingresa tu observación"></textarea>
+                                        <label for="descripcionPago" class="form-label fw-bold">Observaciones</label>
+                                        <textarea class="form-control" name="descripcionPago" id="descripcionPago" rows="5" placeholder="Ingresa tu observación"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row m-3">
+                                    <div class="mb-3">
+                                        <label for="nombrePago" class="form-label fw-bold">Moneda</label>
+                                        <select class="form-control" id="nombrePago">
+                                            <option value="">Selecciona una opción</option>
+                                            @foreach ($tasas as $row)
+                                                <option value="{{ $row->nombreMoneda }}">{{ $row->nombreMoneda }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -439,7 +448,6 @@
                         </div>
                     </div>
 
-                    <!-- Nuevos campos alineados en la misma fila -->
                     <!-- Campos principales para los campos Combinados -->
                     <div id="combinadoFields" class="card mt-3" style="display: none;">
                         <div class="card-body">
@@ -447,7 +455,7 @@
                             <div class="row m-3 combinado-row">
                                 <div class="col-md-4">
                                     <div class="mb-3">
-                                        <label for="select1" class="form-label fw-bold">Metodo Pago</label>
+                                        <label for="select1" class="form-label fw-bold">Método Pago:</label>
                                         <select class="form-control select1">
                                             <option value="">Selecciona una opción</option>
                                             @foreach ($metPago as $row)
@@ -460,15 +468,15 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="mb-3">
-                                        <label for="input1" class="form-label fw-bold">Valor del Pago</label>
+                                        <label for="input1" class="form-label fw-bold">Valor del Pago:</label>
                                         <input type="text" required class="form-control input1" placeholder="0.00" pattern="^\d+(\.\d{1,2})?$" title="Ingrese un monto válido con hasta dos decimales">
 
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="mb-3">
-                                        <label for="select2" class="form-label fw-bold">Moneda</label>
-                                        <select class="form-control" id="select2">
+                                        <label for="nombrePago" style="width: 50%;" class="form-label fw-bold">Moneda de Pago:</label>
+                                        <select class="form-control" id="nombrePago" name="nombrePago">
                                             <option value="">Selecciona una opción</option>
                                             @foreach ($tasas as $row)
                                                 <option value="{{ $row->nombreMoneda }}">{{ $row->nombreMoneda }}</option>
@@ -491,13 +499,15 @@
                             <button type="button" class="btn btn-primary" id="btnGuardarPagoCombinado">Guardar</button>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
     </div>
     {{-- final del segundo modal --}}
+
+
+
+
     <script>
             document.querySelectorAll('.cantidad').forEach(input => {
             input.addEventListener('input', () => {
@@ -505,8 +515,7 @@
             });
         });
     </script>
-
-     {{-- calculo del precio total --}}
+    {{-- calculo del precio total --}}
     {{-- hace de todo, aumenta el valor, multiplica elimina con el menos de todo --}}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -729,8 +738,7 @@
             contarProductos();
         });
     </script>
-
-{{-- guardar en metodo combinado tiene ajax--}}
+    {{-- guardar en metodo combinado tiene ajax--}}
     <script>
         $(document).ready(function () {
             $('#btnGuardarPagoCombinado').click(function () {
@@ -749,6 +757,7 @@
                 $('.combinado-row').each(function () {
                     let metodoPagoId = $(this).find('.select1').val();
                     let monto = parseFloat($(this).find('.input1').val()) || 0;
+                    let nombrePago = $(this).find('#nombrePago').val();
 
                     monto = redondear(monto);
 
@@ -761,7 +770,8 @@
                         pagos.push({
                             venta_id: ventaId,
                             metodo_pago_id: metodoPagoId,
-                            monto: monto
+                            monto: monto,
+                            nombrePago: nombrePago
                         });
                         sumaMontos += monto;
                     }
@@ -810,9 +820,7 @@
             return /^\d+(\.\d{1,2})?$/.test(monto);
         }
     </script>
-
-
-{{-- calcular las opciones rapidas tiene ajax guarda pagos individuales--}}
+    {{-- calcular las opciones rapidas tiene ajax guarda pagos individuales--}}
     <script>
         // Evento al abrir el segundo modal para generar montos sugeridos
         $('#exampleModalToggle2').on('show.bs.modal', function () {
@@ -890,9 +898,11 @@
             var monto = parseFloat($('#valorPago').val()).toFixed(2);
             var ventaId = $('#ventaIdModal').val();
             var metodoPagoId = $('#paymentMethodId').val();
+            var descripcionPago = $('#descripcionPago').val();
+            var nombrePago = $('#nombrePago').val();
 
             // Validación antes de enviar la solicitud
-            if (!monto || !ventaId || !metodoPagoId) {
+            if (!monto || !ventaId || !metodoPagoId || !nombrePago) {
                 console.log('Por favor, complete todos los campos antes de guardar.');
                 return; // Detener ejecución si falta algún dato
             }
@@ -905,7 +915,10 @@
                     _token: '{{ csrf_token() }}', // Token CSRF de Laravel
                     venta_id: ventaId,
                     metodo_pago_id: metodoPagoId,
-                    monto: monto
+                    monto: monto,
+                    descripcionPago: descripcionPago,
+                    nombrePago: nombrePago // Moneda seleccionada
+                     // Enviar descripcionPago
                 },
                 success: function (response) {
                     if (response.success) {
@@ -928,8 +941,6 @@
             });
         });
     </script>
-
-
     {{-- para cambiar entre metodo normal y combinado --}}
     <script>
         // Evento cuando se selecciona un método de pago
@@ -956,7 +967,6 @@
 
 
     </script>
-
     {{-- guarda en la base de datos ventas y detalle venta, me abre el modal ni loco se elimina --}}
     <script>
         // Botón "Vender" - Registrar la venta
@@ -1052,8 +1062,6 @@
         }
 
     </script>
-
-
     {{-- crea las filas del metodo combinado --}}
     <script>
         $(document).ready(function () {
@@ -1084,7 +1092,6 @@
 
 
     </script>
-
     {{-- para eliminar los productos en el segundo div --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -1123,7 +1130,6 @@
             });
         });
     </script>
-
     {{-- controla los colores en los circulos, asi como la cantidad disponible --}}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -1161,7 +1167,6 @@
             });
         });
     </script>
-
     {{-- controla los toolstips --}}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -1178,7 +1183,6 @@
             });
         });
     </script>
-
     {{-- controla los input para buscar --}}
     <script>
         document.querySelector('#search-productos').addEventListener('input', function() {
@@ -1236,7 +1240,6 @@
             }
         });
     </script>
-
     {{-- mantener la posicion de la pagina --}}
     <script>
         // Guardar la posición de desplazamiento al recargar la página
@@ -1266,7 +1269,4 @@
             }
         });
     </script> --}}
-
-
-
 @endsection

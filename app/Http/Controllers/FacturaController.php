@@ -13,13 +13,16 @@ use App\Models\MetodoPago;
 use App\Models\Venta;
 use App\Models\DetalleVenta;
 use App\models\DetallePago;
+use App\models\TasasCambios;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 
 
 class FacturaController extends Controller{
     public function index(){
-        $venta = Venta::all();
+        $venta = Venta::orderBy('id', 'desc')->get();  // Ordena por id de forma descendente
+        $tasa = TasasCambios::all();
         $detalleVenta = DetalleVenta::all();
         $detallePago = DetallePago::all();
         $producto = Producto::all();
@@ -28,26 +31,23 @@ class FacturaController extends Controller{
         $categoria = Categoria::all();
         $colores  = Color::all();
         $proveedor = Proveedor::all();
-        return view('layouts.factura.index', compact( 'almacen', 'categoria', 'colores', 'proveedor', 'producto', 'metPago', 'venta', 'detalleVenta', 'detallePago'
+        $dolarBCV = DB::table('tasas_cambios')->where('id', 2)->value('valorMoneda');
+        $dolarBCV = number_format($dolarBCV, 2);
+        return view('layouts.factura.index', compact( 'almacen', 'categoria', 'colores', 'proveedor', 'producto', 'metPago', 'venta', 'detalleVenta', 'detallePago', 'tasa', 'dolarBCV'
         ));
     }
 
-    public function agregarProducto(Request $request)
-    {
-        // Eliminar cualquier sesión previa de productos seleccionados
-        session()->forget('productos_seleccionados');
-
-        // Validar que el producto_id exista
+    public function agregarProducto(Request $request){
+        // Validar que el idTablaVenta sea enviado y exista en la tabla ventas
         $request->validate([
-            'producto_id' => 'required|exists:productos,id',
+            'idTablaVenta' => 'required|exists:ventas,id',
         ]);
 
-        // Agregar el producto a la sesión
-        session()->push('productos_seleccionados', $request->producto_id);
+        // Guardar el idTablaVenta seleccionado en la sesión
+        session(['idTablaVenta' => $request->idTablaVenta]);
 
-        // Redirigir de nuevo a la vista de factura
+        // Redirigir a la vista factura
         return redirect()->route('factura.index');
     }
-
 
 }

@@ -17,6 +17,7 @@ class CreateHistorialTasasCambiosTable extends Migration
             $table->id();
             $table->string('nombreMonedaH')->nullable();
             $table->string('valorMonedaH')->nullable();
+            $table->string('fechavalorH')->nullable();
             $table->timestamps();
         });
 

@@ -15,6 +15,8 @@ class DetallePago extends Model
         'venta_id',
         'metodo_pago_id',
         'monto',
+        'descripcionPago',
+        'nombrePago',
     ];
     public function venta()
     {

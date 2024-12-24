@@ -11,5 +11,6 @@ class HistoriaTasasCambios extends Model{
     protected $fillable = [
         'nombreMonedaH',
         'valorMonedaH',
+        'fechavalorH',
     ];
 }
