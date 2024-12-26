@@ -19,9 +19,12 @@
             </button>
         @else
             <!-- Mensaje cuando todos los productos están asignados -->
-            <a class="alert alert-success" role="alert">
+            {{-- <a class="alert alert-success" role="alert">
                 Ya se asignaron todos los colores a los productos disponibles.
-            </a>
+            </a> --}}
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalparaEditar">
+                <i class="bi bi-pencil-square"></i>
+            </button>
         @endif
     </div>
     <br>
@@ -36,15 +39,14 @@
         <div class="card-body">
             <p>
                 El Producto <strong>{{ $producto->nombreProducto }}</strong> se encuentra disponible en los siguientes
-                colores
+                colores:
             </p>
             <table class="table text-center">
                 <thead>
                     <tr style="background-color: rgb(212, 212, 212); ">
                         <th scope="col" style="border-radius: 15px 0px 0px 0px;">Color:</th>
                         <th scope="col">Unidades:</th>
-                        <th scope="col">Vista del color</th>
-                        <th scope="col" style="border-radius: 0px 15px 0px 0px;">Acciones</th>
+                        <th scope="col" style="border-radius: 0px 15px 0px 0px;">Vista del color</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -67,11 +69,6 @@
                                         Este es un color
                                     </div>
                                 @endif
-                            </td>
-                            <td>
-                                <a  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalparaEditar">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
                             </td>
                         </tr>
                     @endforeach
@@ -251,8 +248,6 @@
                             }
                         });
                     </script>
-
-
                 <div class="modal-footer">
                     <p class="card-text fs-4"> <strong>Los campos con </strong><span class="text-danger"
                             style="font-size: 1.2rem;">*</span>

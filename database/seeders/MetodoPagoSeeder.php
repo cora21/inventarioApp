@@ -29,14 +29,19 @@ class MetodoPagoSeeder extends Seeder
             'nombreMetPago' => 'Tarjeta de Crédito',
             'observacionesMetPago' => 'Pago con tarjeta de crédito.',
             'imagenMetPago' => asset('InventarioApp/public/storage/imagenes/credito.png'),
-        ]);http://localhost/InventarioApp/public/storage/imagenes/credito.png
-        
+        ]);
+
         MetodoPago::create([
             'nombreMetPago' => 'Tarjeta de Débito',
             'observacionesMetPago' => 'Pago con tarjeta de débito.',
             'imagenMetPago' => asset('InventarioApp/public/storage/imagenes/debito.png'),
         ]);
-        
-        
+
+        MetodoPago::create([
+            'nombreMetPago' => 'Combinado',
+            'observacionesMetPago' => 'Combinado',
+            'imagenMetPago' => asset(''),
+        ]);
+
     }
 }

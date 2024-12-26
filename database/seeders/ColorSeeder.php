@@ -39,7 +39,8 @@ class ColorSeeder extends Seeder
             ['nombreColor' => 'Salmón', 'codigoHexa' => '#FA8072'],
             ['nombreColor' => 'Coral', 'codigoHexa' => '#FF7F50'],
             ['nombreColor' => 'Lavanda', 'codigoHexa' => '#E6E6FA'],
-            ['nombreColor' => 'Azul Acero', 'codigoHexa' => '#4682B4']
+            ['nombreColor' => 'Azul Acero', 'codigoHexa' => '#4682B4'],
+            ['nombreColor' => 'Sin Color', 'codigoHexa' => '#D3D3D3']
         ];
 
         foreach ($colors as $color) {

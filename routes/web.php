@@ -10,6 +10,7 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\VentaController;
 use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\PrincipalController;
+use App\Http\Controllers\PDFController;
 
 
 Route::get('/', function () {
@@ -63,10 +64,12 @@ Route::resource('proveedor', ProveedorController::class);
 //rutas para el producto modulo mas pesado
 Route::resource('producto', ProductoController::class);
 Route::get('colores/{id}', [ProductoController::class, 'colores'])->name('producto.colores');
+Route::get('edit/{id}', [ProductoController::class, 'edit'])->name('producto.edit');
 Route::post('producto/{id}/colores', [ProductoController::class, 'guardarColores'])->name('producto.guardarColores');
 Route::get('imagenes/{id}', [ProductoController::class, 'imagenes'])->name('producto.imagenes');
 Route::post('producto/{id}', [ProductoController::class, 'guardarImagenes'])->name('producto.guardarImagenes');
 Route::get('/buscar-productos', [ProductoController::class, 'buscar'])->name('producto.buscar');
+Route::delete('/imagenes/{id}', [ProductoController::class, 'destroy'])->name('imagenes.destroy');
 
 
 
@@ -83,6 +86,9 @@ Route::post('/venta/guardar-pagos-combinados', [VentaController::class, 'guardar
 Route::resource('factura', FacturaController::class);
 Route::post('/factura/agregar', [FacturaController::class, 'agregarProducto'])->name('factura.agregar');
 
+//rutas para el pdf
+Route::get('/generar-pdf', [PDFController::class, 'generarPDF'])->name('generar.pdf');
+Route::get('/generar-factura-pdf', [PDFController::class, 'generarFacturaPDF'])->name('generarFactura.pdf');
 
 
 

@@ -21,6 +21,7 @@
         "tailwindcss": "^2.0.2"
     },
     "dependencies": {
+        "mysql": "^2.18.1",
         "sweetalert2": "^11.14.5"
     }
 }

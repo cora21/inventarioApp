@@ -54,7 +54,7 @@
                 @if ($producto->imagenes->isNotEmpty())
                     <!-- Mostrar Imagen Principal -->
                     <img id="mainImage" src="{{ $producto->imagenes->first()->ruta }}" class="rounded border"
-                        style="width: 350px; height: 350px; object-fit: cover;" alt="Imagen Principal">
+                        style="width: 350px; height: 350px; object-fit: cover;" blan alt="Imagen Principal">
                 @else
                     <!-- Mostrar Cuadro Placeholder -->
                     <div class="d-flex justify-content-center align-items-center border rounded bg-light"

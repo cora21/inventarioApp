@@ -69,6 +69,7 @@
 
 </style>
 @section('contenido')
+<input type="hidden" id="dolarBCV" class="form-control" value="{{$dolarBCV}}">
     <div class="container">
         <div class="row response">
             <div class="col-12 col-md-12 border" style="height: 500px; background-color: rgb(215, 224, 227);">
@@ -281,20 +282,16 @@
                         <span>Vender</span>
                         <span id="totalFactura" style="font-weight: bold;">$0.00</span>
                     </button>
-                    <a class="btn btn-outline-success  d-flex justify-content-between w-100 mt-2" id="cancelarVenta"
-                        style="padding: 10px; font-size: 1rem; width: 120%;">
-                        <span id="totalProductos">9 productos</span>
-                        <span>Cancelar</span>
+                    <a class="btn btn-success btn-lg d-flex justify-content-between w-100 mt-2"
+                    style="padding: 10px; font-size: 1rem; width: 150%;">
+                        <span>Total en Bolívares:</span>
+                        <span id="totalBolivares" style="font-weight: bold;">Bs. 0.00</span>
                     </a>
+
                 </div>
             </div>
         </div>
     </div>
-
-
-
-
-
 
     {{-- comienza la sesion del modal doble --}}
     {{-- primera parte modal 1 --}}
@@ -319,7 +316,7 @@
                         <div class="row justify-content-center">
                             @foreach ($metPago as $row)
                             @php
-                                $isCombinado = ($row->id == 13 && $row->nombreMetPago == 'Combinado');
+                                $isCombinado = ($row->id == 5 && $row->nombreMetPago == 'Combinado');
                             @endphp
                             <div class="col-lg-3 col-md-3 col-sm-12 mb-3 payment-card-item"
                                  data-bs-target="{{ $isCombinado ? '#modalCombinado' : '#exampleModalToggle2' }}"
@@ -506,15 +503,6 @@
     {{-- final del segundo modal --}}
 
 
-
-
-    <script>
-            document.querySelectorAll('.cantidad').forEach(input => {
-            input.addEventListener('input', () => {
-                console.log(input.value);  // Imprime el valor del input en la consola
-            });
-        });
-    </script>
     {{-- calculo del precio total --}}
     {{-- hace de todo, aumenta el valor, multiplica elimina con el menos de todo --}}
     <script>
@@ -738,6 +726,42 @@
             contarProductos();
         });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const totalFacturaSpan = document.getElementById('totalFactura'); // Total en dólares
+            const totalBolivaresSpan = document.getElementById('totalBolivares'); // Total en bolívares
+            const dolarBCVInput = document.getElementById('dolarBCV'); // Input con el valor del dólar
+
+            // Función para calcular y mostrar el total en bolívares
+            function actualizarTotalBolivares() {
+                // Obtener el total en dólares del contenido del span
+                const totalDolares = parseFloat(totalFacturaSpan.textContent.replace('$', '').trim());
+                const dolarBCV = parseFloat(dolarBCVInput.value);
+
+                // Verificar que ambos valores sean válidos
+                if (!isNaN(totalDolares) && !isNaN(dolarBCV)) {
+                    const totalBolivares = totalDolares * dolarBCV;
+                    totalBolivaresSpan.textContent = `Bs. ${totalBolivares.toFixed(2)}`;
+                } else {
+                    console.error('El total en dólares o el valor del dólar BCV no son válidos.');
+                    totalBolivaresSpan.textContent = 'Bs. 0.00';
+                }
+            }
+
+            // Llamar a actualizarTotalBolivares() en la carga inicial
+            actualizarTotalBolivares();
+
+            // Observador para detectar cambios en el total en dólares
+            const observer = new MutationObserver(() => {
+                actualizarTotalBolivares();
+            });
+
+            // Configurar el observador para el span del total en dólares
+            observer.observe(totalFacturaSpan, { childList: true, characterData: true });
+        });
+    </script>
+
     {{-- guardar en metodo combinado tiene ajax--}}
     <script>
         $(document).ready(function () {
@@ -1269,4 +1293,11 @@
             }
         });
     </script> --}}
+    <script>
+            document.querySelectorAll('.cantidad').forEach(input => {
+            input.addEventListener('input', () => {
+                console.log(input.value);  // Imprime el valor del input en la consola
+            });
+        });
+    </script>
 @endsection

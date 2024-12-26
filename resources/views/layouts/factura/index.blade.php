@@ -19,8 +19,8 @@
 }
 </style>
 @section('contenido')
-    <div class="d-flex" style="height: 100vh;">
-        <div class="flex-grow-1" style="background-color: #ffffff; height: 800px; width: 200px;">
+<div class="d-flex" style="height: 100vh;">
+    <div class="flex-grow-1" style="background-color: #ffffff; height: 100%; width: 200px; overflow-y: auto;">
             @foreach ($venta as $row)
             <form action="{{ route('factura.agregar') }}" method="POST" style="display: inline;">
                 @csrf
@@ -44,7 +44,7 @@
         </div>
 
 
-        <div class="flex-grow-1 p-4" style="background-color: #e0e0e0; height: 800px; width: 600px;">
+        <div class="flex-grow-1 p-4" style="background-color: #e0e0e0; height: 800px; height: 100%; overflow-y: auto;">
             <div class="card borderCard shadow-lg">
                 <div class="card-body">
                     @php
@@ -66,9 +66,9 @@
                         <!-- Encabezado -->
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h5>Factura número {{ $ventaId }}</h5>
-                            <button class="btn btn-outline-success btn-lg" onclick="window.print()">
+                            <a href="{{ route('generarFactura.pdf') }}" class="btn btn-outline-primary btn-lg me-2" target="_blank" style="width: 120px;">
                                 <i class="bi bi-printer"></i> Imprimir
-                            </button>
+                            </a>
                         </div>
 
                         <!-- Detalles de la factura plista de arriba-->
@@ -83,7 +83,7 @@
                                         <td class="text-bold" style="height: 25px; background-color: rgb(241, 241, 241);">Fecha de Creación:</td>
                                         <td class="bg-white" style="height: 25px;">{{ $venta ? \Carbon\Carbon::parse($venta->created_at)->format('d/m/Y g:i a') : 'N/A' }}</td>
                                     </tr>
-                                    <tr>
+                                    {{-- <tr>
                                         <td class="text-bold" style="height: 25px; background-color: rgb(241, 241, 241);">Almacen:</td>
                                         <td class="bg-white" style="height: 25px;"><!-- Sin datos por ahora --></td>
                                     </tr>
@@ -94,7 +94,7 @@
                                     <tr>
                                         <td class="text-bold" style="height: 25px; background-color: rgb(241, 241, 241); border-radius: 0px 0px 0px 15px; border-bottom: none;">Cliente:</td>
                                         <td class="bg-white" style="height: 25px;"> <!-- Sin datos por ahora --></td>
-                                    </tr>
+                                    </tr> --}}
                                 </tbody>
                             </table>
                         </div>

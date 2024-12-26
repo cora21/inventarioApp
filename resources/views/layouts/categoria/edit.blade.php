@@ -49,7 +49,9 @@
                 style="font-size: 1.2rem;">*</span>
             <strong> son obligatorios</strong>
         </p>
-        <button type="button" class="btn btn-outline-primary mx-2" data-bs-dismiss="modal">Cancelar</button>
+        <a href="{{ route('categoria.index') }}" type="button" class="btn btn-outline-primary mx-2">
+            Cancelar
+        </a>
         <button type="submit" class="btn btn-primary text-gray">Guardar</button>
     </div>
     </form>

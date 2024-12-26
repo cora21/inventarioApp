@@ -34,75 +34,146 @@ totalDescontable tienes el total del producto sin descuento ni ndasa
         </script>
     @endif
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        + Nuevo Producto
-    </button>
-    <br><br>
-    <table class="table table-hover">
-        <thead>
-            <tr style="background-color: rgb(212, 212, 212); ">
-                <th scope="col" style="border-radius: 15px 0px 0px 0px;">Producto</th>
-                <th class="bordered">Marca</th>
-                <th>Precio</th>
-                <th>Cantidad Total</th>
-                <th scope="col" style="border-radius: 0px 15px 0px 0px;">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($producto as $row)
-            @php
-                // Calcular el porcentaje de cantidadDisponibleProducto respecto a totalDescontable
-                if ($row->totalDescontable > 0) {
-                    $porcentaje = ($row->cantidadDisponibleProducto / $row->totalDescontable) * 100;
-                    $bajoInventario = $porcentaje <= 10; // Si es menor o igual al 10%
-                } else {
-                    $bajoInventario = false; // Evitar división por cero
-                }
-            @endphp
-                <tr>
-                    <td  class="border" ><a href="{{route('producto.show', $row->id)}}" class="text-primary hover-shadow">{{ $row->nombreProducto }}</a></td>
-                    <td class="border" >{{ $row->marcaProducto }}</td>
-                    {{-- <td class="border">
-                        {{ number_format($row->precioUnitarioProducto * 51.93, 2) }}
-                    </td> --}}
-                    @if($vesBaseMoneda === 1)
-                    <td class="border">Bs.{{ number_format($row->precioUnitarioProducto * $dolarBCV, 2) }}</td>
-                    @else
-                    <td class="border" >${{ $row->precioUnitarioProducto }}</td>
-                    @endif
-                    <td class="border" style="width: 200px;">
-                        {{ $row->cantidadDisponibleProducto }}
-                        @if ($bajoInventario)
-                            <!-- Alerta de bajo inventario -->
-                            <div class="alert alert-warning p-2 m-0 d-inline-flex align-items-center gap-2">
-                                <i class="bi bi-exclamation-circle-fill text-danger"></i>
-                                <span>¡Bajo inventario!</span>
-                            </div>
-                        @endif
-                    </td>
-                    <td class="border" >
-                        <div class="d-flex gap-3">
-                            <!-- Icono de Editar -->
-                            <a href="#" class="text-primary hover-shadow" data-bs-toggle="tooltip"
-                                data-bs-placement="top" title="Editar">
-                                <i class="bi bi-pencil-square fs-4"></i>
+    {{-- contiene la seccion de los botones para el buscador --}}
+    <div class="card">
+        <div class="card-body">
+            <div class="container p-3">
+                <!-- Contenedor de los select y el buscador -->
+                <div class="row">
+                    <!-- Select 1 -->
+                    <div class="col-md-4">
+                        <select id="SelectBuscadorAlmacen" class="form-select">
+                            <option value="">Busqueda mediante almacen</option>
+                            @foreach ($almacen as $row)
+                            <option value="{{ $row->nombre }}">{{ $row->nombre }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Select 2 -->
+                    <div class="col-md-4">
+                        <select id="SelectBuscadorCategoria" class="form-select">
+                            <option value="">Busqueda mediante categoria</option>
+                            @foreach ($categoria as $row)
+                            <option value="{{ $row->nombre }}">{{ $row->nombre }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="col-md-4 d-flex justify-content-end align-items-center">
+                        <a href="{{ route('generar.pdf') }}" class="btn btn-outline-primary btn-lg me-2" target="_blank" style="width: 120px;">Imprimir</a>
+                        <button id="btnExportar" class="btn btn-outline-secondary btn-lg" style="width: 120px;">Exportar</button>
+                    </div>
+                </div>
+
+                <!-- Buscador -->
+                <div class="row mt-3">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text border-success" style="background-color: rgb(189, 225, 201)"
+                            id="search-icon">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="search" id="search-productos" class="form-control border-success rounded"
+                            placeholder="Buscar productos por nombre o marca...">
+                        {{-- <a href="{{ route('producto.index') }}" class="btn btn-outline-success ms-1" type="button">Nuevo
+                            producto + </a> --}}
+                            <a type="button" class="btn btn-outline-success ms-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                + Nuevo Producto
                             </a>
-                            <!-- Icono de Subir Foto -->
-                            <a href="{{ route('producto.imagenes', $row->id) }}" class="text-primary hover-shadow" data-bs-toggle="tooltip"
-                                data-bs-placement="top" title="Subir Foto">
-                                <i class="bi bi-camera fs-4"></i>
-                            </a>
-                            <!-- Icono de Agregar Colores -->
-                            <a href="{{ route('producto.colores', $row->id) }}" class="text-primary hover-shadow"
-                                data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar Colores">
-                                <i class="bi bi-palette fs-4"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- TABLA DE LOS PRODUCTOS --}}
+    <div class="card">
+        <div class="card-body">
+            <table id="productos-table" class="table table-hover">
+                <thead>
+                    <tr style="background-color: rgb(212, 212, 212); ">
+                        <th scope="col" style="border-radius: 15px 0px 0px 0px;">Producto</th>
+                        <th class="bordered">Marca</th>
+                        <th class="bordered">Almacen</th>
+                        <th class="bordered">Categoria</th>
+                        <th>Precio</th>
+                        <th>Cantidad Total</th>
+                        <th scope="col" style="border-radius: 0px 15px 0px 0px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($producto as $row)
+                    @php
+                        // Calcular el porcentaje de cantidadDisponibleProducto respecto a totalDescontable
+                        if ($row->totalDescontable > 0) {
+                            $porcentaje = ($row->cantidadDisponibleProducto / $row->totalDescontable) * 100;
+                            $bajoInventario = $porcentaje <= 10; // Si es menor o igual al 10%
+                        } else {
+                            $bajoInventario = false; // Evitar división por cero
+                        }
+                    @endphp
+                        <tr>
+                            <td  class="border" ><a href="{{route('producto.show', $row->id)}}" class="text-primary hover-shadow">{{ $row->nombreProducto }}</a></td>
+                            <td class="border" >{{ $row->marcaProducto }}</td>
+                            @foreach ($almacen as $almacenRow)
+                                @if ($row->almacen_id === $almacenRow->id)
+                                <td class="border">{{ $almacenRow->nombre }}</td>
+                                @break
+                                @endif
+                            @endforeach
+
+
+                            @foreach ($categoria as $categoriaRow)
+                                @if ($row->categoria_id === $categoriaRow->id)
+                                <td class="border">{{ $categoriaRow->nombre }}</td>
+                                @break
+                                @endif
+                            @endforeach
+                            {{-- <td class="border">
+                                {{ number_format($row->precioUnitarioProducto * 51.93, 2) }}
+                            </td> --}}
+                            @if($vesBaseMoneda === 1)
+                            <td class="border">Bs.{{ number_format($row->precioUnitarioProducto * $dolarBCV, 2) }}</td>
+                            @else
+                            <td class="border" >${{ $row->precioUnitarioProducto }}</td>
+                            @endif
+                            <td class="border" style="width: 200px;">
+                                {{ $row->cantidadDisponibleProducto }}
+                                @if ($bajoInventario)
+                                    <!-- Alerta de bajo inventario -->
+                                    <div class="alert alert-warning p-2 m-0 d-inline-flex align-items-center gap-2">
+                                        <i class="bi bi-exclamation-circle-fill text-danger"></i>
+                                        <span>¡Bajo inventario!</span>
+                                    </div>
+                                @endif
+                            </td>
+                            <td class="border" >
+                                <div class="d-flex gap-3">
+                                    <!-- Icono de Editar -->
+                                    <a href="{{ route('producto.edit', $row->id) }}" class="text-primary hover-shadow" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Editar">
+                                        <i class="bi bi-pencil-square fs-4"></i>
+                                    </a>
+                                    <!-- Icono de Subir Foto -->
+                                    <a href="{{ route('producto.imagenes', $row->id) }}" class="text-primary hover-shadow" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Subir Foto">
+                                        <i class="bi bi-camera fs-4"></i>
+                                    </a>
+                                    <!-- Icono de Agregar Colores -->
+                                    <a href="{{ route('producto.colores', $row->id) }}" class="text-primary hover-shadow"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar Colores">
+                                        <i class="bi bi-palette fs-4"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <!-- Alerta flotante -->
     @if ($bajoInventario)
     <div id="alertaFlotante"
@@ -331,7 +402,76 @@ totalDescontable tienes el total del producto sin descuento ni ndasa
             }
         });
     </script>
+    {{-- script del buscador  --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('search-productos');
+            const table = document.getElementById('productos-table');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
 
+            searchInput.addEventListener('input', function () {
+                const filter = searchInput.value.toLowerCase();
+
+                Array.from(rows).forEach(row => {
+                    const producto = row.cells[0].textContent.toLowerCase(); // Columna Producto
+                    const marca = row.cells[1].textContent.toLowerCase(); // Columna Marca
+
+                    if (producto.includes(filter) || marca.includes(filter)) {
+                        row.style.display = ''; // Mostrar fila
+                    } else {
+                        row.style.display = 'none'; // Ocultar fila
+                    }
+                });
+            });
+        });
+    </script>
+
+
+{{-- select busscador de almacen --}}
+<script>
+        document.getElementById('SelectBuscadorAlmacen').addEventListener('change', function () {
+        const filterValue = this.value.toLowerCase(); // Obtener el valor seleccionado
+        const table = document.getElementById('productos-table'); // Referencia a la tabla
+        const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr'); // Obtener todas las filas del cuerpo de la tabla
+
+        // Iterar sobre las filas de la tabla
+        Array.from(rows).forEach(row => {
+            // Encontrar la celda que contiene el nombre del almacén
+            const almacenCell = row.cells[2]; // La tercera celda (columna del almacén, índice 2)
+            const almacenText = almacenCell ? almacenCell.textContent.toLowerCase() : ''; // Obtener texto en minúsculas
+
+            // Mostrar/ocultar filas dependiendo de la coincidencia
+            if (filterValue === '' || almacenText.includes(filterValue)) {
+                row.style.display = ''; // Mostrar fila
+            } else {
+                row.style.display = 'none'; // Ocultar fila
+            }
+        });
+    });
+</script>
+{{-- controla el select buscador de categoria --}}
+<script>
+    document.getElementById('SelectBuscadorCategoria').addEventListener('change', function () {
+    const filterValue = this.value.toLowerCase(); // Obtener el valor seleccionado
+    const table = document.getElementById('productos-table'); // Referencia a la tabla
+    const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr'); // Obtener todas las filas del cuerpo de la tabla
+
+    // Iterar sobre las filas de la tabla
+    Array.from(rows).forEach(row => {
+        // Encontrar la celda que contiene el nombre de la categoría
+        const categoriaCell = row.cells[3]; // La cuarta celda (columna de la categoría, índice 3)
+        const categoriaText = categoriaCell ? categoriaCell.textContent.toLowerCase() : ''; // Obtener texto en minúsculas
+
+        // Mostrar/ocultar filas dependiendo de la coincidencia
+        if (filterValue === '' || categoriaText.includes(filterValue)) {
+            row.style.display = ''; // Mostrar fila
+        } else {
+            row.style.display = 'none'; // Ocultar fila
+        }
+    });
+});
+
+</script>
 @endsection
 
 
