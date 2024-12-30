@@ -3,6 +3,10 @@
 @section('title', 'Registra colores del producto')
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 
 @section('contenido')
     <!-- Button trigger modal -->
@@ -19,12 +23,12 @@
             </button>
         @else
             <!-- Mensaje cuando todos los productos están asignados -->
-            {{-- <a class="alert alert-success" role="alert">
+            <a class="alert alert-success" role="alert">
                 Ya se asignaron todos los colores a los productos disponibles.
-            </a> --}}
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalparaEditar">
+            </a>
+            {{-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalparaEditar">
                 <i class="bi bi-pencil-square"></i>
-            </button>
+            </button> --}}
         @endif
     </div>
     <br>
@@ -46,7 +50,8 @@
                     <tr style="background-color: rgb(212, 212, 212); ">
                         <th scope="col" style="border-radius: 15px 0px 0px 0px;">Color:</th>
                         <th scope="col">Unidades:</th>
-                        <th scope="col" style="border-radius: 0px 15px 0px 0px;">Vista del color</th>
+                        <th scope="col">Vista del color</th>
+                        <th scope="col" style="border-radius: 0px 15px 0px 0px;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -69,6 +74,11 @@
                                         Este es un color
                                     </div>
                                 @endif
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger" onclick="eliminarFila({{$color->id}})">
+                                    <i class="bi bi-trash"></i> <!-- Icono de eliminar -->
+                                </button>
                             </td>
                         </tr>
                     @endforeach
@@ -105,6 +115,8 @@
                             <div class="mt-3">
                                 <button class="btn btn-primary" id="add-inputs-button">Agregar</button>
                                 <button class="btn btn-danger" id="remove-inputs-button">Eliminar</button>
+                                <button class="btn btn-secondary" id="filaUnica">Agregar Fila Predeterminada</button>
+
                             </div>
                             <form action="{{ route('producto.guardarColores', $producto->id) }}" method="POST">
                                 @csrf
@@ -248,6 +260,63 @@
                             }
                         });
                     </script>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            // Referencia al botón y al contenedor
+                            const filaUnicaButton = document.getElementById('filaUnica');
+                            const inputContainer = document.getElementById('input-container');
+
+                            // Obtener el valor inicial de totalDisponible desde Blade
+                            const totalDisponible = {{ $producto->cantidadDisponibleProducto - $totalUnidadesConColor }};
+
+                            // Variable para rastrear si ya existe una fila
+                            let filaAgregada = false;
+
+                            // Agregar una fila nueva al contenedor
+                            filaUnicaButton.addEventListener('click', (event) => {
+                                event.preventDefault(); // Prevenir comportamiento predeterminado del botón
+
+                                // Verificar si ya existe una fila
+                                if (filaAgregada) {
+                                    alert('Solo puedes agregar una fila predeterminada.');
+                                    return;
+                                }
+
+                                // Obtener el valor actual de "total asignado" en tiempo real
+                                const totalAsignado = parseInt(document.getElementById('total-asignado').textContent) || 0;
+                                const diferencia = totalDisponible - totalAsignado;
+
+                                // Verificar si hay productos disponibles
+                                if (diferencia <= 0) {
+                                    alert('No hay productos disponibles para asignar.');
+                                    return;
+                                }
+
+                                // Crear la nueva fila
+                                const newRow = document.createElement('div');
+                                newRow.classList.add('row', 'mt-3', 'input-group');
+                                newRow.innerHTML = `
+                                    <div class="col-md-6">
+                                        <label for="inputState" class="form-label">Colores:</label>
+                                        <select name="color_id[]" class="form-select">
+                                            <option value="31">Sin Color</option>
+                                            <!-- Agregar más opciones aquí si es necesario -->
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="" class="form-label">Unidades:</label>
+                                        <input type="number" name="unidadesDisponibleProducto[]" class="form-control" value="${diferencia}" min="1">
+                                    </div>
+                                `;
+
+                                // Agregar la fila al contenedor
+                                inputContainer.appendChild(newRow);
+
+                                // Marcar que ya se agregó una fila
+                                filaAgregada = true;
+                            });
+                        });
+                    </script>
                 <div class="modal-footer">
                     <p class="card-text fs-4"> <strong>Los campos con </strong><span class="text-danger"
                             style="font-size: 1.2rem;">*</span>
@@ -288,5 +357,48 @@
 
 
 
+        <script>
+            $(document).ready(function() {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+            });
 
+            function eliminarFila(colorId, button) {
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: 'No podrás revertir esto!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sí, deseo eliminarlo'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/eliminar-color/' + colorId,
+                            type: 'DELETE',
+                            success: function(response) {
+                                Swal.fire(
+                                    'Eliminado!',
+                                    'El color ha sido eliminado.',
+                                    'success'
+                                ).then(() => {
+                                    location.reload(); // Recargar la página
+                                });
+                            },
+                            error: function(xhr) {
+                                Swal.fire(
+                                    'Error!',
+                                    'Ocurrió un error al intentar eliminar el color.',
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+                });
+            }
+        </script>
 @endsection

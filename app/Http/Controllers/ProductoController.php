@@ -282,6 +282,17 @@ class ProductoController extends Controller{
     return response()->json(['success' => 'Imagen eliminada correctamente.']);
 }
 
+public function destroycolores($id)
+{
+    $color = Color::find($id);
+    if ($color) {
+        $color->delete();
+        return response()->json(['success' => 'Color eliminado correctamente.']);
+    }
+    return response()->json(['error' => 'Color no encontrado.'], 404);
+}
+
+
 
 
 

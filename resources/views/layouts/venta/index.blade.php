@@ -126,9 +126,16 @@
                                                 <td>
                                                     @if ($producto->colores->isNotEmpty())
                                                         @foreach ($producto->colores as $color)
-                                                            <span class="badge d-inline-block"
-                                                                style="display: inline-block; width: 20px; height: 20px; background-color: {{ $color->codigoHexa }};
-                                                                border-radius: 50%; {{ strtolower($color->codigoHexa) == '#ffffff' ? 'border: 2px solid #ccc;' : '' }}"></span>
+                                                            @if (empty($color->codigoHexa))
+                                                                <!-- Círculo con una X en el medio -->
+                                                                <span data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                title="Productos sin color asignado" class="badge d-inline-block" style="display: inline-block; width: 20px; height: 20px; background-color: #fff; border-radius: 50%; border: 2px solid #ccc; position: relative; text-align: center; line-height: 20px;">
+                                                                    <span style="font-size: 14px; color: #ccc; position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: center;">✖</span>
+                                                                </span>
+                                                            @else
+                                                                <!-- Círculo con el color -->
+                                                                <span class="badge d-inline-block" style="display: inline-block; width: 20px; height: 20px; background-color: {{ $color->codigoHexa }}; border-radius: 50%; {{ strtolower($color->codigoHexa) == '#ffffff' ? 'border: 2px solid #ccc;' : '' }}"></span>
+                                                            @endif
                                                         @endforeach
                                                     @else
                                                         Sin colores disponibles

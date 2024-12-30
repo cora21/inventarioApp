@@ -27,6 +27,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [PrincipalController::class, 'index'])->name('dashboard');
     Route::post('/actualizar-tasa-cambio', [PrincipalController::class, 'actualizarTasaCambio'])->name('actualizar.tasa.cambio');
     Route::post('/updateBaseMoneda', [PrincipalController::class, 'updateBaseMoneda'])->name('updateBaseMoneda');
+    Route::get('/api/movimientos-semanales', [PrincipalController::class, 'getMovimientosSemanales']);
+    Route::get('/api/productos-ventas', [PrincipalController::class, 'getProductosVentas']);
+
+
 
 
 
@@ -70,6 +74,9 @@ Route::get('imagenes/{id}', [ProductoController::class, 'imagenes'])->name('prod
 Route::post('producto/{id}', [ProductoController::class, 'guardarImagenes'])->name('producto.guardarImagenes');
 Route::get('/buscar-productos', [ProductoController::class, 'buscar'])->name('producto.buscar');
 Route::delete('/imagenes/{id}', [ProductoController::class, 'destroy'])->name('imagenes.destroy');
+Route::delete('/eliminar-color/{id}', [ProductoController::class, 'destroycolores']);
+
+
 
 
 

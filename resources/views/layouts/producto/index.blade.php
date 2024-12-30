@@ -277,13 +277,14 @@ totalDescontable tienes el total del producto sin descuento ni ndasa
                                 <div class="col-md-4">
                                     <label for="" class="form-label">Cantidad Disponible:</label><span
                                         class="text-danger" style="font-size: 1.2rem;"> * </span>
-                                    <input type="text" name="cantidadDisponibleProducto" class="form-control @error('cantidadDisponibleProducto') is-invalid @enderror"
-                                        id="cantidadDisponibleProducto" oninput="calcularPrecioTotal()">
-                                        @error('cantidadDisponibleProducto')
+                                    <input type="text" name="cantidadDisponibleProducto" class="form-control @error('cantidadDisponibleProducto')is-invalid @enderror" id="cantidadDisponibleProducto" oninput="calcularPrecioTotal()"> @error('cantidadDisponibleProducto')
                                         <div class="invalid-feedback">
                                             <strong>{{ $message }}</strong>
                                         </div>
                                         @enderror
+                                        <div>
+                                            <small style="color: rgb(197, 194, 194)">Ingresa el total de los productos</small>
+                                        </div>
                                 </div>
                                 <input type="hidden" name="totalDescontable">
                                 <div class="col-md-4">
@@ -297,12 +298,18 @@ totalDescontable tienes el total del producto sin descuento ni ndasa
                                             <strong>{{ $message }}</strong>
                                         </div>
                                         @enderror
+                                        <div>
+                                            <small style="color: rgb(197, 194, 194)">Ingresa el precio por unidad</small>
+                                        </div>
                                 </div>
                                 <div class="col-4">
                                     <label for="" class="form-label">Total</label><span class="text-light"
                                         style="font-size: 1.2rem;"> * </span>
                                     <input type="text" name="precioTotal" class="form-control" id="precioTotal"
                                         readonly>
+                                        <div>
+                                            <small style="color: rgb(197, 194, 194)">se muestra el total calculado automaticamente</small>
+                                        </div>
                                 </div>
                                 <br>
                                 <div class="col-12 mb-3">
