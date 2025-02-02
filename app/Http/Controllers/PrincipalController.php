@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use App\Models\TasasCambios;
 use App\Models\Producto;
+use App\Models\MetodoPago;
 use App\Models\Venta;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
@@ -48,9 +49,10 @@ public function index(){
         $vesBaseMoneda = DB::table('tasas_cambios')->where('id', 2)->value('baseMoneda');
         $vesBaseMoneda = (int) $vesBaseMoneda;
 
+        $MetodoPagoPrincipales = MetodoPago::count();
         $cantidadProductosPrincipal = Producto::count();
         $cantidadProductosVendidos = Venta::count();
-        return view('layouts.inicioDashboard.index', compact('promedio', 'fechaActualizacion', 'tasas', 'fechaDelRegistro', 'dolarDesdeBase', 'vesBaseMoneda', 'cantidadProductosPrincipal', 'cantidadProductosVendidos'));
+        return view('layouts.inicioDashboard.index', compact('promedio', 'fechaActualizacion', 'tasas', 'fechaDelRegistro', 'dolarDesdeBase', 'vesBaseMoneda', 'cantidadProductosPrincipal', 'cantidadProductosVendidos', 'MetodoPagoPrincipales'));
 }
 
 

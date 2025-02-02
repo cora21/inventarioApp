@@ -40,7 +40,7 @@ class MetodoPagoSeeder extends Seeder
         MetodoPago::create([
             'nombreMetPago' => 'Combinado',
             'observacionesMetPago' => 'Combinado',
-            'imagenMetPago' => asset(''),
+            'imagenMetPago' => null,
         ]);
 
     }

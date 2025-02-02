@@ -53,7 +53,7 @@
                     <h5 class="fw-bold text-secondary mb-2">{{ $row->nombreMetPago }}</h5>
                     <p class="text-muted small">{{ $row->observacionesMetPago }}</p>
                     <div class="mb-3">
-                        @if ($row->imagenMetPago)
+                        @if (!empty($row->imagenMetPago))
                             <a href="{{ $row->imagenMetPago }}" target="_blank">
                                 <img src="{{ $row->imagenMetPago }}" alt="Imagen del método" class="img-fluid rounded" style="max-width: 80px;">
                             </a>

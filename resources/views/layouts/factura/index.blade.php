@@ -19,6 +19,7 @@
 }
 </style>
 @section('contenido')
+
 <div class="d-flex" style="height: 100vh;">
     <div class="flex-grow-1" style="background-color: #ffffff; height: 100%; width: 200px; overflow-y: auto;">
             @foreach ($venta as $row)
@@ -83,11 +84,31 @@
                                         <td class="text-bold" style="height: 25px; background-color: rgb(241, 241, 241);">Fecha de Creación:</td>
                                         <td class="bg-white" style="height: 25px;">{{ $venta ? \Carbon\Carbon::parse($venta->created_at)->format('d/m/Y g:i a') : 'N/A' }}</td>
                                     </tr>
+                                    @foreach ($detallesPagos as $detallePago)
+                                            @if($detallePago->nombrePago === 'VES')
+                                            @php
+                                                $fechaPago = \Carbon\Carbon::parse($detallePago->created_at)->format('Y-m-d'); // Convertir created_at a Carbon y obtener solo la fecha
+                                                $valorMoneda = null; // Variable para almacenar el valorMonedaH
+                                            @endphp
+                                            @foreach ($valorDolarDiario as $valorDiarioDolarBCV)
+                                                @php
+                                                    $fechaHistorial = \Carbon\Carbon::parse($valorDiarioDolarBCV->fechavalorH)->format('Y-m-d'); // Convertir fechavalorH a Carbon
+                                                @endphp
+                                                @if($fechaHistorial === $fechaPago)
+                                                    @php
+                                                        $valorMoneda = $valorDiarioDolarBCV->valorMonedaH; // Asignar el valor de valorMonedaH
+                                                    @endphp
+                                                    @break
+                                                @endif
+                                            @endforeach
+                                            <tr>
+                                                <td class="text-bold" style="height: 25px; background-color: rgb(241, 241, 241);">Tasa BCV:</td>
+                                                <td class="bg-white" style="height: 25px;">{{ number_format($valorMoneda, 2) }}</td>
+                                            </tr>
+                                            @endif
+                                    @endforeach
+                                    
                                     {{-- <tr>
-                                        <td class="text-bold" style="height: 25px; background-color: rgb(241, 241, 241);">Almacen:</td>
-                                        <td class="bg-white" style="height: 25px;"><!-- Sin datos por ahora --></td>
-                                    </tr>
-                                    <tr>
                                         <td class="text-bold" style="height: 25px; background-color: rgb(241, 241, 241);">Vendedor:</td>
                                         <td class="bg-white" style="height: 25px;"> <!-- Sin datos por ahora --></td>
                                     </tr>
@@ -153,10 +174,27 @@
                                                 @break
                                             @endif
                                         @endforeach
-
-                                        {{-- <td style="width: 30%;">${{ number_format($detallePago->monto, 2) }}</td> <!-- Monto --> --}}
+                                        {{-- esto se mantiene igual --}}
                                         @if($detallePago->nombrePago === 'VES')
-                                        <th scope="row"> {{ number_format($detallePago->monto * $dolarBCV , 2) }}</th>
+                                        @php
+                                            $fechaPago = \Carbon\Carbon::parse($detallePago->created_at)->format('Y-m-d'); // Convertir created_at a Carbon y obtener solo la fecha
+                                            $valorMoneda = null; // Variable para almacenar el valorMonedaH
+                                        @endphp
+
+                                        @foreach ($valorDolarDiario as $valorDiarioDolarBCV)
+                                            @php
+                                                $fechaHistorial = \Carbon\Carbon::parse($valorDiarioDolarBCV->fechavalorH)->format('Y-m-d'); // Convertir fechavalorH a Carbon
+                                            @endphp
+                                            @if($fechaHistorial === $fechaPago)
+                                                @php
+                                                    $valorMoneda = $valorDiarioDolarBCV->valorMonedaH; // Asignar el valor de valorMonedaH
+                                                @endphp
+                                                @break
+                                            @endif
+                                        @endforeach
+                                        <th scope="row">
+                                             {{ number_format($detallePago->monto * $valorMoneda , 2) }}
+                                        </th>
                                         @else
                                             <th scope="row">{{ $detallePago->monto }}</th>
                                         @endif
@@ -172,8 +210,24 @@
                                 @foreach ($detallesPagos as $detallePago)
                                 <li style="padding: 10px 0; display: flex; justify-content: space-between; border-bottom: 1px solid #000;">
                                     @if($detallePago->nombrePago === 'VES')
+                                    @php
+                                    $fechaPago = \Carbon\Carbon::parse($detallePago->created_at)->format('Y-m-d'); // Convertir created_at a Carbon y obtener solo la fecha
+                                    $valorMoneda = null; // Variable para almacenar el valorMonedaH
+                                        @endphp
+
+                                        @foreach ($valorDolarDiario as $valorDiarioDolarBCV)
+                                            @php
+                                                $fechaHistorial = \Carbon\Carbon::parse($valorDiarioDolarBCV->fechavalorH)->format('Y-m-d'); // Convertir fechavalorH a Carbon
+                                            @endphp
+                                            @if($fechaHistorial === $fechaPago)
+                                                @php
+                                                    $valorMoneda = $valorDiarioDolarBCV->valorMonedaH; // Asignar el valor de valorMonedaH
+                                                @endphp
+                                                @break
+                                            @endif
+                                    @endforeach
                                     <span>Pago en bolivares:</span>
-                                    <span>Bs. {{ number_format($detallePago->monto * $dolarBCV, 2) }}</span>
+                                    <span>Bs. {{ number_format($detallePago->monto * $valorMoneda, 2) }}</span>
                                     @else
                                     <span>Pago en dolares:</span>
                                     <span>${{ number_format($detallePago->monto, 2) }}</span>

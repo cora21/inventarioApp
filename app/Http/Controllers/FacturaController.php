@@ -14,6 +14,7 @@ use App\Models\Venta;
 use App\Models\DetalleVenta;
 use App\models\DetallePago;
 use App\models\TasasCambios;
+use App\models\HistoriaTasasCambios;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -31,9 +32,13 @@ class FacturaController extends Controller{
         $categoria = Categoria::all();
         $colores  = Color::all();
         $proveedor = Proveedor::all();
+        $valorDolarDiario = HistoriaTasasCambios::all();
+
         $dolarBCV = DB::table('tasas_cambios')->where('id', 2)->value('valorMoneda');
         $dolarBCV = number_format($dolarBCV, 2);
-        return view('layouts.factura.index', compact( 'almacen', 'categoria', 'colores', 'proveedor', 'producto', 'metPago', 'venta', 'detalleVenta', 'detallePago', 'tasa', 'dolarBCV'
+
+        
+        return view('layouts.factura.index', compact( 'almacen', 'categoria', 'colores', 'proveedor', 'producto', 'metPago', 'venta', 'detalleVenta', 'detallePago', 'tasa', 'dolarBCV', 'valorDolarDiario'
         ));
     }
 
