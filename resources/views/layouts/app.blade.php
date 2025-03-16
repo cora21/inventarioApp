@@ -100,7 +100,7 @@
                     </li>
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('factura.index') }}">
-                            <i class="align-middle" data-feather="grid"></i> <span class="align-middle">Facturas</span>
+                            <i class="align-middle" data-feather="grid"></i> <span class="align-middle">Transacciones</span>
                         </a>
                     </li>
                     <li class="sidebar-item">

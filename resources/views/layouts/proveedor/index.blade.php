@@ -27,22 +27,22 @@
           </tr>
         </thead>
         <tbody>
-                    @if ($proveedor->isEmpty())
-                    <tr>
-                        <td colspan="6" class="text-center">
-                            <div class="alert alert-info" role="alert">
-                                <strong class="h3 text-dark" >¡A un clic de crear tu primer proveedor!</strong>
-                                <br>
-                                <br>
-                                <p class="h5">
-                                    Crea tus productos y comienza a registrar tus inventario
-                                </p>
-                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalRegistroAlmacen">
-                                    + Nuevo Proveedor
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                @if ($proveedor->isEmpty())
+                <tr>
+                    <td colspan="6" class="text-center">
+                        <div class="alert alert-info" role="alert">
+                            <strong class="h3 text-dark" >¡A un clic de crear tu primer proveedor!</strong>
+                            <br>
+                            <br>
+                            <p class="h5">
+                                Crea tus productos y comienza a registrar tus inventario
+                            </p>
+                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalRegistroAlmacen">
+                                + Nuevo Proveedor
+                            </button>
+                        </div>
+                    </td>
+                </tr>
                 @else
                 @foreach ($proveedor as $row)
                 <tr>

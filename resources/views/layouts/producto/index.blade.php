@@ -43,7 +43,7 @@ totalDescontable tienes el total del producto sin descuento ni ndasa
                     <!-- Select 1 -->
                     <div class="col-md-4">
                         <select id="SelectBuscadorAlmacen" class="form-select">
-                            <option value="">Busqueda mediante almacen</option>
+                            <option value="">Busqueda por almacén</option>
                             @foreach ($almacen as $row)
                             <option value="{{ $row->nombre }}">{{ $row->nombre }}</option>
                             @endforeach
@@ -53,7 +53,7 @@ totalDescontable tienes el total del producto sin descuento ni ndasa
                     <!-- Select 2 -->
                     <div class="col-md-4">
                         <select id="SelectBuscadorCategoria" class="form-select">
-                            <option value="">Busqueda mediante categoria</option>
+                            <option value="">Busqueda por categoría</option>
                             @foreach ($categoria as $row)
                             <option value="{{ $row->nombre }}">{{ $row->nombre }}</option>
                             @endforeach
@@ -102,6 +102,23 @@ totalDescontable tienes el total del producto sin descuento ni ndasa
                         <th scope="col" style="border-radius: 0px 15px 0px 0px;">Acciones</th>
                     </tr>
                 </thead>
+                @if ($producto->isEmpty())
+                <tr>
+                    <td colspan="8" class="text-center">
+                        <div class="alert alert-info" role="alert">
+                            <strong class="h2 text-dark" >¡Haz un clic para registrar tu primer producto!</strong>
+                            <br>
+                            <br>
+                            <p class="h5">
+                                Aqui podrás registrar los diferentes productos para tu inventario
+                            </p>
+                            <a type="button" class="btn btn-outline-primary ms-1" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                + Nuevo Producto
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                @else
                 <tbody>
                     @foreach ($producto as $row)
                     @php
@@ -169,6 +186,7 @@ totalDescontable tienes el total del producto sin descuento ni ndasa
                             </td>
                         </tr>
                     @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>

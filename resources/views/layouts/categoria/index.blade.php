@@ -125,6 +125,23 @@
                         <th scope="col" style="border-radius: 0px 15px 0px 0px;">Acciones</th>
                     </tr>
                 </thead>
+                @if ($categoria->isEmpty())
+                <tr>
+                    <td colspan="6" class="text-center">
+                        <div class="alert alert-info" role="alert">
+                            <strong class="h3 text-dark" >¡Haz un clic de crear tu primera Categoria!</strong>
+                            <br>
+                            <br>
+                            <p class="h5">
+                                Crea las diferentes categorias para el inventario de tus productos
+                            </p>
+                            <button type="button" class="btn btn-lg btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalRegistroAlmacen">
+                                + Nueva Categoria
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                @else
                 @foreach ($categoria as $row)
                 <tbody>
                     <tr>
@@ -160,6 +177,7 @@
                         </td>
                     </tr>
                     @endforeach
+                    @endif
                 </tbody>
             </table>
 
