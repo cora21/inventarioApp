@@ -11,6 +11,9 @@ use App\Http\Controllers\VentaController;
 use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\PrincipalController;
 use App\Http\Controllers\PDFController;
+use Illuminate\Support\Facades\Auth;
+
+Auth::routes();
 
 
 Route::get('/', function () {
