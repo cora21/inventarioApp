@@ -308,7 +308,7 @@ totalDescontable tienes el total del producto sin descuento ni ndasa
                                 <div class="col-md-4">
                                     <label for="" class="form-label">Precio Unitario:</label><span
                                         class="text-danger" style="font-size: 1.2rem;"> * </span>
-                                    <input type="number"  name="precioUnitarioProducto"
+                                    <input type="text"  name="precioUnitarioProducto"
                                         class="form-control @error('precioUnitarioProducto') is-invalid @enderror" id="precioUnitarioProducto"
                                         oninput="formatDecimal(this); calcularPrecioTotal()">
                                         @error('precioUnitarioProducto')

@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
         User::create([
             'first_name' => 'Obrayan',
             'last_name' => 'Acosta',
-            'email' => 'obra@admin.com',
+            'email' => 'obrayanacosta2021@gmail.com',
             'email_verified_at' => now(),
             'phone_number'=> '4122539631',
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
