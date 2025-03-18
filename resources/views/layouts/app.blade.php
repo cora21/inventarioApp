@@ -104,7 +104,7 @@
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="#">
+                        <a class="sidebar-link" href="{{ route('configuracion.index') }}">
                             <i class="align-middle" data-feather="sliders"></i> <span
                                 class="align-middle">Configuraciones</span>
                         </a>
@@ -203,16 +203,16 @@
                         <div class="col-6 text-end">
                             <ul class="list-inline">
                                 <li class="list-inline-item">
-                                    <a class="text-muted" href="" target="_blank">Support</a>
+                                    <a class="text-muted" href="" target="_blank">Soporte</a>
                                 </li>
                                 <li class="list-inline-item">
-                                    <a class="text-muted" href="" target="_blank">Help Center</a>
+                                    <a class="text-muted" href="" target="_blank">Centro de ayuda</a>
                                 </li>
                                 <li class="list-inline-item">
-                                    <a class="text-muted" href="" target="_blank">Privacy</a>
+                                    <a class="text-muted" href="" target="_blank">Privacidad</a>
                                 </li>
                                 <li class="list-inline-item">
-                                    <a class="text-muted" href="" target="_blank">Terms</a>
+                                    <a class="text-muted" href="" target="_blank">Terminos</a>
                                 </li>
                             </ul>
                         </div>

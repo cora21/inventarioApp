@@ -10,6 +10,7 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\VentaController;
 use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\PrincipalController;
+use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\PDFController;
 use Illuminate\Support\Facades\Auth;
 
@@ -100,6 +101,10 @@ Route::post('/factura/agregar', [FacturaController::class, 'agregarProducto'])->
 Route::get('/generar-pdf', [PDFController::class, 'generarPDF'])->name('generar.pdf');
 Route::get('/generar-factura-pdf', [PDFController::class, 'generarFacturaPDF'])->name('generarFactura.pdf');
 
+
+
+//rutas para la configuracion
+Route::get('configuracion', [ConfiguracionController::class, 'index'])->name('configuracion.index');
 
 
 
