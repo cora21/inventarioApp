@@ -74,11 +74,11 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-item">
+                    {{-- <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('users.index') }}">
                             <i class="align-middle" data-feather="user"></i> <span class="align-middle">Usuarios</span>
                         </a>
-                    </li>
+                    </li> --}}
 
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('metodoPago.index') }}">
