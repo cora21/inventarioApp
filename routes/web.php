@@ -7,6 +7,7 @@ use App\Http\Controllers\MetodoPagoController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\ReporteVentaController;
 use App\Http\Controllers\VentaController;
 use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\PrincipalController;
@@ -27,28 +28,23 @@ require __DIR__.'/auth.php';
 
 
 Route::middleware(['auth'])->group(function () {
-
     Route::get('/dashboard', [PrincipalController::class, 'index'])->name('dashboard');
     Route::post('/actualizar-tasa-cambio', [PrincipalController::class, 'actualizarTasaCambio'])->name('actualizar.tasa.cambio');
     Route::post('/updateBaseMoneda', [PrincipalController::class, 'updateBaseMoneda'])->name('updateBaseMoneda');
     Route::get('/api/movimientos-semanales', [PrincipalController::class, 'getMovimientosSemanales']);
     Route::get('/api/productos-ventas', [PrincipalController::class, 'getProductosVentas']);
 
-
-
-
-
-
     /* USERS */
-    Route::get('users', [UserController::class, 'index'])->name('users.index');
-    Route::get('users/create', [UserController::class, 'create'])->name('users.create');
-    Route::post('users', [UserController::class, 'store'])->name('users.store');
-    Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
-    Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-    Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
-    Route::delete('users/{user}/destroy', [UserController::class, 'destroy'])->name('users.destroy');
-});
+    Route::resource('users', UserController::class);
 
+    /* REPORTES */
+    Route::prefix('reportes')->group(function () {
+        Route::get('/ventas', [ReporteVentaController::class, 'index'])->name('reporte.ventas.index');
+        Route::get('/ventas/filtrar', [ReporteVentaController::class, 'filtrar'])->name('reporte.ventas.filtrar');
+        Route::get('/ventas/exportar/pdf', [ReporteVentaController::class, 'exportarPdf'])->name('reportes.ventas.exportar.pdf');
+        Route::get('/ventas/exportar/excel', [ReporteVentaController::class, 'exportarExcel'])->name('reportes.ventas.exportar.excel');
+    });
+});
 
 // rutas de almacen
 Route::resource('almacen', AlmacenController::class);
@@ -79,9 +75,6 @@ Route::post('producto/{id}', [ProductoController::class, 'guardarImagenes'])->na
 Route::get('/buscar-productos', [ProductoController::class, 'buscar'])->name('producto.buscar');
 Route::delete('/imagenes/{id}', [ProductoController::class, 'destroy'])->name('imagenes.destroy');
 Route::delete('/eliminar-color/{id}', [ProductoController::class, 'destroycolores']);
-
-
-
 
 
 //rutas de las ventas

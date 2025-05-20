@@ -27,4 +27,12 @@ class DetallePago extends Model
     {
         return $this->belongsTo(MetodoPago::class, 'metodo_pago_id');
     }
+    public function tasaCambio()
+    {
+        return $this->belongsTo(TasasCambios::class, 'tasa_cambio_id');
+    }
+    public function historiaTasaCambio()
+    {
+        return $this->hasMany(HistoriaTasasCambios::class, 'venta_id');
+    }
 }

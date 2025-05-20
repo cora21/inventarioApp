@@ -10,6 +10,45 @@
     <meta name="author" content="AdminKit">
     <meta name="keywords"
         content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
+  
+    <style>
+    /* Colores principales */
+    .sidebar {
+        background-color: #284B26; /* Verde oscuro combinado con tu logo */
+    }
+
+    .sidebar .sidebar-brand {
+        color: #ffffff;
+    }
+
+    .sidebar .sidebar-nav .sidebar-item:hover > .sidebar-link,
+    .sidebar .sidebar-nav .sidebar-item.active > .sidebar-link {
+        background-color: #3A6B3A;
+        color: #fff !important;
+        border-left: 4px solid #FFD700; /* Borde amarillo dorado */
+    }
+
+    .sidebar .sidebar-link {
+        color: #f8f9fa;
+        transition: all 0.3s ease-in-out;
+        border-radius: 5px;
+    }
+
+    .sidebar .sidebar-link i {
+        color: #dcdcdc;
+    }
+
+    .sidebar .logout-btn {
+        width: 100%;
+        margin-top: auto;
+        border-radius: 5px;
+        background-color: #4B7447;
+    }
+
+    .sidebar .logout-btn:hover {
+        background-color: #3A6B3A;
+    }
+    </style>
 
     <!-- Fuente y Favicon -->
     {{-- <link rel="preconnect" href="https://fonts.gstatic.com"> --}}
@@ -38,26 +77,19 @@
         {{-- <nav id="sidebar" class="sidebar js-sidebar {{ request()->routeIs('venta.index') ? 'collapsed' : '' }}"> --}}
         <nav id="sidebar" class="sidebar js-sidebar">
             <div class="sidebar-content js-simplebar">
-                <a class="sidebar-brand" href="#">
-                    <!-- titulo de la parte de arriba de la plantilla en la esquina donde puede ir un logo -->
-                    <span class="align-middle">AdminKit</span>
-                </a>
+                <div class="sidebar-brand d-flex align-items-center justify-content-center py-3">
+                <img src="{{ asset('imagenes/logo.png') }}" alt="Logo" class="img-fluid me-2" style="max-height: 40px;">
+                <span class="align-middle fw-bold text-white fs-5">Inversiones MP</span>
+            </div>
 
                 <ul class="sidebar-nav">
                     <li class="sidebar-header">
                         Panel de control
                     </li>
 
-                    <li class="sidebar-item">
+                    <li class="sidebar-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                         <a class="sidebar-link" href="{{ route('dashboard') }}">
-                            <i class="align-middle" data-feather="power"></i> <span
-                                class="align-middle">Principal</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{ route('producto.index') }}">
-                            <i class="align-middle" data-feather="tag"></i> <span class="align-middle">Productos</span>
+                            <i class="align-middle" data-feather="power"></i> <span class="align-middle">Principal</span>
                         </a>
                     </li>
 
@@ -69,14 +101,28 @@
                     </li>
 
                     <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('producto.index') }}">
+                            <i class="align-middle" data-feather="tag"></i> <span class="align-middle">Productos</span>
+                        </a>
+                    </li>
+
+                     <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('categoria.index') }}">
+                            <i class="align-middle" data-feather="grid"></i> <span
+                                class="align-middle">Categorias</span>
+                        </a>
+                    </li>
+
+                    <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('almacen.index') }}">
                             <i class="align-middle" data-feather="book"></i> <span class="align-middle">Almacenes</span>
                         </a>
                     </li>
 
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{ route('users.index') }}">
-                            <i class="align-middle" data-feather="user"></i> <span class="align-middle">Usuarios</span>
+                        <a class="sidebar-link" href="{{ route('proveedor.index') }}">
+                            <i class="align-middle" data-feather="users"></i> <span
+                                class="align-middle">Proveedores</span>
                         </a>
                     </li>
 
@@ -86,23 +132,25 @@
                                 de Pago</span>
                         </a>
                     </li>
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{ route('categoria.index') }}">
-                            <i class="align-middle" data-feather="grid"></i> <span
-                                class="align-middle">Categorias</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{ route('proveedor.index') }}">
-                            <i class="align-middle" data-feather="users"></i> <span
-                                class="align-middle">Proveedores</span>
-                        </a>
-                    </li>
+
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('factura.index') }}">
                             <i class="align-middle" data-feather="grid"></i> <span class="align-middle">Transacciones</span>
                         </a>
                     </li>
+
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('reporte.ventas.index') }}">
+                            <i class="fas fa-chart-line"></i> Reportes de Ventas</span>
+                        </a>
+                    </li>
+
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route('users.index') }}">
+                            <i class="align-middle" data-feather="user"></i> <span class="align-middle">Usuarios</span>
+                        </a>
+                    </li>
+                    
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('configuracion.index') }}">
                             <i class="align-middle" data-feather="sliders"></i> <span
@@ -454,6 +502,10 @@
                 defaultDate: defaultDate
             });
         });
+    </script>
+    <script src="https://unpkg.com/feather-icons "></script>
+    <script>
+        feather.replace();
     </script>
 </body>
 

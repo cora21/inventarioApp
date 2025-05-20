@@ -12,7 +12,7 @@ use App\Models\Producto;
 use App\Models\MetodoPago;
 use App\Models\Venta;
 use App\Models\DetalleVenta;
-use App\models\DetallePago;
+use App\Models\DetallePago;
 use App\Models\TasasCambios;
 
 use Illuminate\Support\Facades\DB;

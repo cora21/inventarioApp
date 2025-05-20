@@ -12,9 +12,9 @@ use App\Models\Producto;
 use App\Models\MetodoPago;
 use App\Models\Venta;
 use App\Models\DetalleVenta;
-use App\models\DetallePago;
-use App\models\TasasCambios;
-use App\models\HistoriaTasasCambios;
+use App\Models\DetallePago;
+use App\Models\TasasCambios;
+use App\Models\HistoriaTasasCambios;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 

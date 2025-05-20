@@ -117,12 +117,12 @@
                     <div class="text-center">
                         @if (5 - $cantidadImagenes === 1)
                         <p style="font-size: 1rem;">Este producto tiene: <strong>{{ $cantidadImagenes }}</strong>  imágenes registradas.</p>
-                        <p style="font-size: 1rem;">Puedes registrar máximo <strong>una</strong> imágen más todavía.</p>
+                        <p style="font-size: 1rem;">o <strong>una</strong> imágen más todavía.</p>
                         @elseif ($cantidadImagenes === 5)
                         <p style="font-size: 1rem; color: red;">No puedes registrar más imagenes</p>
                         @else
                             <p style="font-size: 1rem;">Este producto tiene: <strong>{{ $cantidadImagenes }}</strong>  imágenes registradas.</p>
-                            <p style="font-size: 1rem;">Puedes registrar máximo <strong>{{ 5 - $cantidadImagenes }}</strong> imágenes todavía.</p>
+                            <p style="font-size: 1rem;">o <strong>{{ 5 - $cantidadImagenes }}</strong> imágenes todavía.</p>
                         @endif
 
                     </div>

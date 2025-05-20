@@ -73,7 +73,7 @@
                     <div class="dropdown-item text-center">
                         <a href="{{ route('metodo.show', $row->id) }}" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
                             <i data-feather="eye" class="me-2"></i> <span>Ver</span>
-                        <a/>
+                        </a>
                     </div>
                     <div class="dropdown-item text-center">
                     @can('users.show')

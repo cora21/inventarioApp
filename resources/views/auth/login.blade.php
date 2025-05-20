@@ -6,7 +6,7 @@
     <title>Iniciar Sesión</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body style="background-color: #9A616D;" class="h-screen flex items-center justify-center">
+<body style="background-color: #1f2937;" class="h-screen flex items-center justify-center">
 
     <section class="w-full h-full">
         <div class="container mx-auto py-5 h-full flex items-center justify-center">

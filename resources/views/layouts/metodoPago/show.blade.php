@@ -50,7 +50,7 @@
 
     </div>
     <script>
-        const imageInput = document.getElementById('imageMetodo');
+        const imageInput = document.getElementById('metPago');
         const previewImage = document.getElementById('previewImage');
 
         imageInput.addEventListener('change', function(event) {
