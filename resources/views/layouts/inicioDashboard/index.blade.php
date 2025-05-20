@@ -65,7 +65,7 @@
                             <h1 class="mt-1 mb-3">{{$cantidadProductosVendidos}}</h1>
                             <div class="mb-0">
                                 <span class="text-danger">-3.65%</span>
-                                <span class="text-muted">Since last week</span>
+                                <span class="text-muted">Desde la semana pasada</span>
                             </div>
                         </div>
 
@@ -86,7 +86,7 @@
                             <h1 class="mt-1 mb-3">{{$cantidadProductosPrincipal}}</h1>
                             <div class="mb-0">
                                 <span class="text-success">5.25%</span>
-                                <span class="text-muted">Since last week</span>
+                                <span class="text-muted">Desde la semana pasada</span>
                             </div>
                         </div>
                     </div>
@@ -108,7 +108,7 @@
                             <h1 class="mt-1 mb-3">$21.300</h1>
                             <div class="mb-0">
                                 <span class="text-success">6.65%</span>
-                                <span class="text-muted">Since last week</span>
+                                <span class="text-muted">Desde hace una semana</span>
                             </div>
                         </div>
                     </div>
@@ -126,10 +126,10 @@
                                 </div>
                             </div>
                             <h1 class="mt-1 mb-3">{{$MetodoPagoPrincipales}}</h1>
-                            {{-- <div class="mb-0">
+                            <div class="mb-0">
                                 <span class="text-danger">-2.25%</span>
-                                <span class="text-muted">Since last week</span>
-                            </div> --}}
+                                <span class="text-muted">Desde hace una semana</span>
+                            </div>
                         </div>
                     </div>
                 </div>

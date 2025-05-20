@@ -292,7 +292,7 @@ totalDescontable tienes el total del producto sin descuento ni ndasa
                                         @enderror
                                     </select>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <label for="" class="form-label">Cantidad Disponible:</label><span
                                         class="text-danger" style="font-size: 1.2rem;"> * </span>
                                     <input type="text" name="cantidadDisponibleProducto" class="form-control @error('cantidadDisponibleProducto')is-invalid @enderror" id="cantidadDisponibleProducto" oninput="calcularPrecioTotal()"> @error('cantidadDisponibleProducto')
@@ -305,7 +305,19 @@ totalDescontable tienes el total del producto sin descuento ni ndasa
                                         </div>
                                 </div>
                                 <input type="hidden" name="totalDescontable">
-                                <div class="col-md-4">
+                                {{-- aqui colocamos el precio del proveedor --}}
+                                <div class="col-md-3">
+                                    <label for="" class="form-label">Precio Base-Proveedor:</label><span
+                                        class="text-danger" style="font-size: 1.2rem;"> * </span>
+                                    <input type="text"  name="precioBaseProveedor"
+                                        class="form-control">
+                                        <div>
+                                            <small style="color: rgb(197, 194, 194)">Se registra el precio base</small>
+                                        </div>
+                                </div>
+
+                                {{-- real --}}
+                                <div class="col-md-3">
                                     <label for="" class="form-label">Precio Unitario:</label><span
                                         class="text-danger" style="font-size: 1.2rem;"> * </span>
                                     <input type="text"  name="precioUnitarioProducto"
@@ -320,7 +332,7 @@ totalDescontable tienes el total del producto sin descuento ni ndasa
                                             <small style="color: rgb(197, 194, 194)">Ingresa el precio por unidad</small>
                                         </div>
                                 </div>
-                                <div class="col-4">
+                                <div class="col-3">
                                     <label for="" class="form-label">Total</label><span class="text-light"
                                         style="font-size: 1.2rem;"> * </span>
                                     <input type="text" name="precioTotal" class="form-control" id="precioTotal"
