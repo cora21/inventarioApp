@@ -14,6 +14,9 @@ class Venta extends Model
     protected $fillable = [
 
         'montoTotalVenta',
+        'metodo_pago_id',   
+        'almacen_id', 
+        'tasa_cambio_id', 
     ];
 
     public function detallesVenta(){
@@ -36,12 +39,6 @@ class Venta extends Model
         return $this->belongsTo(TasasCambios::class, 'tasa_cambio_id');
     }
 
-    public function categoria(){
-        return $this->belongsTo(Categoria::class, 'categoria_id');
-    }
-    public function producto(){
-        return $this->belongsTo(Producto::class, 'producto_id');
-    }
     public function historiaTasaCambio(){
         return $this->hasMany(HistoriaTasasCambios::class, 'venta_id');
     }

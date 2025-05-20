@@ -6,9 +6,9 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #000;
+            background-color: #fff;
             color: #fff;
-            margin: 40px;
+            margin: 20px;
             padding: 0;
         }
 
@@ -21,9 +21,9 @@
         .date {
             display: block;
             text-align: center;
-            font-size: 14px;
+            font-size: 12px;
             color: #ccc;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         table {
@@ -31,12 +31,15 @@
             border-collapse: collapse;
             background-color: #111;
             color: #fff;
+            table-layout: fixed; /* Hace que respete el ancho total */
+            font-size: 10px; /* Reduce un poco el tamaño del texto */
         }
 
         th, td {
             border: 1px solid #7ED321;
-            padding: 12px;
-            text-align: left;
+            padding: 6px; /*Reduce el padding para ahorrar espacio */
+            word-wrap: break-word; /*Rompe palabras largas */
+            white-space: normal; /* Evita que el texto esté en una sola línea */
         }
 
         th {
@@ -62,7 +65,7 @@
         .footer {
             margin-top: 50px;
             text-align: center;
-            font-size: 12px;
+            font-size: 18px;
             color: #666;
         }
     </style>
@@ -70,38 +73,51 @@
 <body>
 
     <!-- Logo de fondo -->
-    <img src="{{ public_path('imagenes/fonde del PDF.jpg') }}" class="background-logo" alt="Logo Moto">
+    <img src="{{ public_path('imagenes/fondopdf.jpg') }}" class="background-logo" alt="Logo Moto">
 
     <h2>Reporte de Ventas</h2>
     <span class="date">Fecha: {{ now()->format('d/m/Y') }}</span>
 
     <table>
         <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Producto</th>
-                        <th>Categoría</th>
-                        <th>Cantidad</th>
-                        <th>Precio Unitario</th>
-                        <th>Total</th>
-                        <th>Método Pago</th>
-                        <th>Tasa Cambio</th>
-                        <th>Almacén</th>
-                    </tr>
-                </thead>
+            <tr>
+                <th>N°</th>
+                <th>Cantidad</th>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Color</th>
+                <th>Descripción</th>
+                <th>Producto Disponible</th>
+                <th>Precio de Proveedor</th>
+                <th>Precio Unitario</th>
+                <th>Total</th>
+                <th>Método Pago</th>
+                <th>Almacén</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
             <tbody>
+                @php $contador = 1; @endphp
                 @forelse($ventas as $venta)
                     @foreach($venta->detallesVenta as $detalle)
                         <tr>
-                            <td>{{ $venta->created_at->format('d/m/Y') }}</td>
+                            <td>{{ $contador++ }}</td>
+                            <td>{{ $detalle->cantidadSeleccionadaVenta }}</td>
                             <td>{{ optional($detalle->producto)->nombreProducto }}</td>
                             <td>{{ optional(optional($detalle->producto)->categoria)->nombre ?? '-' }}</td>
-                            <td>{{ $detalle->cantidadSeleccionadaVenta }}</td>
+                            <td>{{ optional($detalle->producto)->marcaProducto ?? '-' }}</td>
+                            <td>{{ optional($detalle->producto)->modeloProducto ?? '-' }}</td>
+                            <td>{{ optional($detalle->color)->nombreColor ?? '-' }}</td>
+                            <td>{{ optional($detalle->producto)->descripcionProducto ?? '-' }}</td>
+                            <td>{{ optional($detalle->producto)->cantidadDisponibleProducto ?? '-' }}</td>
+                            <td>${{ number_format(optional($detalle->producto)->precioBaseProveedor, 2) }}</td>
                             <td>${{ number_format($detalle->precioUnitarioProducto, 2) }}</td>
                             <td>${{ number_format($detalle->precioTotalPorVenta, 2) }}</td>
-                            <td>{{ optional($venta->metodoPago)->nombre ?? '-' }}</td>
-                            <td>{{ optional(optional($venta->detallePago)->tasaCambio)->valor ?? '-' }}</td>
-                            <td>{{ optional($venta->almacen)->nombre ?? '-' }}</td>
+                            <td>{{ optional(optional($venta->detallesPago->first())->metodoPago)->nombreMetPago ?? '-' }}</td>
+                            <td>{{ optional(optional($detalle->producto)->almacen)->nombre ?? '-' }}</td>
+                            <td>{{ $venta->created_at->format('d/m/Y') }}</td>
                         </tr>
                     @endforeach
                 @empty

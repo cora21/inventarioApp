@@ -22,7 +22,7 @@ class Producto extends Model
         'precioTotal',
         'totalDescontable',
     ];
-        public function categoria(){
+    public function categoria(){
         return $this->belongsTo(Categoria::class, 'categoria_id');
     }
 

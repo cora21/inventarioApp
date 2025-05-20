@@ -15,7 +15,7 @@ use App\Models\Almacen;
 use App\Models\Categoria;
 use App\Models\HistoriaTasasCambios;
 use Carbon\Carbon;
-use Barryvdh\DomPDF\Facade as PDF;
+use PDF;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 
@@ -41,7 +41,14 @@ class ReporteVentaController extends Controller
 
     public function filtrar(Request $request)
     {
-        $query = Venta::with(['detallesVenta.producto']);
+        $perPage = $request->input('perPage', 10); // Valores predeterminados: 10, 20, 50, 100
+
+        $query = Venta::with([
+        'detallesVenta.producto.categoria',
+        'detallesPago.metodoPago',
+        'detallesPago.tasaCambio',
+        'almacen',
+    ]);
 
         if ($request->filled('producto_id')) {
             $query->whereHas('detallesVenta', function ($q) use ($request) {
@@ -56,7 +63,18 @@ class ReporteVentaController extends Controller
             ]);
         }
 
-        $ventas = $query->paginate(10)->appends($request->all());
+         if ($request->filled('metodo_pago_id')) {
+            $query->whereHas('detallesPago', function($q) use ($request) {
+            $q->where('metodo_pago_id', $request->metodo_pago_id);
+        });
+    }
+
+        if ($request->filled('almacen_id')) {
+                $query->where('almacen_id', $request->almacen_id);
+        }
+
+
+         $ventas = $query->paginate($perPage)->appends($request->all());
 
         $productos = Producto::all();
         $metodosPago = MetodoPago::all();
@@ -66,11 +84,20 @@ class ReporteVentaController extends Controller
         return view('reportes.ventas', compact('ventas', 'productos', 'metodosPago', 'almacenes'));
     }
 
-    public function exportarPdf(Request $request)
+        public function exportarPdf(Request $request)
     {
-        $ventas = $this->filtrarQuery($request)->get();
-        $pdf = PDF::loadView('reportes.pdf.ventas_pdf', compact('ventas'));
+        $ventas = $this->filtrarQuery($request)
+                        ->with([
+                            'detallesVenta.producto.categoria',
+                            'detallesPago.metodoPago',
+                            'detallesPago.tasaCambio',
+                            'almacen'
+                        ])
+                        ->get();
 
+        $pdf = $pdf = PDF::loadView('reportes.pdf.ventas_pdf', compact('ventas'))
+        ->setPaper('A4', 'landscape')
+        ->setOptions(['dpi' => 96, 'zoom' => 0.8]); // 👈 Zoom reducido
         return $pdf->download('reporte_ventas_' . now()->format('Y-m-d') . '.pdf');
     }
 
@@ -101,11 +128,11 @@ class ReporteVentaController extends Controller
     private function filtrarQuery(Request $request)
     {
         $query = Venta::with([
-            'detallesVenta.producto.categoria',
-            'metodoPago',
-            'almacen',
-            'detallePago.tasaCambio'
-        ]);
+        'detallesVenta.producto.categoria',
+        'detallesPago.metodoPago',
+        'detallesPago.tasaCambio',
+        'almacen'
+    ]);
 
         if ($request->filled('producto_id')) {
             $query->whereHas('detallesVenta', function ($q) use ($request) {
