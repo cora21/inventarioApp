@@ -10,6 +10,8 @@ class ColorSeeder extends Seeder
     public function run()
     {
         $colors = [
+            
+            ['nombreColor' => 'Sin Color', 'codigoHexa' => '#D3D3D3'],
             ['nombreColor' => 'Rojo', 'codigoHexa' => '#FF0000'],
             ['nombreColor' => 'Verde', 'codigoHexa' => '#008000'],
             ['nombreColor' => 'Azul', 'codigoHexa' => '#0000FF'],
@@ -39,8 +41,7 @@ class ColorSeeder extends Seeder
             ['nombreColor' => 'Salmón', 'codigoHexa' => '#FA8072'],
             ['nombreColor' => 'Coral', 'codigoHexa' => '#FF7F50'],
             ['nombreColor' => 'Lavanda', 'codigoHexa' => '#E6E6FA'],
-            ['nombreColor' => 'Azul Acero', 'codigoHexa' => '#4682B4'],
-            ['nombreColor' => 'Sin Color', 'codigoHexa' => '#D3D3D3']
+            ['nombreColor' => 'Azul Acero', 'codigoHexa' => '#4682B4']
         ];
 
         foreach ($colors as $color) {

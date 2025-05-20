@@ -105,6 +105,6 @@ Route::get('/generar-factura-pdf', [PDFController::class, 'generarFacturaPDF'])-
 
 //rutas para la configuracion
 Route::get('configuracion', [ConfiguracionController::class, 'index'])->name('configuracion.index');
-
-
+Route::post('/configuracion/colores', [ConfiguracionController::class, 'guardarColor'])->name('configuracion.colores.store');
+Route::delete('/configuracion/colores/{id}', [ConfiguracionController::class, 'eliminarColor'])->name('configuracion.colores.delete');
 
