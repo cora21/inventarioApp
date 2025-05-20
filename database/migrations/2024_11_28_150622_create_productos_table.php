@@ -26,6 +26,7 @@ class CreateProductosTable extends Migration
             $table->decimal('precioUnitarioProducto', 10, 2)->nullable();
             $table->decimal('precioTotal', 15, 2)->nullable();
             $table->integer('totalDescontable')->default(0);
+            $table->decimal('precioBaseProveedor', 10, 2)->default(0);
             $table->timestamps();
 
             // Relaciones

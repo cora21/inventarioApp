@@ -66,6 +66,7 @@ class ProductoController extends Controller{
             'almacen_id' => 'required|exists:almacenes,id',
             'cantidadDisponibleProducto' => 'required|integer|min:0',
             'precioUnitarioProducto' => 'required|numeric|min:0',
+            'precioBaseProveedor' => 'required|numeric|min:0',
             'precioTotal' => 'numeric',
         ], [
             'nombreProducto.required' => 'Este campo es obligatorio.',
@@ -74,6 +75,7 @@ class ProductoController extends Controller{
             'proveedor_id.required' => 'Este campo es obligatorio.',
             'almacen_id.required' => 'Este campo es obligatorio.',
             'cantidadDisponibleProducto.required' => 'Este campo es obligatorio.',
+            'precioBaseProveedor.required' => 'Este campo es obligatorio.',
             'cantidadDisponibleProducto.integer' => 'Este campo debe contener números.',
         ]);
 
@@ -87,6 +89,7 @@ class ProductoController extends Controller{
             $producto->proveedor_id = $validated['proveedor_id'];
             $producto->almacen_id = $validated['almacen_id'];
             $producto->cantidadDisponibleProducto = $validated['cantidadDisponibleProducto'];
+            $producto->precioBaseProveedor = $validated['precioBaseProveedor'];
             // Asigna el valor de cantidadDisponibleProducto a totalDescontable
             $producto->totalDescontable = $validated['cantidadDisponibleProducto'];  // Aquí lo asignamos
             $producto->precioUnitarioProducto = $validated['precioUnitarioProducto'];
@@ -112,6 +115,7 @@ class ProductoController extends Controller{
             'almacen_id' => 'required|exists:almacenes,id',
             'cantidadDisponibleProducto' => 'required|integer|min:0',
             'precioUnitarioProducto' => 'required|numeric|min:0',
+            'precioBaseProveedor' => 'required|numeric|min:0',
             'precioTotal' => 'nullable',
         ], [
             'nombreProducto.required' => 'Este campo es obligatorio.',
@@ -119,6 +123,7 @@ class ProductoController extends Controller{
             'categoria_id.required' => 'Este campo es obligatorio.',
             'proveedor_id.required' => 'Este campo es obligatorio.',
             'almacen_id.required' => 'Este campo es obligatorio.',
+            'precioBaseProveedor.required' => 'Este campo es obligatorio.',
             'cantidadDisponibleProducto.required' => 'Este campo es obligatorio.',
             'cantidadDisponibleProducto.integer' => 'Este campo debe contener números.',
         ]);
@@ -134,7 +139,8 @@ class ProductoController extends Controller{
         $producto->categoria_id = $validated['categoria_id'];
         $producto->proveedor_id = $validated['proveedor_id'];
         $producto->almacen_id = $validated['almacen_id'];
-        $producto->cantidadDisponibleProducto = $validated['cantidadDisponibleProducto'];
+        $producto->cantidadDisponibleProducto = $validated['cantidadDisponibleProducto']; 
+        $producto->precioBaseProveedor = $validated['precioBaseProveedor'];
         $producto->totalDescontable = $validated['cantidadDisponibleProducto']; // Actualizar totalDescontable
         $producto->precioUnitarioProducto = $validated['precioUnitarioProducto'];
         $producto->precioTotal = $validated['precioTotal'];
