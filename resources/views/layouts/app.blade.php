@@ -95,7 +95,7 @@
 
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('venta.index') }}">
-                            <i class="align-middle" data-feather="dollar-sign"></i> <span
+                            <i class="align-middle" data-feather="shopping-cart"></i> <span
                                 class="align-middle">Ventas</span>
                         </a>
                     </li>
@@ -134,20 +134,27 @@
                     </li>
 
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{ route('factura.index') }}">
-                            <i class="align-middle" data-feather="grid"></i> <span class="align-middle">Transacciones</span>
+                        <a data-bs-toggle="collapse" href="#reportesMenu" class="sidebar-link collapsed" aria-expanded="false">
+                            <i class="align-middle" data-feather="trending-up"></i> 
+                            <span class="align-middle">Reportes</span>
                         </a>
-                    </li>
-
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{ route('reporte.ventas.index') }}">
-                            <i class="fas fa-chart-line"></i> Reportes de Ventas</span>
-                        </a>
-                    </li>
+                        <ul id="reportesMenu" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" href="{{ route('factura.index') }}">
+                                    <i class="align-middle" data-feather="grid"></i> Transacciones
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" href="{{ route('reporte.ventas.index') }}">
+                                    <i class="align-middle" data-feather="bar-chart-2"></i> Reportes de ventas
+                                </a>
+                            </li>
+                        </ul>
+                    </li>                    
 
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('users.index') }}">
-                            <i class="align-middle" data-feather="user"></i> <span class="align-middle">Usuarios</span>
+                            <i class="align-middle" data-feather="user"></i> <span class="align-middle">Perfil de Usuario</span>
                         </a>
                     </li>
                     
