@@ -92,6 +92,15 @@
                     </select>
                 </div>
                 <div class="col-md-4">
+                    <label for="" class="form-label">Precio Base-Proveedor:</label><span
+                        class="text-danger" style="font-size: 1.2rem;"> * </span>
+                    <input type="text" value="{{$producto->precioBaseProveedor}}"  name="precioBaseProveedor"
+                        class="form-control">
+                        <div>
+                            <small style="color: rgb(197, 194, 194)">Se registra el precio base</small>
+                        </div>
+                </div>
+                <div class="col-md-4">
                     <label for="" class="form-label">Cantidad Disponible:</label><span
                         class="text-danger" style="font-size: 1.2rem;"> * </span>
                         <input type="text" value="{{$producto->cantidadDisponibleProducto}}" name="cantidadDisponibleProducto"
@@ -104,9 +113,9 @@
                         @enderror
                 </div>
                 <div class="col-md-4">
-                    <label for="" class="form-label">Precio Unitario:</label><span
+                    <label for="" class="form-label">Precio Unitario para la Venta:</label><span
                         class="text-danger" style="font-size: 1.2rem;"> * </span>
-                    <input type="number" value="{{$producto->precioUnitarioProducto}}"  name="precioUnitarioProducto"
+                    <input type="text" value="{{$producto->precioUnitarioProducto}}"  name="precioUnitarioProducto"
                         class="form-control @error('precioUnitarioProducto') is-invalid @enderror" id="precioUnitarioProducto"
                         oninput="formatDecimal(this); calcularPrecioTotal()">
                         @error('precioUnitarioProducto')
@@ -115,6 +124,7 @@
                         </div>
                         @enderror
                 </div>
+                
                 <div class="col-4">
                     <input type="hidden" name="precioTotal" value="{{$producto->precioTotal}}" class="form-control" placeholder="Se calcula automaticamente" id="precioTotal"
                         readonly>

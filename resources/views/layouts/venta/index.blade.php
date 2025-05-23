@@ -73,245 +73,336 @@
         color: #000 !important;
         /* Asegurar que el texto sea visible */
     }
+
+    /* aqui comienzan los estilos para las fotos pequeñas de los productos, en ventas */
+        .product-cell {
+        position: relative;
+        white-space: nowrap;
+    }
+
+    .product-preview-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Espacio entre el texto y la imagen */
+        position: relative;
+        z-index: 1;
+    }
+
+    .product-link {
+        color: #3d8edf ; /* Asegura que mantenga el color azul */
+        text-decoration: underline; /* Opcional: para que se vea como enlace */
+        flex-shrink: 0; /* Evita que el texto se encime con la imagen */
+    }
+
+    .product-thumbnail {
+        display: none;
+        position: absolute;
+        left: 100%; /* A la derecha del contenedor */
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 9999;
+        background: white;
+        border: 1px solid #ccc;
+        padding: 4px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        width: 60px;
+        height: auto;
+    }
+
+    .product-thumbnail img {
+        width: 100%;
+        height: auto;
+        border-radius: 4px;
+    }
+
+    .product-preview-wrapper:hover .product-thumbnail {
+        display: block;
+    }
+
 </style>
 @section('contenido')
     <input type="hidden" id="dolarBCV" class="form-control" value="{{ $dolarBCV }}">
-    <div class="container">
-        <div class="row response">
-            <div class="col-12 col-md-12 border" style="height: 500px; background-color: rgb(215, 224, 227);">
-                <div class="py-4">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text border-success" style="background-color: rgb(189, 225, 201)"
-                            id="search-icon">
-                            <i class="bi bi-search"></i>
-                        </span>
-                        <input type="search" id="search-productos" class="form-control border-success rounded"
-                            placeholder="Buscar productos por nombre o marca...">
-                        <a href="{{ route('producto.index') }}" class="btn btn-outline-success ms-1" type="button">Nuevo
-                            producto + </a>
-                    </div>
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="table-responsive" style="max-height: 350px; overflow-y: auto;">
-                                <table class="table w-100">
-                                    <thead style="position: sticky; top: 0; z-index: 100;">
-                                        <tr style="background-color: rgb(212, 212, 212);">
-                                            <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="Nombre del producto" style="border-radius: 15px 0px 0px 0px;">
-                                                Producto
-                                            </th>
-                                            <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="Categoria donde esta registrado el producto">
-                                                Categoría
-                                            </th>
-                                            <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="Cantidad disponible en el inventario">Cant.</th>
-                                            <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="Precio Unitario">Precio</th>
-                                            <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="Productos disponibles en estos colores">Colores disponibles</th>
-                                            <th scope="col" style="border-radius: 0px 15px 0px 0px;">Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tabla-productos">
-                                        @foreach ($producto as $producto)
-                                            <tr>
-                                                <td><a
-                                                        href="{{ route('producto.show', $producto->id) }}">{{ $producto->nombreProducto }}</a>
-                                                </td>
-                                                <td>{{ $producto->categoria->nombre ?? 'Sin Categoría' }}</td>
-                                                <td>{{ $producto->cantidadDisponibleProducto }}</td>
-                                                @if ($vesBaseMoneda === 1)
-                                                    <td>Bs.{{ number_format($producto->precioUnitarioProducto * $dolarBCV, 2) }}
-                                                    </td>
-                                                @else
-                                                    <td>${{ $producto->precioUnitarioProducto }}</td>
-                                                @endif
-                                                {{-- <td>${{ $producto->precioUnitarioProducto }}</td> --}}
-                                                <td>
-                                                    @if ($producto->colores->isNotEmpty())
-                                                        @foreach ($producto->colores as $color)
-                                                            @if (empty($color->codigoHexa))
-                                                                <!-- Círculo con una X en el medio -->
-                                                                <span data-bs-toggle="tooltip" data-bs-placement="top"
-                                                                    title="Productos sin color asignado"
-                                                                    class="badge d-inline-block"
-                                                                    style="display: inline-block; width: 20px; height: 20px; background-color: #fff; border-radius: 50%; border: 2px solid #ccc; position: relative; text-align: center; line-height: 20px;">
-                                                                    <span
-                                                                        style="font-size: 14px; color: #ccc; position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: center;">✖</span>
-                                                                </span>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Columna izquierda: Lista de productos -->
+            <div class="col-12 col-lg-7">
+                <div class="container">
+                    <div class="row response">
+                        <div class="col-12 col-md-12 border" style="height: 500px; background-color: rgb(215, 224, 227);">
+                            <div class="py-4">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text border-success"
+                                        style="background-color: rgb(189, 225, 201)" id="search-icon">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                    <input type="search" id="search-productos" class="form-control border-success rounded"
+                                        placeholder="Buscar productos por nombre o marca...">
+                                    <a href="{{ route('producto.index') }}" class="btn btn-outline-success ms-1"
+                                        type="button">Nuevo
+                                        producto + </a>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="table-responsive" style="max-height: 350px; overflow-y: auto;">
+                                            <table class="table w-100" style="font-size: 12px">
+                                                <thead style="position: sticky; top: 0; z-index: 100;">
+                                                    <tr style="background-color: rgb(212, 212, 212);">
+                                                        <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            title="Nombre del producto"
+                                                            style="border-radius: 15px 0px 0px 0px;">
+                                                            Producto
+                                                        </th>
+                                                        <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            title="Categoria donde esta registrado el producto">
+                                                            Categoría
+                                                        </th>
+                                                        <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            title="Cantidad disponible en el inventario">Cant.</th>
+                                                        <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            title="Precio Unitario">Precio</th>
+                                                        <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            title="Productos disponibles en estos colores">Colores</th>
+                                                        <th scope="col" style="border-radius: 0px 15px 0px 0px;" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                        title="Agrega Productos a la factura">Agregar
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tabla-productos">
+                                                    @foreach ($producto as $producto)
+                                                        <tr>
+                                                            <td class="product-cell">
+                                                                <div class="product-preview-wrapper">
+                                                                    <a href="{{ route('producto.show', $producto->id) }}" class="product-link">
+                                                                        {{ $producto->nombreProducto }}
+                                                                    </a>
+                                                                    <span class="product-thumbnail">
+                                                                        <img src="{{ asset($producto->imagenes->first()->ruta) }}" alt="Miniatura del producto" />
+                                                                    </span>
+                                                                </div>
+                                                            </td>
+                                                            {{-- <td>
+                                                                <a href="{{ route('producto.show', $producto->id) }}">{{ $producto->nombreProducto }}</a>
+                                                            </td> --}}
+                                                            <td>{{ $producto->categoria->nombre ?? 'Sin Categoría' }}</td>
+                                                            <td>{{ $producto->cantidadDisponibleProducto }}</td>
+                                                            @if ($vesBaseMoneda === 1)
+                                                                <td>Bs.{{ number_format($producto->precioUnitarioProducto * $dolarBCV, 2) }}
+                                                                    <br>
+                                                                    <small
+                                                                        style="color: gray; font-size: 0.8em;">${{ $producto->precioUnitarioProducto }}
+                                                                    </small>
+                                                                </td>
+                                                                
                                                             @else
-                                                                <!-- Círculo con el color -->
-                                                                <span class="badge d-inline-block"
-                                                                    style="display: inline-block; width: 20px; height: 20px; background-color: {{ $color->codigoHexa }}; border-radius: 50%; {{ strtolower($color->codigoHexa) == '#ffffff' ? 'border: 2px solid #ccc;' : '' }}"></span>
+                                                                <td>${{ $producto->precioUnitarioProducto }}
+                                                                    <br>
+                                                                    <small
+                                                                    style="color: gray; font-size: 0.8em;">Bs.{{ number_format($producto->precioUnitarioProducto * $dolarBCV, 2) }}
+                                                                    </small>
+                                                                </td>
+                                                                
                                                             @endif
-                                                        @endforeach
-                                                    @else
-                                                        Sin colores disponibles
-                                                    @endif
-                                                </td>
-                                                <!-- En el primer div, donde el usuario agrega productos -->
-                                                <td style="position: relative;">
-                                                    <div>
-                                                        <form action="{{ route('venta.agregar') }}" method="POST"
-                                                            style="display: inline;">
-                                                            @csrf
-                                                            <input type="hidden" name="producto_id"
-                                                                value="{{ $producto->id }}">
-                                                            <button type="submit"
-                                                                class="btn btn-success btn-sm btn-agregar"
-                                                                id="btn-agregar-{{ $producto->id }}"
-                                                                data-id="{{ $producto->id }}"
-                                                                data-cantidadDisponibleProducto="{{ $producto->cantidadDisponibleProducto }}">
-                                                                Agregar
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
+                                                            {{-- <td>${{ $producto->precioUnitarioProducto }}</td> --}}
+                                                            <td>
+                                                                @if ($producto->colores->isNotEmpty())
+                                                                    @foreach ($producto->colores as $color)
+                                                                        @if (empty($color->codigoHexa))
+                                                                            <!-- Círculo con una X en el medio -->
+                                                                            <span data-bs-toggle="tooltip"
+                                                                                data-bs-placement="top"
+                                                                                title="Productos sin color asignado"
+                                                                                class="badge d-inline-block"
+                                                                                style="display: inline-block; width: 20px; height: 20px; background-color: #fff; border-radius: 50%; border: 2px solid #ccc; position: relative; text-align: center; line-height: 20px;">
+                                                                                <span
+                                                                                    style="font-size: 14px; color: #ccc; position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: center;">✖</span>
+                                                                            </span>
+                                                                        @else
+                                                                            <!-- Círculo con el color -->
+                                                                            <span class="badge d-inline-block"
+                                                                                style="display: inline-block; width: 20px; height: 20px; background-color: {{ $color->codigoHexa }}; border-radius: 50%; {{ strtolower($color->codigoHexa) == '#ffffff' ? 'border: 2px solid #ccc;' : '' }}"></span>
+                                                                        @endif
+                                                                    @endforeach
+                                                                @else
+                                                                    Sin colores disponibles
+                                                                @endif
+                                                            </td>
+                                                            <!-- En el primer div, donde el usuario agrega productos -->
+                                                            <td style="position: relative;">
+                                                                <div>
+                                                                    <form action="{{ route('venta.agregar') }}"
+                                                                        method="POST" style="display: inline;">
+                                                                        @csrf
+                                                                        <input type="hidden" name="producto_id"
+                                                                            value="{{ $producto->id }}">
+                                                                        <button type="submit"
+                                                                            class="btn btn-success btn-sm btn-agregar"
+                                                                            id="btn-agregar-{{ $producto->id }}"
+                                                                            data-id="{{ $producto->id }}"
+                                                                            data-cantidadDisponibleProducto="{{ $producto->cantidadDisponibleProducto }}">
+                                                                            +
+                                                                        </button>
+                                                                    </form>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna derecha: Factura de venta -->
+            <div class="col-12 col-lg-5">
+                <div class="container" style="height: 550px; background-color: rgb(228, 227, 227);">
+                    <div class="row response">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
+                                <h5 class="h3">Factura de Venta</h5>
+                                <div>
+                                    <!-- Ícono de impresión -->
+                                    <a class="btn btn-light" title="Imprimir">
+                                        <i class="bi bi-printer"></i>
+                                    </a>
+                                    <!-- Ícono de ajustes -->
+                                    <a class="btn btn-light" title="Configuración">
+                                        <i class="bi bi-sliders"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-12 border"
+                                style="height: 300px; background-color: rgb(255, 255, 255); max-height: 420px; overflow-y: auto;">
+                                <table id="tabla-agregados" class="table table-hover">
+                                    <div class="card">
+                                        <tbody>
+                                            @foreach ($productosAgregados as $producto)
+                                                <tr id="producto-{{ $producto->id }}">
+                                                    <td style="width: 170px; height: 50px;">
+                                                        {{ $producto->nombreProducto }} <br>
+                                                        <small
+                                                            style="color: gray; font-size: 0.8em;">${{ $producto->precioUnitarioProducto }}
+                                                        </small>
+                                                    </td>
+                                                    <td style="width: 200px; height: 50px;">
+                                                        <div class="d-flex align-items-center">
+                                                            <a class="restar" data-id="{{ $producto->id }}">
+                                                                <i class="bi bi-dash-lg mx-2"></i>
+                                                            </a>
+                                                            <input type="text" name="cantidadSelecionadaVenta"
+                                                                value="1" min="1"
+                                                                class="form-control text-center mx-2 cantidad"
+                                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                title="Cantidad seleccionada" style="width: 80px;"
+                                                                readonly>
+                                                            <a class="sumar" data-id="{{ $producto->id }}"
+                                                                data-cantDisponible="{{ $producto->cantidadDisponibleProducto }}">
+                                                                <i class="bi bi-plus-lg mx-2"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                    <td style="width: 180px; height: 50px;">
+                                                        <input type="hidden" name="producto_id"
+                                                            value="{{ $producto->id }}">
+                                                        <!-- Select de colores -->
+                                                        <select name="colorIdVenta" class="form-control select-color"
+                                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            title="Seleccione el color del producto">
+                                                            @if ($producto->colores->isNotEmpty())
+                                                                @foreach ($producto->colores as $color)
+                                                                    <option value="{{ $color->id }}"
+                                                                        data-color="{{ $color->codigoHexa }}"
+                                                                        data-unidades="{{ $color->pivot->unidadesDisponibleProducto }}">
+                                                                        {{ $color->nombreColor }}
+                                                                    </option>
+                                                                @endforeach
+                                                            @else
+                                                                <option value="" disabled selected>Color no
+                                                                    disponible</option>
+                                                            @endif
+                                                        </select>
+                                                    </td>
+
+                                                    <td style="width: 100px; height: 50px;">
+                                                        <!-- Verificar si el producto tiene colores disponibles -->
+                                                        @if (!empty($producto->colores) && $producto->colores->count() > 0)
+                                                            <!-- Verificar si el color es blanco -->
+                                                            @if ($producto->colores[0]->codigoHexa == '#FFFFFF')
+                                                                <div class="color-circulo"
+                                                                    style="width: 30px; height: 30px; border-radius: 50%; background-color: {{ $producto->colores[0]->codigoHexa }}; border: 2px solid #928f8f;">
+                                                                </div>
+                                                            @else
+                                                                <div class="color-circulo"
+                                                                    style="width: 30px; height: 30px; border-radius: 50%; background-color: {{ $producto->colores[0]->codigoHexa }};">
+                                                                </div>
+                                                            @endif
+                                                        @else
+                                                            <!-- Mostrar un círculo vacío si no hay colores disponibles -->
+                                                            <div class="color-circulo disabled"
+                                                                style="width: 30px; height: 30px; border-radius: 50%; background-color: transparent; border: 2px solid #928f8f; display: flex; align-items: center; justify-content: center;">
+                                                                <span class="x-icon"
+                                                                    style="color: gray; font-size: 20px;">&times;</span>
+                                                            </div>
+                                                        @endif
+                                                    </td>
+                                                    <td style="width: 150px; height: 50px;">
+                                                        <!-- Mostrar unidades disponibles -->
+                                                        <input type="text" id="unidades-{{ $producto->id }}"
+                                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            title="Cantidad disponible por color"
+                                                            value="{{ $producto->colores->isNotEmpty() ? $producto->colores[0]->pivot->unidadesDisponibleProducto : $producto->cantidadDisponibleProducto }}"
+                                                            readonly class="form-control">
+                                                    </td>
+                                                    <!-- Nueva celda para el monto calculado -->
+                                                    <td style="width: 170px; height: 50px;">
+                                                        <input type="text" name=""
+                                                            value="${{ $producto->precioUnitarioProducto }}"
+                                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            title="Precio total por productos"
+                                                            class="form-control text-center mx-2 monto" value="0"
+                                                            readonly style="width: 120px; color: black; font-size: 15px">
+                                                    </td>
+
+                                                    <td style="position: relative;">
+                                                        <a href="#" class="eliminar-producto"
+                                                            data-id="{{ $producto->id }}"
+                                                            onclick="event.preventDefault();">
+                                                            <i class="fas fa-trash-alt icon-eliminar"
+                                                                title="Eliminar"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </div>
                                 </table>
                             </div>
+                        </div>
 
+                        <div class="mt-4 py-2 d-flex sticky-bottom"
+                            style="margin-top: auto; flex-direction: column; height: 100%;">
+                            <div style="margin-top: auto;">
+                                {{-- data-bs-target="#exampleModalToggle" data-bs-toggle="modal" --}}
+                                <button class="btn btn-success btn-lg d-flex justify-content-between w-100"
+                                    id="procesarVenta" style="padding: 10px; font-size: 1.5rem; width: 150%;">
+                                    <span>Vender</span>
+                                    <span id="totalFactura" style="font-weight: bold;">$0.00</span>
+                                </button>
+                                <a class="btn btn-success btn-lg d-flex justify-content-between w-100 mt-2"
+                                    style="padding: 10px; font-size: 1rem; width: 150%;">
+                                    <span>Total en Bolívares:</span>
+                                    <span id="totalBolivares" style="font-weight: bold;">Bs. 0.00</span>
+                                </a>
+
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <br>
-    <div class="container" style="height: 550px; background-color: rgb(228, 227, 227);">
-        <div class="row response">
-            <div>
-                <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
-                    <h5 class="h3">Factura de Venta</h5>
-                    <div>
-                        <!-- Ícono de impresión -->
-                        <a class="btn btn-light" title="Imprimir">
-                            <i class="bi bi-printer"></i>
-                        </a>
-                        <!-- Ícono de ajustes -->
-                        <a class="btn btn-light" title="Configuración">
-                            <i class="bi bi-sliders"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-12 col-md-12 border"
-                    style="height: 300px; background-color: rgb(255, 255, 255); max-height: 420px; overflow-y: auto;">
-                    <table id="tabla-agregados" class="table table-hover">
-                        <div class="card" style="">
-                            <tbody>
-                                @foreach ($productosAgregados as $producto)
-                                    <tr id="producto-{{ $producto->id }}">
-                                        <td style="width: 170px; height: 50px;">
-                                            {{ $producto->nombreProducto }} <br>
-                                            <small
-                                                style="color: gray; font-size: 0.8em;">${{ $producto->precioUnitarioProducto }}
-                                            </small>
-                                        </td>
-                                        <td style="width: 200px; height: 50px;">
-                                            <div class="d-flex align-items-center">
-                                                <a class="restar" data-id="{{ $producto->id }}">
-                                                    <i class="bi bi-dash-lg mx-2"></i>
-                                                </a>
-                                                <input type="text" name="cantidadSelecionadaVenta" value="1"
-                                                    min="1" class="form-control text-center mx-2 cantidad"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                    title="Cantidad seleccionada" style="width: 80px;" readonly>
-                                                <a class="sumar" data-id="{{ $producto->id }}"
-                                                    data-cantDisponible="{{ $producto->cantidadDisponibleProducto }}">
-                                                    <i class="bi bi-plus-lg mx-2"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                        <td style="width: 180px; height: 50px;">
-                                            <input type="hidden" name="producto_id" value="{{ $producto->id }}">
-                                            <!-- Select de colores -->
-                                            <select name="colorIdVenta" class="form-control select-color"
-                                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="Seleccione el color del producto">
-                                                @if ($producto->colores->isNotEmpty())
-                                                    @foreach ($producto->colores as $color)
-                                                        <option value="{{ $color->id }}"
-                                                            data-color="{{ $color->codigoHexa }}"
-                                                            data-unidades="{{ $color->pivot->unidadesDisponibleProducto }}">
-                                                            {{ $color->nombreColor }}
-                                                        </option>
-                                                    @endforeach
-                                                @else
-                                                    <option value="" disabled selected>Color no disponible</option>
-                                                @endif
-                                            </select>
-                                        </td>
-
-                                        <td style="width: 100px; height: 50px;">
-                                            <!-- Verificar si el producto tiene colores disponibles -->
-                                            @if (!empty($producto->colores) && $producto->colores->count() > 0)
-                                                <!-- Verificar si el color es blanco -->
-                                                @if ($producto->colores[0]->codigoHexa == '#FFFFFF')
-                                                    <div class="color-circulo"
-                                                        style="width: 30px; height: 30px; border-radius: 50%; background-color: {{ $producto->colores[0]->codigoHexa }}; border: 2px solid #928f8f;">
-                                                    </div>
-                                                @else
-                                                    <div class="color-circulo"
-                                                        style="width: 30px; height: 30px; border-radius: 50%; background-color: {{ $producto->colores[0]->codigoHexa }};">
-                                                    </div>
-                                                @endif
-                                            @else
-                                                <!-- Mostrar un círculo vacío si no hay colores disponibles -->
-                                                <div class="color-circulo disabled"
-                                                    style="width: 30px; height: 30px; border-radius: 50%; background-color: transparent; border: 2px solid #928f8f; display: flex; align-items: center; justify-content: center;">
-                                                    <span class="x-icon"
-                                                        style="color: gray; font-size: 20px;">&times;</span>
-                                                </div>
-                                            @endif
-                                        </td>
-                                        <td style="width: 150px; height: 50px;">
-                                            <!-- Mostrar unidades disponibles -->
-                                            <input type="text" id="unidades-{{ $producto->id }}"
-                                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="Cantidad disponible por color"
-                                                value="{{ $producto->colores->isNotEmpty() ? $producto->colores[0]->pivot->unidadesDisponibleProducto : $producto->cantidadDisponibleProducto }}"
-                                                readonly class="form-control">
-                                        </td>
-                                        <!-- Nueva celda para el monto calculado -->
-                                        <td style="width: 170px; height: 50px;">
-                                            <input type="text" name=""
-                                                value="${{ $producto->precioUnitarioProducto }}" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" title="Precio total por productos"
-                                                class="form-control text-center mx-2 monto" value="0" readonly
-                                                style="width: 120px; color: black; font-size: 15px">
-                                        </td>
-
-                                        <td style="position: relative;">
-                                            <a href="#" class="eliminar-producto" data-id="{{ $producto->id }}"
-                                                onclick="event.preventDefault();">
-                                                <i class="fas fa-trash-alt icon-eliminar" title="Eliminar"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </div>
-                    </table>
-                </div>
-            </div>
-
-            <div class="mt-4 py-2 d-flex sticky-bottom" style="margin-top: auto; flex-direction: column; height: 100%;">
-                <div style="margin-top: auto;">
-                    {{-- data-bs-target="#exampleModalToggle" data-bs-toggle="modal" --}}
-                    <button class="btn btn-success btn-lg d-flex justify-content-between w-100" id="procesarVenta"
-                        style="padding: 10px; font-size: 1.5rem; width: 150%;">
-                        <span>Vender</span>
-                        <span id="totalFactura" style="font-weight: bold;">$0.00</span>
-                    </button>
-                    <a class="btn btn-success btn-lg d-flex justify-content-between w-100 mt-2"
-                        style="padding: 10px; font-size: 1rem; width: 150%;">
-                        <span>Total en Bolívares:</span>
-                        <span id="totalBolivares" style="font-weight: bold;">Bs. 0.00</span>
-                    </a>
-
                 </div>
             </div>
         </div>
@@ -683,7 +774,8 @@
 
                     } else if (currentValue >= maxUnidades) {
                         alert(
-                            `No puedes seleccionar más de ${maxUnidades} unidades de este producto.`);
+                            `No puedes seleccionar más de ${maxUnidades} unidades de este producto.`
+                        );
                     } else {
                         input.value = currentValue + 1;
                     }
@@ -934,7 +1026,7 @@
             var methodId = $(this).data('method-id');
             var methodName = $(this).data('method-name');
             var totalFactura = $('#totalVentaModal').data(
-            'total'); // Captura con respaldo en el atributo data-total
+                'total'); // Captura con respaldo en el atributo data-total
 
             // Captura el ID de la venta
             var ventaId = $('#ventaIdModal').val();
@@ -942,7 +1034,7 @@
             // Verificación de totalFactura antes de asignar
             if (totalFactura === undefined || totalFactura === null || isNaN(totalFactura)) {
                 totalFactura = $('#totalVentaModal').text().replace('$', '')
-            .trim(); // Captura desde el texto del DOM
+                    .trim(); // Captura desde el texto del DOM
             }
 
             // Asignar valores al segundo modal
@@ -1068,7 +1160,8 @@
                         if (result.isConfirmed) {
                             // Paso 4: Abrir el modal y pasar el venta_id y totalFactura después de que se haya registrado todo
                             $('#ventaIdModal').val(
-                            ventaId); // Asignamos el ID de la venta al campo oculto en el modal
+                                ventaId
+                            ); // Asignamos el ID de la venta al campo oculto en el modal
                             $('#exampleModalToggle').modal('show'); // Mostrar el modal
 
                             // Actualizamos el monto total de la venta en el primer modal

@@ -23,7 +23,7 @@
     <h1>Aqui registro las imagenes de los productos</h1>
     <br>
     <p class="h4">
-        El Producto <strong>{{ $producto->nombreProducto }}</strong> dispone de las siguientes fotos
+        El Producto <strong>{{ $producto->nombreProducto }}</strong> dispone de las siguientes fotos:
     </p>
     <br>
     <!-- Button trigger modal -->

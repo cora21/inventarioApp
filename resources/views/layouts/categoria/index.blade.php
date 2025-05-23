@@ -14,6 +14,7 @@
         </script>
     @endif
     <h1>Categorias</h1>
+    <hr>
     <div class="d-flex justify-content-between align-items-center">
         <!-- Select alineado a la izquierda -->
         <select class="form-select form-select-lg me-2" aria-label="Large select example"

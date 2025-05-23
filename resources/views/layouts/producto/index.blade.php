@@ -6,7 +6,7 @@
 {{--
 
 
-totalDescontable tienes el total del producto sin descuento ni ndasa
+totalDescontable tienes el total del producto sin descuento ni nada
 
 
 
@@ -35,7 +35,7 @@ totalDescontable tienes el total del producto sin descuento ni ndasa
     @endif
     <!-- Button trigger modal -->
     {{-- contiene la seccion de los botones para el buscador --}}
-    <div class="card">
+    <div class="card shadow-lg">
         <div class="card-body">
             <div class="container p-3">
                 <!-- Contenedor de los select y el buscador -->
@@ -98,7 +98,7 @@ totalDescontable tienes el total del producto sin descuento ni ndasa
                         <th class="bordered">Almacen</th>
                         <th class="bordered">Categoria</th>
                         <th>Precio</th>
-                        <th>Cantidad Total</th>
+                        <th>Cantidad Disponible</th>
                         <th scope="col" style="border-radius: 0px 15px 0px 0px;">Acciones</th>
                     </tr>
                 </thead>
