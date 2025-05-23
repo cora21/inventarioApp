@@ -200,6 +200,36 @@
                     <i class="hamburger align-self-center"></i>
                 </a>
                 <h2>@yield('nombreBarra')</h2>
+                <div class="nav-item dropdown text-start" style="font-size: 15px;" id="moneda-dropdown-container"  @yield('barraNavegacion')>
+                    <!-- Línea superior con símbolo y valor de referencia -->
+                    <div class="d-flex align-items-center ms-4">
+                        <span>
+                            Ref.1 =
+                            <span id="currencyLabel">
+                                @php $bsValue = number_format($dolarDesdeBase, 2); @endphp
+                                Bs. {{ $bsValue }}
+                            </span>
+                        </span>
+                    </div>
+                    <!-- Botón para abrir el dropdown -->
+                    <a class="dropdown-toggle text-primary ms-4" href="#" id="currencyDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
+                        <span id="activeSymbol">{{ (isset($_COOKIE['baseMoneda']) && $_COOKIE['baseMoneda'] == 'USD') ? '$' : 'Bs.' }}</span> Ref.
+                    </a>
+                    <!-- Dropdown -->
+                    <div class="dropdown-menu p-3" aria-labelledby="currencyDropdown" style="min-width: 200px;">
+                        <input type="radio" class="btn-check" name="moneda" id="dropdown-usd-radio" autocomplete="off" value="USD"
+                            onclick="updateBaseMonedaAndUI('USD')" {{ (isset($_COOKIE['baseMoneda']) && $_COOKIE['baseMoneda'] == 'USD') ? 'checked' : '' }}>
+                        <label class="btn w-100 mb-2 {{ (isset($_COOKIE['baseMoneda']) && $_COOKIE['baseMoneda'] == 'USD') ? 'btn-success active' : 'btn-outline-success' }}" for="dropdown-usd-radio" id="label-usd">
+                            Dólares
+                        </label>
+                
+                        <input type="radio" class="btn-check" name="moneda" id="dropdown-ves-radio" autocomplete="off" value="VES"
+                            onclick="updateBaseMonedaAndUI('VES')" {{ (isset($_COOKIE['baseMoneda']) && $_COOKIE['baseMoneda'] == 'VES') ? 'checked' : '' }}>
+                        <label class="btn w-100 {{ (isset($_COOKIE['baseMoneda']) && $_COOKIE['baseMoneda'] == 'VES') ? 'btn-success active' : 'btn-outline-success' }}" for="dropdown-ves-radio" id="label-ves">
+                            Bolívares
+                        </label>
+                    </div>
+                </div>
                 <div class="navbar-collapse collapse">
                     <ul class="navbar-nav navbar-align">
                         <li class="nav-item dropdown">
@@ -514,6 +544,159 @@
     <script>
         feather.replace();
     </script>
+    {{-- compara las fechas, abre el sweet alert, y actualiza dolar desde el api --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Convertir las fechas que pasamos del servidor a objetos Date de JavaScript
+            const fechaActualizacion = new Date("{{ $fechaActualizacion }}");
+            const fechaDelRegistro = new Date("{{ $fechaDelRegistro }}");
+
+            // Comparar las fechas, si la fecha de actualización es más reciente
+            if (fechaActualizacion > fechaDelRegistro) {
+                Swal.fire({
+                    title: '¿Quieres actualizar la tasa de cambio?',
+                    text: "La fecha de actualización es más reciente que la registrada.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, actualizar',
+                    cancelButtonText: 'No, cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Enviar la solicitud para actualizar el registro con el ID 2
+                        fetch('/actualizar-tasa-cambio', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                body: JSON.stringify({
+                                    id: 2,
+                                    valorMoneda: "{{ $promedio }}", // El valor de la tasa de cambio
+                                    created_at: "{{ $fechaActualizacion }}" // La nueva fecha de actualización
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire(
+                                        'Actualizado',
+                                        'La tasa de cambio se ha actualizado correctamente.',
+                                        'success'
+                                    ).then(() => {
+                                        // Recargar la página después de que el usuario haga clic en "Aceptar"
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire(
+                                        'Error',
+                                        'No se pudo actualizar la tasa de cambio.',
+                                        'error'
+                                    );
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                Swal.fire(
+                                    'Error',
+                                    'Ocurrió un error al procesar la solicitud: ' + error.message,
+                                    'error'
+                                );
+                            });
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        function updateBaseMoneda(moneda) {
+            // Establecer la cookie para recordar la selección de la moneda
+            document.cookie = "baseMoneda=" + moneda + ";path=/;max-age=31536000"; // cookie de 1 año
+
+            // Enviar la solicitud AJAX
+            $.ajax({
+                url: "{{ route('updateBaseMoneda') }}", // Ruta que manejará la actualización en el backend
+                method: "POST",
+                data: {
+                    moneda: moneda,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    // Cuando la respuesta sea exitosa, actualizar la interfaz
+                    if (response.success) {
+                        // Deseleccionar todos los radios
+                        $('input[name="moneda"]').prop('checked', false);
+                        // Marcar el radio correspondiente
+                        $('#' + moneda.toLowerCase() + '-radio').prop('checked', true);
+
+                        // Alerta con SweetAlert
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Éxito!',
+                            text: 'La moneda base ha sido actualizada a ' + moneda,
+                            showConfirmButton: true,
+                        }).then(() => {
+                            // Recargar la página después de que el usuario haga clic en "Aceptar"
+                            location.reload();
+                        });
+                    } else {
+                        // Mostrar el mensaje de error si la respuesta no fue exitosa
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message || 'Hubo un problema al actualizar la moneda base.',
+                            showConfirmButton: true,
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Si hay un error en la solicitud, mostrar el mensaje de error
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Hubo un problema con la solicitud: ' + error,
+                        showConfirmButton: true,
+                    });
+                }
+            });
+        }
+    </script>
+<script>
+    function updateBaseMonedaAndUI(moneda) {
+        // Llama tu función original
+        updateBaseMoneda(moneda);
+
+        // Actualiza símbolo arriba
+        document.getElementById('activeSymbol').textContent = (moneda === 'USD') ? '$' : 'Bs';
+
+        // Actualiza color de botones
+        const usdLabel = document.getElementById('label-usd');
+        const vesLabel = document.getElementById('label-ves');
+
+        if (moneda === 'USD') {
+            usdLabel.classList.add('btn-success', 'active');
+            usdLabel.classList.remove('btn-outline-success');
+            vesLabel.classList.add('btn-outline-success');
+            vesLabel.classList.remove('btn-success', 'active');
+        } else {
+            vesLabel.classList.add('btn-success', 'active');
+            vesLabel.classList.remove('btn-outline-success');
+            usdLabel.classList.add('btn-outline-success');
+            usdLabel.classList.remove('btn-success', 'active');
+        }
+
+        // Opcional: también puedes actualizar el texto de referencia si deseas
+        const currencyLabel = document.getElementById('currencyLabel');
+        if (moneda === 'USD') {
+            currencyLabel.textContent = '$ 1.00';
+        } else {
+            currencyLabel.textContent = 'Bs. ' + parseFloat({{ $dolarDesdeBase }}).toFixed(2);
+        }
+    }
+</script>
+
 </body>
 
 </html>

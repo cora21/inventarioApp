@@ -17,7 +17,7 @@
         <div class="card shadow card-hover-scale" style="width: 170px; text-align: center; transition: transform 0.3s ease;">
             <div class="card-body">
                 <button type="button" id="btnConfigurarColores" data-bs-toggle="modal" data-bs-target="#exampleModalConfiColors" style="background: none; border: none; padding: 0;">
-                    <img src="{{ asset('storage/ruedaColorImagen.png') }}" alt="Configurar Colores" style="width: 120px; height: 120px;">
+                    <img src="{{ asset('imagenes/ruedaColorImagen.png') }}" alt="Configurar Colores" style="width: 120px; height: 120px;">
                 </button>
                 <p class="card-text mt-2"><h5>Configura colores para los productos</h5></p>
             </div>
@@ -28,7 +28,7 @@
         <div class="card shadow card-hover-scale" style="width: 180px; text-align: center; transition: transform 0.3s ease;">
             <div class="card-body">
                 <button type="button" id="btnConfigurarMarcas" data-bs-toggle="modal" data-bs-target="#exampleModalParaMarcas" style="background: none; border: none; padding: 0;">
-                    <img src="{{ asset('storage/marcaConfiguracion.png') }}" alt="Configurar Marcas" style="width: 120px; height: 120px;">
+                    <img src="{{ asset('imagenes/marcaConfiguracion.png') }}" alt="Configurar Marcas" style="width: 120px; height: 120px;">
                 </button>
                 <p class="card-text mt-2"><h5>Configura las marcas para los productos</h5></p>
             </div>

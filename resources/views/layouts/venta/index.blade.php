@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('nombreBarra', 'Generar Venta')
+{{-- @section('nombreBarra', 'Generar Venta') --}}
 {{--
         OJOOOOOOOO
         totalDescontable es el total original recuerdalooooooooooooooooo
@@ -48,28 +48,34 @@
         /* Aumentar tamaño al pasar */
     }
 
-        .payment-card {
-        transition: all 0.3s ease; /* Transición suave */
-        border: 2px solid transparent; /* Sin borde visible por defecto */
-        cursor: pointer; /* Cambia el cursor a manito */
+    .payment-card {
+        transition: all 0.3s ease;
+        /* Transición suave */
+        border: 2px solid transparent;
+        /* Sin borde visible por defecto */
+        cursor: pointer;
+        /* Cambia el cursor a manito */
     }
 
     .payment-card:hover {
-        border: 10px solid #146d28; /* Borde verde al pasar el cursor */
-        box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); /* Sombra verde suave */
-        transform: scale(1.1); /* Ligero aumento de tamaño */
+        border: 10px solid #146d28;
+        /* Borde verde al pasar el cursor */
+        box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+        /* Sombra verde suave */
+        transform: scale(1.1);
+        /* Ligero aumento de tamaño */
     }
 
-            #selectedPaymentMethod,
-        #totalVentaModal {
-            visibility: visible !important;
-            display: inline-block !important;
-            color: #000 !important; /* Asegurar que el texto sea visible */
-        }
-
+    #selectedPaymentMethod,
+    #totalVentaModal {
+        visibility: visible !important;
+        display: inline-block !important;
+        color: #000 !important;
+        /* Asegurar que el texto sea visible */
+    }
 </style>
 @section('contenido')
-<input type="hidden" id="dolarBCV" class="form-control" value="{{$dolarBCV}}">
+    <input type="hidden" id="dolarBCV" class="form-control" value="{{ $dolarBCV }}">
     <div class="container">
         <div class="row response">
             <div class="col-12 col-md-12 border" style="height: 500px; background-color: rgb(215, 224, 227);">
@@ -98,7 +104,6 @@
                                                 title="Categoria donde esta registrado el producto">
                                                 Categoría
                                             </th>
-                                            <th scope="col">Marca</th>
                                             <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top"
                                                 title="Cantidad disponible en el inventario">Cant.</th>
                                             <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top"
@@ -115,12 +120,12 @@
                                                         href="{{ route('producto.show', $producto->id) }}">{{ $producto->nombreProducto }}</a>
                                                 </td>
                                                 <td>{{ $producto->categoria->nombre ?? 'Sin Categoría' }}</td>
-                                                <td>{{ $producto->marcaProducto }}</td>
                                                 <td>{{ $producto->cantidadDisponibleProducto }}</td>
-                                                @if($vesBaseMoneda === 1)
-                                                <td>Bs.{{ number_format($producto->precioUnitarioProducto * $dolarBCV, 2) }}</td>
+                                                @if ($vesBaseMoneda === 1)
+                                                    <td>Bs.{{ number_format($producto->precioUnitarioProducto * $dolarBCV, 2) }}
+                                                    </td>
                                                 @else
-                                                <td  >${{ $producto->precioUnitarioProducto }}</td>
+                                                    <td>${{ $producto->precioUnitarioProducto }}</td>
                                                 @endif
                                                 {{-- <td>${{ $producto->precioUnitarioProducto }}</td> --}}
                                                 <td>
@@ -129,12 +134,16 @@
                                                             @if (empty($color->codigoHexa))
                                                                 <!-- Círculo con una X en el medio -->
                                                                 <span data-bs-toggle="tooltip" data-bs-placement="top"
-                                                                title="Productos sin color asignado" class="badge d-inline-block" style="display: inline-block; width: 20px; height: 20px; background-color: #fff; border-radius: 50%; border: 2px solid #ccc; position: relative; text-align: center; line-height: 20px;">
-                                                                    <span style="font-size: 14px; color: #ccc; position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: center;">✖</span>
+                                                                    title="Productos sin color asignado"
+                                                                    class="badge d-inline-block"
+                                                                    style="display: inline-block; width: 20px; height: 20px; background-color: #fff; border-radius: 50%; border: 2px solid #ccc; position: relative; text-align: center; line-height: 20px;">
+                                                                    <span
+                                                                        style="font-size: 14px; color: #ccc; position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: center;">✖</span>
                                                                 </span>
                                                             @else
                                                                 <!-- Círculo con el color -->
-                                                                <span class="badge d-inline-block" style="display: inline-block; width: 20px; height: 20px; background-color: {{ $color->codigoHexa }}; border-radius: 50%; {{ strtolower($color->codigoHexa) == '#ffffff' ? 'border: 2px solid #ccc;' : '' }}"></span>
+                                                                <span class="badge d-inline-block"
+                                                                    style="display: inline-block; width: 20px; height: 20px; background-color: {{ $color->codigoHexa }}; border-radius: 50%; {{ strtolower($color->codigoHexa) == '#ffffff' ? 'border: 2px solid #ccc;' : '' }}"></span>
                                                             @endif
                                                         @endforeach
                                                     @else
@@ -144,10 +153,16 @@
                                                 <!-- En el primer div, donde el usuario agrega productos -->
                                                 <td style="position: relative;">
                                                     <div>
-                                                        <form action="{{ route('venta.agregar') }}" method="POST" style="display: inline;">
+                                                        <form action="{{ route('venta.agregar') }}" method="POST"
+                                                            style="display: inline;">
                                                             @csrf
-                                                            <input type="hidden" name="producto_id" value="{{ $producto->id }}">
-                                                            <button type="submit" class="btn btn-success btn-sm btn-agregar" id="btn-agregar-{{ $producto->id }}" data-id="{{ $producto->id }}" data-cantidadDisponibleProducto="{{ $producto->cantidadDisponibleProducto }}">
+                                                            <input type="hidden" name="producto_id"
+                                                                value="{{ $producto->id }}">
+                                                            <button type="submit"
+                                                                class="btn btn-success btn-sm btn-agregar"
+                                                                id="btn-agregar-{{ $producto->id }}"
+                                                                data-id="{{ $producto->id }}"
+                                                                data-cantidadDisponibleProducto="{{ $producto->cantidadDisponibleProducto }}">
                                                                 Agregar
                                                             </button>
                                                         </form>
@@ -192,18 +207,20 @@
                                         <td style="width: 170px; height: 50px;">
                                             {{ $producto->nombreProducto }} <br>
                                             <small
-                                                style="color: gray; font-size: 0.8em;">${{ $producto->precioUnitarioProducto }}</small>
+                                                style="color: gray; font-size: 0.8em;">${{ $producto->precioUnitarioProducto }}
+                                            </small>
                                         </td>
                                         <td style="width: 200px; height: 50px;">
                                             <div class="d-flex align-items-center">
                                                 <a class="restar" data-id="{{ $producto->id }}">
                                                     <i class="bi bi-dash-lg mx-2"></i>
                                                 </a>
-                                                <input type="text" name="cantidadSelecionadaVenta" value="1" min="1"
-                                                    class="form-control text-center mx-2 cantidad" data-bs-toggle="tooltip"
-                                                    data-bs-placement="top" title="Cantidad seleccionada"
-                                                    style="width: 80px;" readonly>
-                                                <a class="sumar" data-id="{{ $producto->id }}" data-cantDisponible="{{ $producto->cantidadDisponibleProducto }}">
+                                                <input type="text" name="cantidadSelecionadaVenta" value="1"
+                                                    min="1" class="form-control text-center mx-2 cantidad"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                                    title="Cantidad seleccionada" style="width: 80px;" readonly>
+                                                <a class="sumar" data-id="{{ $producto->id }}"
+                                                    data-cantDisponible="{{ $producto->cantidadDisponibleProducto }}">
                                                     <i class="bi bi-plus-lg mx-2"></i>
                                                 </a>
                                             </div>
@@ -260,9 +277,9 @@
                                         </td>
                                         <!-- Nueva celda para el monto calculado -->
                                         <td style="width: 170px; height: 50px;">
-                                            <input type="text" name="" value="${{ $producto->precioUnitarioProducto }}"
-                                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="Precio total por productos"
+                                            <input type="text" name=""
+                                                value="${{ $producto->precioUnitarioProducto }}" data-bs-toggle="tooltip"
+                                                data-bs-placement="top" title="Precio total por productos"
                                                 class="form-control text-center mx-2 monto" value="0" readonly
                                                 style="width: 120px; color: black; font-size: 15px">
                                         </td>
@@ -290,7 +307,7 @@
                         <span id="totalFactura" style="font-weight: bold;">$0.00</span>
                     </button>
                     <a class="btn btn-success btn-lg d-flex justify-content-between w-100 mt-2"
-                    style="padding: 10px; font-size: 1rem; width: 150%;">
+                        style="padding: 10px; font-size: 1rem; width: 150%;">
                         <span>Total en Bolívares:</span>
                         <span id="totalBolivares" style="font-weight: bold;">Bs. 0.00</span>
                     </a>
@@ -317,35 +334,36 @@
 
                         <!-- Mostrar el monto total de la venta en grande -->
                         <div class="text-center mb-4">
-                            <h4><strong>Total de la venta: </strong><span id="totalVentaModal" style="font-size: 2rem;">$0.00</span></h4>
+                            <h4><strong>Total de la venta: </strong><span id="totalVentaModal"
+                                    style="font-size: 2rem;">$0.00</span></h4>
                         </div>
 
                         <div class="row justify-content-center">
                             @foreach ($metPago as $row)
-                            @php
-                                $isCombinado = ($row->id == 5 && $row->nombreMetPago == 'Combinado');
-                            @endphp
-                            <div class="col-lg-3 col-md-3 col-sm-12 mb-3 payment-card-item"
-                                 data-bs-target="{{ $isCombinado ? '#modalCombinado' : '#exampleModalToggle2' }}"
-                                 data-bs-toggle="modal"
-                                 data-method-id="{{ $row->id }}"
-                                 data-method-name="{{ $row->nombreMetPago }}">
-                                <div class="bg-light border p-2 text-center payment-card">
-                                    <div class="mb-2">
-                                        @if ($row->imagenMetPago)
-                                            <a>
-                                                <img src="{{ $row->imagenMetPago }}" alt="Imagen del método" class="img-fluid rounded" style="max-width: 50px;">
-                                            </a>
-                                        @else
-                                            <div class="text-muted">
-                                                <i class="bi bi-bank" style="font-size: 2.5rem;"></i>
-                                                <br>
-                                            </div>
-                                        @endif
-                                        <h6 class="fw-bold text-secondary mb-1">{{ $row->nombreMetPago }}</h6>
+                                @php
+                                    $isCombinado = $row->id == 5 && $row->nombreMetPago == 'Combinado';
+                                @endphp
+                                <div class="col-lg-3 col-md-3 col-sm-12 mb-3 payment-card-item"
+                                    data-bs-target="{{ $isCombinado ? '#modalCombinado' : '#exampleModalToggle2' }}"
+                                    data-bs-toggle="modal" data-method-id="{{ $row->id }}"
+                                    data-method-name="{{ $row->nombreMetPago }}">
+                                    <div class="bg-light border p-2 text-center payment-card">
+                                        <div class="mb-2">
+                                            @if ($row->imagenMetPago)
+                                                <a>
+                                                    <img src="{{ $row->imagenMetPago }}" alt="Imagen del método"
+                                                        class="img-fluid rounded" style="max-width: 50px;">
+                                                </a>
+                                            @else
+                                                <div class="text-muted">
+                                                    <i class="bi bi-bank" style="font-size: 2.5rem;"></i>
+                                                    <br>
+                                                </div>
+                                            @endif
+                                            <h6 class="fw-bold text-secondary mb-1">{{ $row->nombreMetPago }}</h6>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             @endforeach
                         </div>
 
@@ -370,7 +388,8 @@
     </div>
     {{-- final del primer modal --}}
     {{-- segunda parte modal 2 --}}
-    <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+    <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2"
+        tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -416,7 +435,8 @@
                                     <div class="col-md-6 border-end">
                                         <div class="mb-3 pb-2 border-bottom">
                                             <label for="valorPago" class="form-label fw-bold">Valor del pago: *</label>
-                                            <input type="number" class="form-control" id="valorPago" placeholder="Ingresa el valor">
+                                            <input type="number" class="form-control" id="valorPago"
+                                                placeholder="Ingresa el valor">
                                         </div>
 
                                         <!-- Opciones rápidas -->
@@ -431,7 +451,8 @@
                                     <!-- Columna Derecha -->
                                     <div class="col-md-6">
                                         <label for="descripcionPago" class="form-label fw-bold">Observaciones</label>
-                                        <textarea class="form-control" name="descripcionPago" id="descripcionPago" rows="5" placeholder="Ingresa tu observación"></textarea>
+                                        <textarea class="form-control" name="descripcionPago" id="descripcionPago" rows="5"
+                                            placeholder="Ingresa tu observación"></textarea>
                                     </div>
                                 </div>
                                 <div class="row m-3">
@@ -440,7 +461,8 @@
                                         <select class="form-control" id="nombrePago">
                                             <option value="">Selecciona una opción</option>
                                             @foreach ($tasas as $row)
-                                                <option value="{{ $row->nombreMoneda }}">{{ $row->nombreMoneda }}</option>
+                                                <option value="{{ $row->nombreMoneda }}">{{ $row->nombreMoneda }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -464,7 +486,8 @@
                                             <option value="">Selecciona una opción</option>
                                             @foreach ($metPago as $row)
                                                 @if ($row->nombreMetPago !== 'Combinado')
-                                                    <option value="{{ $row->id }}">{{ $row->nombreMetPago }}</option>
+                                                    <option value="{{ $row->id }}">{{ $row->nombreMetPago }}
+                                                    </option>
                                                 @endif
                                             @endforeach
                                         </select>
@@ -473,17 +496,21 @@
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label for="input1" class="form-label fw-bold">Valor del Pago:</label>
-                                        <input type="text" required class="form-control input1" placeholder="0.00" pattern="^\d+(\.\d{1,2})?$" title="Ingrese un monto válido con hasta dos decimales">
+                                        <input type="text" required class="form-control input1" placeholder="0.00"
+                                            pattern="^\d+(\.\d{1,2})?$"
+                                            title="Ingrese un monto válido con hasta dos decimales">
 
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="mb-3">
-                                        <label for="nombrePago" style="width: 50%;" class="form-label fw-bold">Moneda de Pago:</label>
+                                        <label for="nombrePago" style="width: 50%;" class="form-label fw-bold">Moneda de
+                                            Pago:</label>
                                         <select class="form-control" id="nombrePago" name="nombrePago">
                                             <option value="">Selecciona una opción</option>
                                             @foreach ($tasas as $row)
-                                                <option value="{{ $row->nombreMoneda }}">{{ $row->nombreMoneda }}</option>
+                                                <option value="{{ $row->nombreMoneda }}">{{ $row->nombreMoneda }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -550,7 +577,7 @@
                 select.addEventListener('change', () => {
                     const productoRow = select.closest('tr'); // Encuentra la fila del producto
                     const cantidadInput = productoRow.querySelector(
-                    '.cantidad'); // Encuentra el campo de cantidad
+                        '.cantidad'); // Encuentra el campo de cantidad
                     cantidadInput.value = 1; // Restablece el valor a 1
                     actualizarMonto(productoRow); // Actualiza el monto al cambiar el color
                     calcularTotal(); // Recalcula el total general
@@ -560,109 +587,114 @@
 
             // Manejar clic en botones de restar
             document.querySelectorAll('.restar').forEach(button => {
-            button.addEventListener('click', () => {
-                const input = button.parentElement.querySelector('.cantidad');
-                let currentValue = parseInt(input.value) || 1;
+                button.addEventListener('click', () => {
+                    const input = button.parentElement.querySelector('.cantidad');
+                    let currentValue = parseInt(input.value) || 1;
 
-                if (currentValue > 1) {
-                    input.value = currentValue - 1;
-                } else if (currentValue === 1) {
-                    eliminarProductoConAjax(button);
-                }
-
-                // Verificar la reversión de estado del botón "Agregar"
-                const productoId = button.getAttribute('data-id'); // Obtener el ID del producto
-                let totalCantidad = 0;
-                const cantDisponible = parseInt(document.querySelector(`#btn-agregar-${productoId}`).getAttribute('data-cantidadDisponibleProducto'));
-
-                // Calcular el total de cantidad actual para el producto
-                document.querySelectorAll('.cantidad').forEach(input => {
-                    const inputId = input.closest('tr').querySelector('.sumar').getAttribute('data-id');
-                    if (inputId === productoId) {
-                        totalCantidad += parseInt(input.value) || 0;
+                    if (currentValue > 1) {
+                        input.value = currentValue - 1;
+                    } else if (currentValue === 1) {
+                        eliminarProductoConAjax(button);
                     }
+
+                    // Verificar la reversión de estado del botón "Agregar"
+                    const productoId = button.getAttribute('data-id'); // Obtener el ID del producto
+                    let totalCantidad = 0;
+                    const cantDisponible = parseInt(document.querySelector(
+                        `#btn-agregar-${productoId}`).getAttribute(
+                        'data-cantidadDisponibleProducto'));
+
+                    // Calcular el total de cantidad actual para el producto
+                    document.querySelectorAll('.cantidad').forEach(input => {
+                        const inputId = input.closest('tr').querySelector('.sumar')
+                            .getAttribute('data-id');
+                        if (inputId === productoId) {
+                            totalCantidad += parseInt(input.value) || 0;
+                        }
+                    });
+
+                    // Obtener el botón "Agregar" correspondiente
+                    const btnAgregar = document.querySelector(`#btn-agregar-${productoId}`);
+                    if (btnAgregar) {
+                        if (totalCantidad < cantDisponible) {
+                            // Revertir el estado del botón a habilitado
+                            btnAgregar.style.backgroundColor = ""; // Restaurar color original
+                            btnAgregar.style.color = ""; // Restaurar color original del texto
+                            btnAgregar.disabled = false; // Habilitar el botón
+                        }
+                    }
+
+                    // Actualizar monto
+                    const productoRow = button.closest('tr');
+                    actualizarMonto(productoRow);
+                    calcularTotal(); // Recalcula el total general
+                    contarProductos(); // Actualiza el conteo de productos
                 });
-
-                // Obtener el botón "Agregar" correspondiente
-                const btnAgregar = document.querySelector(`#btn-agregar-${productoId}`);
-                if (btnAgregar) {
-                    if (totalCantidad < cantDisponible) {
-                        // Revertir el estado del botón a habilitado
-                        btnAgregar.style.backgroundColor = ""; // Restaurar color original
-                        btnAgregar.style.color = "";          // Restaurar color original del texto
-                        btnAgregar.disabled = false;          // Habilitar el botón
-                    }
-                }
-
-                // Actualizar monto
-                const productoRow = button.closest('tr');
-                actualizarMonto(productoRow);
-                calcularTotal(); // Recalcula el total general
-                contarProductos(); // Actualiza el conteo de productos
             });
-        });
 
 
 
 
             // Manejar clic en botones de sumar
-           // Manejar clic en botones de sumar
+            // Manejar clic en botones de sumar
             document.querySelectorAll('.sumar').forEach(button => {
-            button.addEventListener('click', () => {
-                const input = button.parentElement.querySelector('.cantidad');
-                const maxUnidades = obtenerMaxUnidades(button);
-                let currentValue = parseInt(input.value) || 1;
-                let totalCantidad = 0;
+                button.addEventListener('click', () => {
+                    const input = button.parentElement.querySelector('.cantidad');
+                    const maxUnidades = obtenerMaxUnidades(button);
+                    let currentValue = parseInt(input.value) || 1;
+                    let totalCantidad = 0;
 
-                // Obtener el ID del producto
-                const productoId = button.getAttribute('data-id');
+                    // Obtener el ID del producto
+                    const productoId = button.getAttribute('data-id');
 
-                // Obtener directamente el valor de data-cantDisponible desde el botón
-                const cantDisponible = button.getAttribute('data-cantDisponible');
+                    // Obtener directamente el valor de data-cantDisponible desde el botón
+                    const cantDisponible = button.getAttribute('data-cantDisponible');
 
-                // Calcular la suma total de las cantidades de filas con el mismo data-id
-                document.querySelectorAll('.cantidad').forEach(input => {
-                    const inputId = input.parentElement.querySelector('.sumar').getAttribute('data-id');
-                    if (inputId === productoId) {
-                        totalCantidad += parseInt(input.value) || 0;
-                    }
-                });
+                    // Calcular la suma total de las cantidades de filas con el mismo data-id
+                    document.querySelectorAll('.cantidad').forEach(input => {
+                        const inputId = input.parentElement.querySelector('.sumar')
+                            .getAttribute('data-id');
+                        if (inputId === productoId) {
+                            totalCantidad += parseInt(input.value) || 0;
+                        }
+                    });
 
-                // Verificar si el input existe
-                console.log(`Cantidad Disponible: ${cantDisponible}`);
-                console.log(`Total Cantidad: ${totalCantidad}`);
+                    // Verificar si el input existe
+                    console.log(`Cantidad Disponible: ${cantDisponible}`);
+                    console.log(`Total Cantidad: ${totalCantidad}`);
 
 
-                if (totalCantidad >= cantDisponible) {
-                    alert("Ya no quedan unidades disponibles.");
-                    const btnAgregar = document.querySelector(`#btn-agregar-${productoId}`);
-                    if (btnAgregar) {
-                        btnAgregar.style.backgroundColor = "gray"; // Fondo gris
-                        btnAgregar.style.color = "black";         // Letras negras
-                        btnAgregar.disabled = true;               // Deshabilitar el botón
-                    }else {
+                    if (totalCantidad >= cantDisponible) {
+                        alert("Ya no quedan unidades disponibles.");
                         const btnAgregar = document.querySelector(`#btn-agregar-${productoId}`);
                         if (btnAgregar) {
-                            btnAgregar.style.backgroundColor = ""; // Restaurar color original
-                            btnAgregar.style.color = "";          // Restaurar color original del texto
-                            btnAgregar.disabled = false;          // Habilitar el botón
+                            btnAgregar.style.backgroundColor = "gray"; // Fondo gris
+                            btnAgregar.style.color = "black"; // Letras negras
+                            btnAgregar.disabled = true; // Deshabilitar el botón
+                        } else {
+                            const btnAgregar = document.querySelector(`#btn-agregar-${productoId}`);
+                            if (btnAgregar) {
+                                btnAgregar.style.backgroundColor = ""; // Restaurar color original
+                                btnAgregar.style.color = ""; // Restaurar color original del texto
+                                btnAgregar.disabled = false; // Habilitar el botón
+                            }
                         }
+
+
+                    } else if (currentValue >= maxUnidades) {
+                        alert(
+                            `No puedes seleccionar más de ${maxUnidades} unidades de este producto.`);
+                    } else {
+                        input.value = currentValue + 1;
                     }
 
-
-                } else if (currentValue >= maxUnidades) {
-                    alert(`No puedes seleccionar más de ${maxUnidades} unidades de este producto.`);
-                } else {
-                    input.value = currentValue + 1;
-                }
-
-                // Actualizar monto
-                const productoRow = button.closest('tr');
-                actualizarMonto(productoRow);
-                calcularTotal(); // Recalcula el total general
-                contarProductos(); // Actualiza el conteo de productos
+                    // Actualizar monto
+                    const productoRow = button.closest('tr');
+                    actualizarMonto(productoRow);
+                    calcularTotal(); // Recalcula el total general
+                    contarProductos(); // Actualiza el conteo de productos
+                });
             });
-        });
 
 
 
@@ -765,14 +797,17 @@
             });
 
             // Configurar el observador para el span del total en dólares
-            observer.observe(totalFacturaSpan, { childList: true, characterData: true });
+            observer.observe(totalFacturaSpan, {
+                childList: true,
+                characterData: true
+            });
         });
     </script>
 
-    {{-- guardar en metodo combinado tiene ajax--}}
+    {{-- guardar en metodo combinado tiene ajax --}}
     <script>
-        $(document).ready(function () {
-            $('#btnGuardarPagoCombinado').click(function () {
+        $(document).ready(function() {
+            $('#btnGuardarPagoCombinado').click(function() {
                 let ventaId = $('#ventaIdModal').val();
                 let totalVentaText = $('#totalVentaSpan').text();
                 let totalVenta = parseFloat(totalVentaText.replace(/[^0-9.-]+/g, "")) || 0;
@@ -785,7 +820,7 @@
                 let sumaMontos = 0;
                 let pagos = [];
 
-                $('.combinado-row').each(function () {
+                $('.combinado-row').each(function() {
                     let metodoPagoId = $(this).find('.select1').val();
                     let monto = parseFloat($(this).find('.input1').val()) || 0;
                     let nombrePago = $(this).find('#nombrePago').val();
@@ -825,7 +860,7 @@
                             _token: '{{ csrf_token() }}', // CSRF token para seguridad
                             pagos: pagos // El array de pagos
                         },
-                        success: function (response) {
+                        success: function(response) {
                             if (response.success) {
                                 // Mostrar alerta de éxito
                                 Swal.fire({
@@ -839,7 +874,7 @@
                                 });
                             }
                         },
-                        error: function (xhr, status, error) {
+                        error: function(xhr, status, error) {
                             console.error(xhr.responseText); // Manejo de errores
                         }
                     });
@@ -851,10 +886,10 @@
             return /^\d+(\.\d{1,2})?$/.test(monto);
         }
     </script>
-    {{-- calcular las opciones rapidas tiene ajax guarda pagos individuales--}}
+    {{-- calcular las opciones rapidas tiene ajax guarda pagos individuales --}}
     <script>
         // Evento al abrir el segundo modal para generar montos sugeridos
-        $('#exampleModalToggle2').on('show.bs.modal', function () {
+        $('#exampleModalToggle2').on('show.bs.modal', function() {
             // Capturamos el total de la venta, eliminamos el símbolo '$' y lo convertimos a número
             var totalVenta = parseFloat($('#totalVentaModal').text().replace('$', '').trim());
 
@@ -862,7 +897,7 @@
             console.log('Total de la venta:', totalVenta);
 
             // Actualizar el span en la vista con el valor de totalVenta
-            $('#totalVentaSpan').text('$' + totalVenta.toFixed(2));  // Se muestra con el símbolo '$' y formato
+            $('#totalVentaSpan').text('$' + totalVenta.toFixed(2)); // Se muestra con el símbolo '$' y formato
 
             // Generar montos sugeridos basados en el total
             var opciones = generarMontosRapidos(totalVenta);
@@ -871,8 +906,9 @@
             $('#opcionesRapidas').empty();
 
             // Crear botones dinámicamente con las opciones generadas
-            opciones.forEach(function (monto) {
-                var boton = `<button type="button" class="btn btn-outline-secondary me-2 opcion-rapida">${monto.toFixed(2)}</button>`;
+            opciones.forEach(function(monto) {
+                var boton =
+                    `<button type="button" class="btn btn-outline-secondary me-2 opcion-rapida">${monto.toFixed(2)}</button>`;
                 $('#opcionesRapidas').append(boton);
             });
         });
@@ -880,31 +916,33 @@
         // Función para generar montos rápidos (menos 10% y 15%)
         function generarMontosRapidos(total) {
             var opciones = [];
-            opciones.push(total);              // Total exacto
-            opciones.push(total * 0.9);        // 10% menos
-            opciones.push(total * 0.85);       // 15% menos
+            opciones.push(total); // Total exacto
+            opciones.push(total * 0.9); // 10% menos
+            opciones.push(total * 0.85); // 15% menos
             return opciones;
         }
 
         // Evento para capturar clic en los botones de opciones rápidas
-        $(document).on('click', '.opcion-rapida', function () {
+        $(document).on('click', '.opcion-rapida', function() {
             var valorSeleccionado = $(this).text(); // Capturar el valor del botón
             var valorFormateado = parseFloat(valorSeleccionado).toFixed(2); // Asegurarnos de que tenga 2 decimales
             $('#valorPago').val(valorFormateado); // Pasarlo al input
         });
 
         // Pasa los datos a los modales cuando se selecciona un método de pago
-        $('.payment-card-item').on('click', function () {
+        $('.payment-card-item').on('click', function() {
             var methodId = $(this).data('method-id');
             var methodName = $(this).data('method-name');
-            var totalFactura = $('#totalVentaModal').data('total'); // Captura con respaldo en el atributo data-total
+            var totalFactura = $('#totalVentaModal').data(
+            'total'); // Captura con respaldo en el atributo data-total
 
             // Captura el ID de la venta
             var ventaId = $('#ventaIdModal').val();
 
             // Verificación de totalFactura antes de asignar
             if (totalFactura === undefined || totalFactura === null || isNaN(totalFactura)) {
-                totalFactura = $('#totalVentaModal').text().replace('$', '').trim(); // Captura desde el texto del DOM
+                totalFactura = $('#totalVentaModal').text().replace('$', '')
+            .trim(); // Captura desde el texto del DOM
             }
 
             // Asignar valores al segundo modal
@@ -924,7 +962,7 @@
         });
 
         // Manejo de la acción de guardar el pago
-        $('.btn-primary').on('click', function () {
+        $('.btn-primary').on('click', function() {
             // Recoger los datos del formulario
             var monto = parseFloat($('#valorPago').val()).toFixed(2);
             var ventaId = $('#ventaIdModal').val();
@@ -949,9 +987,9 @@
                     monto: monto,
                     descripcionPago: descripcionPago,
                     nombrePago: nombrePago // Moneda seleccionada
-                     // Enviar descripcionPago
+                    // Enviar descripcionPago
                 },
-                success: function (response) {
+                success: function(response) {
                     if (response.success) {
                         // Mostrar alerta de éxito con SweetAlert2
                         Swal.fire({
@@ -959,14 +997,14 @@
                             title: 'Pago guardado correctamente.',
                             showConfirmButton: false,
                             timer: 1500
-                        }).then(function () {
+                        }).then(function() {
                             location.reload(); // Recargar la página después de guardar
                         });
                     } else {
                         console.log('Error al guardar el pago:', response.message);
                     }
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     console.error('Error en la solicitud:', error); // Imprimir error en consola
                 }
             });
@@ -975,8 +1013,8 @@
     {{-- para cambiar entre metodo normal y combinado --}}
     <script>
         // Evento cuando se selecciona un método de pago
-        $('.payment-card-item').on('click', function () {
-            var methodId = $(this).data('method-id');    // ID del método de pago
+        $('.payment-card-item').on('click', function() {
+            var methodId = $(this).data('method-id'); // ID del método de pago
             var methodName = $(this).data('method-name'); // Nombre del método de pago
 
             // Mostrar el método de pago seleccionado
@@ -985,36 +1023,34 @@
 
             // Lógica para mostrar u ocultar contenido según el método seleccionado
             if (methodName === 'Combinado') {
-                $('#combinadoFields').show();     // Mostrar el bloque combinado
-                $('.regular-fields').hide();      // Ocultar el bloque regular
+                $('#combinadoFields').show(); // Mostrar el bloque combinado
+                $('.regular-fields').hide(); // Ocultar el bloque regular
             } else {
-                $('#combinadoFields').hide();     // Ocultar el bloque combinado
-                $('.regular-fields').show();      // Mostrar el bloque regular
+                $('#combinadoFields').hide(); // Ocultar el bloque combinado
+                $('.regular-fields').show(); // Mostrar el bloque regular
             }
 
             // Mostrar el modal secundario
             $('#exampleModalToggle2').modal('show');
         });
-
-
     </script>
     {{-- guarda en la base de datos ventas y detalle venta, me abre el modal ni loco se elimina --}}
     <script>
         // Botón "Vender" - Registrar la venta
-        $('#procesarVenta').on('click', function (event) {
+        $('#procesarVenta').on('click', function(event) {
             event.preventDefault(); // Evitar que la página se recargue al hacer clic
 
             const totalFactura = parseFloat($('#totalFactura').text().replace('$', '').trim());
 
             // Paso 1: Registrar la venta
             $.ajax({
-                url: '{{ route("venta.registrar") }}',
+                url: '{{ route('venta.registrar') }}',
                 method: 'POST',
                 data: {
                     montoTotal: totalFactura,
                     _token: '{{ csrf_token() }}'
                 },
-                success: function (response) {
+                success: function(response) {
                     const ventaId = response.venta_id;
 
                     // Paso 2: Registrar los detalles de la venta
@@ -1031,8 +1067,9 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             // Paso 4: Abrir el modal y pasar el venta_id y totalFactura después de que se haya registrado todo
-                            $('#ventaIdModal').val(ventaId);  // Asignamos el ID de la venta al campo oculto en el modal
-                            $('#exampleModalToggle').modal('show');  // Mostrar el modal
+                            $('#ventaIdModal').val(
+                            ventaId); // Asignamos el ID de la venta al campo oculto en el modal
+                            $('#exampleModalToggle').modal('show'); // Mostrar el modal
 
                             // Actualizamos el monto total de la venta en el primer modal
                             $('#totalVentaModal').text('$' + totalFactura.toFixed(2));
@@ -1043,7 +1080,7 @@
                         }
                     });
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     console.error('Error al registrar la venta:', error);
                     Swal.fire('Error', 'Hubo un error al procesar la venta.', 'error');
                 }
@@ -1054,7 +1091,7 @@
         function registrarDetallesVenta(ventaId) {
             const detalles = [];
 
-            $('#tabla-agregados tr').each(function () {
+            $('#tabla-agregados tr').each(function() {
                 const productoId = $(this).find('input[name="producto_id"]').val();
                 const cantidad = $(this).find('.cantidad').val();
                 const colorId = $(this).find('.select-color').val();
@@ -1076,28 +1113,27 @@
 
             // Enviar los detalles de la venta
             $.ajax({
-                url: '{{ route("venta.detalles") }}',
+                url: '{{ route('venta.detalles') }}',
                 method: 'POST',
                 data: {
                     detalles: detalles,
                     _token: '{{ csrf_token() }}'
                 },
-                success: function (response) {
+                success: function(response) {
                     console.log('Detalles registrados exitosamente:', response);
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     console.error('Error al registrar los detalles:', error);
                     Swal.fire('Error', 'Hubo un error al registrar los detalles de la venta.', 'error');
                 }
             });
         }
-
     </script>
     {{-- crea las filas del metodo combinado --}}
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             // Botón para agregar una nueva fila
-            $(document).on('click', '.btn-add', function () {
+            $(document).on('click', '.btn-add', function() {
                 // Clona la fila de campos
                 var newRow = $(this).closest('.card-body').find('.combinado-row:first').clone();
 
@@ -1110,7 +1146,7 @@
             });
 
             // Botón para eliminar una fila
-            $(document).on('click', '.btn-remove', function () {
+            $(document).on('click', '.btn-remove', function() {
                 // Verifica si hay más de una fila antes de eliminar
                 var rowCount = $(this).closest('.card-body').find('.combinado-row').length;
                 if (rowCount > 1) {
@@ -1120,8 +1156,6 @@
                 }
             });
         });
-
-
     </script>
     {{-- para eliminar los productos en el segundo div --}}
     <script>
@@ -1301,9 +1335,9 @@
         });
     </script> --}}
     <script>
-            document.querySelectorAll('.cantidad').forEach(input => {
+        document.querySelectorAll('.cantidad').forEach(input => {
             input.addEventListener('input', () => {
-                console.log(input.value);  // Imprime el valor del input en la consola
+                console.log(input.value); // Imprime el valor del input en la consola
             });
         });
     </script>
