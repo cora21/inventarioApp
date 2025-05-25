@@ -74,8 +74,8 @@
 
 <body>
     <div class="wrapper">
-        {{-- <nav id="sidebar" class="sidebar js-sidebar {{ request()->routeIs('venta.index') ? 'collapsed' : '' }}"> --}}
-        <nav id="sidebar" class="sidebar js-sidebar">
+        <nav id="sidebar" class="sidebar js-sidebar {{ request()->routeIs('venta.index') ? 'collapsed' : '' }}">
+        {{-- <nav id="sidebar" class="sidebar js-sidebar"> --}}
             <div class="sidebar-content js-simplebar">
                 <div class="sidebar-brand d-flex align-items-center justify-content-center py-3">
                 <img src="{{ asset('imagenes/logo.png') }}" alt="Logo" class="img-fluid me-2" style="max-height: 40px;">
