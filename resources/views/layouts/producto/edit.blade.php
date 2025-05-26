@@ -5,7 +5,13 @@
 @section('contenido')
 
 <div class="container">
+    <a href="{{ url()->previous() }}" type="button" class="btn btn-primary">
+        Regresar
+    </a>
+    <br>
+    <br>
     <div class="card">
+        
         <div class="card-body">
             <form action="{{ route('producto.update', $producto->id) }}" method="post" class="row g-3">
                 @csrf

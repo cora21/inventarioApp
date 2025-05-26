@@ -147,7 +147,9 @@
                 <tbody>
                     <tr>
                         <td class="border">{{ $row->nombre }}</td>
-                        <td class="border">{{ $row->descripcion }}</td>
+                        <td class="border">
+                            {{ empty($row->descripcion) ? '- Sin descripción -' : $row->descripcion }}
+                        </td>
                         <td class="border">
                             <a class="btn btn-primary dropdown-toggle d-none d-sm-inline-block" type="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">

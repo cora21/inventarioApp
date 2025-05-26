@@ -69,33 +69,50 @@
                     </div>
                 @endif
                 <br>
-
+                <br>
                 <!-- Colores Disponibles -->
-                <div class="mt-4">
-                    <p><strong>Colores Disponibles:</strong></p>
-                    @if ($producto->colores->isNotEmpty())
-                        <!-- Mostrar colores disponibles -->
-                        <div class="d-flex gap-3 justify-content-start">
-                            @foreach ($producto->colores as $color)
-                                <div class="color-container text-center" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                    title="Cantidad disponible: {{ $color->pivot->unidadesDisponibleProducto }} unidades">
-                                    <div class="circle" style="background-color: {{ $color->codigoHexa }};"></div>
-                                    <span
-                                        class="color-count mt-2 d-block">{{ $color->pivot->unidadesDisponibleProducto }}</span>
+                @if ($producto->colores->isEmpty())
+                    <!-- Mensaje cuando no hay colores -->
+                    <div class="alert text-center mt-3 border" style="background-color: #e8eff4" role="alert">
+                        <i class="bi bi-palette" style="font-size: 2rem; color: #6c757d;"></i>
+                        <p class="mb-3">No hay colores registrados para este producto.</p>
+                        <a href="{{ route('producto.colores', $producto->id) }}" class="btn btn-primary btn-sm mt-2">
+                            + Registrar colores
+                        </a>
+                    </div>
+                @else
+                    <!-- Mostrar colores y unidades sin color -->
+                    @php
+                        $unidadesConColor = $producto->colores->sum('pivot.unidadesDisponibleProducto');
+                        $unidadesSinColor = $producto->cantidadDisponibleProducto - $unidadesConColor;
+                    @endphp
+
+                    <div class="d-flex gap-3 flex-wrap">
+                        @foreach ($producto->colores as $color)
+                            <div class="text-center" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                title="Cantidad disponible: {{ $color->pivot->unidadesDisponibleProducto }} unidades">
+                                <div class="rounded-circle border border-secondary"
+                                    style="width: 40px; height: 40px; background-color: {{ $color->codigoHexa }};">
                                 </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <!-- Mensaje cuando no hay colores -->
-                        <div class="alert text-center mt-3 border" style="background-color: #e8eff4" role="alert">
-                            <i class="bi bi-palette" style="font-size: 2rem; color: #6c757d;"></i>
-                            <p class="mb-3">No hay colores registrados para este producto.</p>
-                            <a href="{{ route('producto.colores', $producto->id) }}" class="btn btn-primary btn-sm mt-2">
-                                + Registrar colores
-                            </a>
-                        </div>
-                    @endif
-                </div>
+                                <div class="mt-1 small">{{ $color->pivot->unidadesDisponibleProducto }}</div>
+                            </div>
+                        @endforeach
+
+                        @if ($unidadesSinColor > 0)
+                        <a href="{{ route('producto.colores', $producto->id) }}" class="text-decoration-none text-dark">
+                            <div class="text-center" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                 title="Unidades sin color: {{ $unidadesSinColor }} unidades, pulsa para agregar colores.">
+                                <div class="rounded-circle bg-light border border-secondary position-relative"
+                                     style="width: 40px; height: 40px;">
+                                    <span class="position-absolute top-50 start-50 translate-middle fw-bold">X</span>
+                                </div>
+                                <div class="mt-1 small">{{ $unidadesSinColor }}</div>
+                            </div>
+                        </a>                        
+                        @endif
+                    </div>
+                @endif
+
             </div>
 
 

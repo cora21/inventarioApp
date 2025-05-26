@@ -478,8 +478,8 @@
                             @endforeach
                         </div>
 
-                        <div class="row justify-content-center">
-                            {{-- <div class="col-lg-3 col-md-5 col-sm-12 mb-3">
+                        {{-- <div class="row justify-content-center">
+                            <div class="col-lg-3 col-md-5 col-sm-12 mb-3">
                                 <div class="bg-light border rounded shadow-sm p-2 text-center payment-card">
                                     <div class="mb-2">
                                         <div class="text-muted">
@@ -490,8 +490,8 @@
                                         </a>
                                     </div>
                                 </div>
-                            </div> --}}
-                        </div>
+                            </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>

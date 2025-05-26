@@ -150,10 +150,20 @@ totalDescontable tienes el total del producto sin descuento ni nada
                             {{-- <td class="border">
                                 {{ number_format($row->precioUnitarioProducto * 51.93, 2) }}
                             </td> --}}
-                            @if($vesBaseMoneda === 1)
-                            <td class="border">Bs.{{ number_format($row->precioUnitarioProducto * $dolarBCV, 2) }}</td>
+                            @if ($vesBaseMoneda === 1)
+                            <td>Bs.{{ number_format($row->precioUnitarioProducto * $dolarBCV, 2) }}
+                                <br>
+                                <small
+                                    style="color: gray; font-size: 0.8em;">${{ $row->precioUnitarioProducto }}
+                                </small>
+                            </td>
                             @else
-                            <td class="border" >${{ $row->precioUnitarioProducto }}</td>
+                                <td>${{ $row->precioUnitarioProducto }}
+                                    <br>
+                                    <small
+                                        style="color: gray; font-size: 0.8em;">Bs.{{ number_format($row->precioUnitarioProducto * $dolarBCV, 2) }}
+                                    </small>
+                                </td>
                             @endif
                             <td class="border" style="width: 200px;">
                                 {{ $row->cantidadDisponibleProducto }}

@@ -11,7 +11,7 @@
     <meta name="keywords"
         content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
   
-    <style>
+<style>
     /* Colores principales */
     .sidebar {
         background-color: #284B26; /* Verde oscuro combinado con tu logo */
@@ -48,7 +48,7 @@
     .sidebar .logout-btn:hover {
         background-color: #3A6B3A;
     }
-    </style>
+</style>
 
     <!-- Fuente y Favicon -->
     {{-- <link rel="preconnect" href="https://fonts.gstatic.com"> --}}
