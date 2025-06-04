@@ -21,6 +21,7 @@
 
 @section('barraNavegacion')
 @endsection
+{{-- primera barra 4 cuadros y calendario --}}
 <div class="row">
     <div class="col-xl-6 col-xxl-5 d-flex">
         <div class="w-100">
@@ -114,6 +115,30 @@
             </div>
         </div>
     </div>
+    <div class="col-12 col-md-6 col-xxl-3 d-flex order-1 order-xxl-1">
+        <div class="card flex-fill">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Calendario</h5>
+            </div>
+            <div class="card-body d-flex">
+                <div class="align-self-center w-100">
+                    <div class="chart">
+                        <!-- Aquí se renderiza el calendario -->
+                        <div id="calendarioNuevo"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+
+
+
+
+{{-- segunda barra estadisticas de abajo, las barras --}}
+<div class="row">
 
     <div class="col-xl-6 col-xxl-7">
         <div class="card flex-fill w-100">
@@ -128,8 +153,46 @@
             </div>
         </div>
     </div>
+
+    <div class="col-12 col-md-6 col-xxl-3 d-flex order-2 order-xxl-3">
+        <div class="card flex-fill w-100">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Productos Más Vendidos desde hace una semana:</h5>
+            </div>
+            <div class="card-body d-flex">
+                <div class="align-self-center w-100">
+                    <div class="py-3">
+                        <!-- Contenedor del gráfico circular -->
+                        <div class="chart chart-xs">
+                            <svg id="productosMasVendidos" width="200" height="200" viewBox="0 0 200 200" style="display: block; margin: 0 auto;"></svg>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de productos -->
+                    <table class="table mb-0">
+                        <tbody>
+                            <tr>
+                                <td id="producto1Nombre">Producto 1</td>
+                                <td class="text-end" id="producto1Count">0</td>
+                            </tr>
+                            <tr>
+                                <td id="producto2Nombre">Producto 2</td>
+                                <td class="text-end" id="producto2Count">0</td>
+                            </tr>
+                            <tr>
+                                <td id="producto3Nombre">Producto 3</td>
+                                <td class="text-end" id="producto3Count">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+
 {{-- script para las estadisticas de ventas --}}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -209,206 +272,105 @@
     });
 </script>
 
+<script>
+    async function obtenerProductosVentas() {
+        try {
+            const response = await fetch('/api/productos-ventas'); // Ruta de tu API
+            const data = await response.json(); // Los datos en formato JSON
 
+            // Tomar solo los 3 productos más vendidos
+            const topProductos = data.slice(0, 3);
 
+            // Actualizar la tabla con los datos
+            actualizarTabla(topProductos);
 
-{{-- segunda parte para el calendario --}}
-<div class="row">
+            // Dibujar el gráfico circular con animación
+            drawPieChart(topProductos);
+        } catch (error) {
+            console.error('Error al obtener los productos:', error);
+        }
+    }
 
+    function actualizarTabla(data) {
+        data.forEach((producto, index) => {
+            document.getElementById(`producto${index + 1}Nombre`).innerText = producto.nombre_producto;
+            document.getElementById(`producto${index + 1}Count`).innerText = producto.total_ventas;
+        });
+    }
 
-    <div class="col-12 col-md-6 col-xxl-3 d-flex order-2 order-xxl-3">
-        <div class="card flex-fill w-100">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Productos Más Vendidos desde hace una semana:</h5>
-            </div>
-            <div class="card-body d-flex">
-                <div class="align-self-center w-100">
-                    <div class="py-3">
-                        <!-- Contenedor del gráfico circular -->
-                        <div class="chart chart-xs">
-                            <svg id="productosMasVendidos" width="200" height="200" viewBox="0 0 200 200" style="display: block; margin: 0 auto;"></svg>
-                        </div>
-                    </div>
+    function drawPieChart(data) {
+        const svg = document.getElementById('productosMasVendidos');
+        svg.innerHTML = ''; // Limpia el contenido previo del SVG
 
-                    <!-- Tabla de productos -->
-                    <table class="table mb-0">
-                        <tbody>
-                            <tr>
-                                <td id="producto1Nombre">Producto 1</td>
-                                <td class="text-end" id="producto1Count">0</td>
-                            </tr>
-                            <tr>
-                                <td id="producto2Nombre">Producto 2</td>
-                                <td class="text-end" id="producto2Count">0</td>
-                            </tr>
-                            <tr>
-                                <td id="producto3Nombre">Producto 3</td>
-                                <td class="text-end" id="producto3Count">0</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+        const total = data.reduce((sum, producto) => sum + parseInt(producto.total_ventas, 10), 0); // Suma total de ventas
+        const radius = 100;
+        const center = { x: radius, y: radius };
+        const colors = ['#FF6384', '#36A2EB', '#FFCE56']; // Colores para los segmentos
 
-        <script>
-            async function obtenerProductosVentas() {
-                try {
-                    const response = await fetch('/api/productos-ventas'); // Ruta de tu API
-                    const data = await response.json(); // Los datos en formato JSON
+        let cumulativePercentage = 0;
 
-                    // Tomar solo los 3 productos más vendidos
-                    const topProductos = data.slice(0, 3);
+        const tooltip = document.createElement('div');
+        tooltip.style.position = 'absolute';
+        tooltip.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+        tooltip.style.color = '#fff';
+        tooltip.style.padding = '5px 10px';
+        tooltip.style.borderRadius = '5px';
+        tooltip.style.fontSize = '12px';
+        tooltip.style.display = 'none';
+        tooltip.style.pointerEvents = 'none';
+        document.body.appendChild(tooltip);
 
-                    // Actualizar la tabla con los datos
-                    actualizarTabla(topProductos);
+        data.forEach((producto, index) => {
+            const percentage = parseInt(producto.total_ventas, 10) / total;
+            const startAngle = cumulativePercentage * 2 * Math.PI;
+            cumulativePercentage += percentage;
+            const endAngle = cumulativePercentage * 2 * Math.PI;
 
-                    // Dibujar el gráfico circular con animación
-                    drawPieChart(topProductos);
-                } catch (error) {
-                    console.error('Error al obtener los productos:', error);
-                }
-            }
+            const x1 = center.x + radius * Math.sin(startAngle);
+            const y1 = center.y - radius * Math.cos(startAngle);
+            const x2 = center.x + radius * Math.sin(endAngle);
+            const y2 = center.y - radius * Math.cos(endAngle);
 
-            function actualizarTabla(data) {
-                data.forEach((producto, index) => {
-                    document.getElementById(`producto${index + 1}Nombre`).innerText = producto.nombre_producto;
-                    document.getElementById(`producto${index + 1}Count`).innerText = producto.total_ventas;
-                });
-            }
+            const largeArcFlag = percentage > 0.5 ? 1 : 0;
 
-            function drawPieChart(data) {
-                const svg = document.getElementById('productosMasVendidos');
-                svg.innerHTML = ''; // Limpia el contenido previo del SVG
+            const pathData = `
+                M ${center.x} ${center.y}
+                L ${x1} ${y1}
+                A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}
+                Z
+            `;
 
-                const total = data.reduce((sum, producto) => sum + parseInt(producto.total_ventas, 10), 0); // Suma total de ventas
-                const radius = 100;
-                const center = { x: radius, y: radius };
-                const colors = ['#FF6384', '#36A2EB', '#FFCE56']; // Colores para los segmentos
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', pathData);
+            path.setAttribute('fill', colors[index % colors.length]);
+            path.style.transformOrigin = `${center.x}px ${center.y}px`;
+            path.style.transform = 'scale(0)';
+            path.style.transition = `transform 0.5s ease ${index * 0.2}s`;
 
-                let cumulativePercentage = 0;
+            // Mostrar tooltip al pasar el ratón
+            path.addEventListener('mousemove', (e) => {
+                tooltip.style.display = 'block';
+                tooltip.style.left = `${e.pageX + 10}px`;
+                tooltip.style.top = `${e.pageY + 10}px`;
+                tooltip.textContent = `${producto.nombre_producto}: ${producto.total_ventas} (${(percentage * 100).toFixed(1)}%)`;
+            });
 
-                const tooltip = document.createElement('div');
-                tooltip.style.position = 'absolute';
-                tooltip.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-                tooltip.style.color = '#fff';
-                tooltip.style.padding = '5px 10px';
-                tooltip.style.borderRadius = '5px';
-                tooltip.style.fontSize = '12px';
+            // Ocultar tooltip al salir
+            path.addEventListener('mouseout', () => {
                 tooltip.style.display = 'none';
-                tooltip.style.pointerEvents = 'none';
-                document.body.appendChild(tooltip);
+            });
 
-                data.forEach((producto, index) => {
-                    const percentage = parseInt(producto.total_ventas, 10) / total;
-                    const startAngle = cumulativePercentage * 2 * Math.PI;
-                    cumulativePercentage += percentage;
-                    const endAngle = cumulativePercentage * 2 * Math.PI;
+            svg.appendChild(path);
 
-                    const x1 = center.x + radius * Math.sin(startAngle);
-                    const y1 = center.y - radius * Math.cos(startAngle);
-                    const x2 = center.x + radius * Math.sin(endAngle);
-                    const y2 = center.y - radius * Math.cos(endAngle);
+            // Aplicar animación después de agregar el elemento
+            setTimeout(() => {
+                path.style.transform = 'scale(1)';
+            }, 50);
+        });
+    }
 
-                    const largeArcFlag = percentage > 0.5 ? 1 : 0;
-
-                    const pathData = `
-                        M ${center.x} ${center.y}
-                        L ${x1} ${y1}
-                        A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}
-                        Z
-                    `;
-
-                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                    path.setAttribute('d', pathData);
-                    path.setAttribute('fill', colors[index % colors.length]);
-                    path.style.transformOrigin = `${center.x}px ${center.y}px`;
-                    path.style.transform = 'scale(0)';
-                    path.style.transition = `transform 0.5s ease ${index * 0.2}s`;
-
-                    // Mostrar tooltip al pasar el ratón
-                    path.addEventListener('mousemove', (e) => {
-                        tooltip.style.display = 'block';
-                        tooltip.style.left = `${e.pageX + 10}px`;
-                        tooltip.style.top = `${e.pageY + 10}px`;
-                        tooltip.textContent = `${producto.nombre_producto}: ${producto.total_ventas} (${(percentage * 100).toFixed(1)}%)`;
-                    });
-
-                    // Ocultar tooltip al salir
-                    path.addEventListener('mouseout', () => {
-                        tooltip.style.display = 'none';
-                    });
-
-                    svg.appendChild(path);
-
-                    // Aplicar animación después de agregar el elemento
-                    setTimeout(() => {
-                        path.style.transform = 'scale(1)';
-                    }, 50);
-                });
-            }
-
-            obtenerProductosVentas();
-        </script>
-    </div>
-
-
-
-
-
-
-
-
-
-    <div class="col-12 col-md-6 col-xxl-3 d-flex order-1 order-xxl-1">
-        <div class="card flex-fill">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Calendario</h5>
-            </div>
-            <div class="card-body d-flex">
-                <div class="align-self-center w-100">
-                    <div class="chart">
-                        <!-- Aquí se renderiza el calendario -->
-                        <div id="calendarioNuevo"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    obtenerProductosVentas();
+</script>
 {{-- es el scripts del navegador --}}
 <script>
     document.addEventListener("DOMContentLoaded", function() {
